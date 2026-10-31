@@ -126,7 +126,7 @@ export function ProgramProof({ program, selftest, live }: { program: Program; se
 
       <details className="code">
         <summary>
-          Proven program source <span className="data muted">({program.code.split("\n").length} lines)</span>
+          Proven program source <span className="data muted">({program.code.trimEnd().split("\n").length} lines)</span>
         </summary>
         <pre>
           <code>{program.code}</code>
