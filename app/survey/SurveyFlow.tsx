@@ -80,14 +80,14 @@ function Station({
 }
 
 function ErrorBox({ err }: { err: Err }) {
-  const recorded = err.reason !== "PAYLOAD" && err.reason !== "JUDGE_CODE";
+  const detail = err.detail.length > 160 ? `${err.detail.slice(0, 157)}…` : err.detail;
   return (
     <div className="error-box" role="alert">
       <p>
-        <span className="data error-box__code">{err.reason}</span> {err.detail}
+        <span className="data error-box__code">{err.reason}</span> {detail}
       </p>
       <p className="small">
-        {REASON_NEXT[err.reason]} {recorded ? <Link href="/">Open the recorded runs →</Link> : null}
+        {REASON_NEXT[err.reason]} <Link href="/">Open the recorded runs →</Link>
       </p>
     </div>
   );
@@ -203,7 +203,12 @@ export function SurveyFlow() {
     setMeasure({ state: "busy", t0: Date.now() });
     let body: Record<string, unknown>;
     if (kind === "upload" && file) {
-      const dataUrl = await readDataUrl(file);
+      let dataUrl: string;
+      try {
+        dataUrl = await readDataUrl(file);
+      } catch {
+        return setMeasure({ state: "error", err: { reason: "PAYLOAD", detail: "the browser could not read that file; try exporting it again as MP4" } });
+      }
       body = { upload: dataUrl, judge_code: judgeCode.trim(), fps: fpsNum, frames: nFrames, scale: MARK_SYSTEMS[system].scale, run_id: runId.current };
     } else {
       body = { fixture: fixtureId, run_id: runId.current };
@@ -348,7 +353,7 @@ export function SurveyFlow() {
               </p>
               <p>
                 <strong>Camera:</strong> side-on to the hull, held still, the mark column and the waterline both in frame,
-                cropped close to the marks. Prepared MP4 only: at most {MAX_SECONDS} s, {MAX_FPS} fps and{" "}
+                cropped close to the marks. On iPhone, export or share the clip as MP4 first (Most Compatible). Prepared MP4 only: at most {MAX_SECONDS} s, {MAX_FPS} fps and{" "}
                 {MAX_BYTES / 1048576} MB.
               </p>
             </div>
@@ -413,7 +418,7 @@ export function SurveyFlow() {
       <Station n={2} title="Measure" open={measure.state !== "idle" || !!videoUrl} done={draft.state === "done"} live>
         {measure.state === "busy" ? (
           <p>
-            SAM 3.1 is tracking the numerals and the water… <Elapsed t0={measure.t0} />
+            SAM 3.1 is tracking the numerals and the water (usually 30–45 s)… <Elapsed t0={measure.t0} />
           </p>
         ) : null}
         {measure.state === "error" ? <ErrorBox err={measure.err} /> : null}

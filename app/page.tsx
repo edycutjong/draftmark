@@ -59,6 +59,27 @@ export default function Home() {
           ) : null}
         </section>
 
+        <aside className="honesty" aria-label="What these runs do and do not prove">
+          <h2 className="h4">What is and is not proven here</h2>
+          <ul>
+            <li>
+              <strong>SYNTHETIC barge:</strong> weight accuracy is checked only against a code-rendered barge whose truth is
+              known by construction. No physical scale check has been done.
+            </li>
+            <li>
+              <strong>Real hulls:</strong> the two clips are third-party test footage with no ground truth. They show the
+              measurement and an honest refusal, not a weight.
+            </li>
+            <li>
+              <strong>Trieste booklet:</strong> a Ro-Ro/passenger ship, not a bulk carrier. It proves that Wonder&apos;s program
+              reproduces the booklet&apos;s printed conditions.
+            </li>
+            <li>
+              <strong>Prototype:</strong> not a surveyor&apos;s certificate.
+            </li>
+          </ul>
+        </aside>
+
         <section className="proof-section" aria-labelledby="measurement-h">
           <div className="section-head">
             <p className="eyebrow">Proof 1 of 2</p>

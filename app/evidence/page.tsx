@@ -1,6 +1,6 @@
 import { loadRun, runIndex } from "@/lib/runs";
 import type { UsageRow } from "@/lib/types";
-import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
+import { SiteHeader } from "@/components/SiteChrome";
 import { HealthProbe } from "./HealthProbe";
 
 export const dynamic = "force-static";
@@ -31,6 +31,7 @@ export default function EvidencePage() {
         <h2 className="h2">Live deployment</h2>
         <HealthProbe />
         <h2 className="h2">Recorded Meta calls</h2>
+        <p className="small muted swipe-hint">All rows are RECORDED calls from the runs on this site, not a live feed. Swipe the table sideways on a phone.</p>
         <div className="table-scroll">
           <table className="table">
             <caption className="table__caption">
@@ -61,7 +62,6 @@ export default function EvidencePage() {
           </table>
         </div>
       </main>
-      <SiteFooter />
     </>
   );
 }
