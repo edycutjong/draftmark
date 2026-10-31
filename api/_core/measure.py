@@ -126,7 +126,7 @@ def frame_draft(i: int, tokens: list[Token], drafts: dict[str, float], water: li
         fg.drop_reason = "EDGE_NOISY"
         return fg
     # perspective: single-glyph dry digit heights vary > 10 % bottom to top
-    hs = [t.h for t in dry if t.n_glyphs == 1]
+    hs = [t.h for t in dry if t.n_glyphs == 1 and t.box[1] > 1.0]  # a numeral cut by the frame's top edge is short
     if len(hs) >= 2 and (max(hs) - min(hs)) / max(hs) > 0.10 + 2.0 / max(hs):
         fg.drop_reason = "PERSPECTIVE"
         return fg

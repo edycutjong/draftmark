@@ -91,7 +91,7 @@ class Token:
 
 
 def group_glyphs(objs: list[SamObject], system: MarkSystem = SHIP) -> list[Token]:
-    """Union glyphs sharing a baseline (bottom edges within 0.15 h) with a horizontal gap
+    """Union glyphs sharing a baseline (bottom edges within 0.15 h) or a cap line (tops within 0.15 h) with a horizontal gap
     < 0.5 h, where h = median glyph height. Returns tokens sorted bottom -> top."""
     if len(objs) >= SAM_VIDEO_OBJECT_CAP:
         raise ObjectCapError(f"{len(objs)} raw glyphs >= SAM cap {SAM_VIDEO_OBJECT_CAP}: crop to fewer marks")
@@ -109,7 +109,9 @@ def group_glyphs(objs: list[SamObject], system: MarkSystem = SHIP) -> list[Token
     for i, a in enumerate(objs):
         for j in range(i + 1, len(objs)):
             b = objs[j]
-            if abs(a.box[3] - b.box[3]) >= 0.15 * h:
+            # same line = same baseline OR same cap height: a glyph the water has reached (or a frame edge cut) has a
+            # shifted bottom, but its top still sits on the line of its neighbours
+            if abs(a.box[3] - b.box[3]) >= 0.15 * h and abs(a.box[1] - b.box[1]) >= 0.15 * h:
                 continue
             gap = max(a.box[0], b.box[0]) - min(a.box[2], b.box[2])
             if gap < 0.5 * h:

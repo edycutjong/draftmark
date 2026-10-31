@@ -140,10 +140,23 @@ def system_of(geom: dict) -> MarkSystem:
 
 def check(geom: dict, reads: dict[int, dict[str, str]], strip: list[str] | None = None,
           table_range: tuple[float, float] | None = None) -> tuple[dict[str, float], marks.CheckResult]:
-    """The five code checks on the first label frame; reads = {frame: {track: label}}."""
-    toks, _ = rebuild(geom)
+    """The five code checks on the first label frame; reads = {frame: {track: label}}.
+    A numeral the water has reached (mask bottom within the edge margin) shows its waterline, not its printed
+    bottom edge, so the geometric checks use the dry numerals only: the same rule frame_draft fits on."""
+    toks, wat = rebuild(geom)
     f1, f2 = (int(k) for k in list(reads)[:2])
-    return marks.check_labels(toks[f1], reads[f1], reads.get(f2), system_of(geom), strip, table_range)
+    return marks.check_labels(dry_tokens(toks[f1], wat.get(f1, [])), reads[f1], reads.get(f2), system_of(geom), strip,
+                              table_range)
+
+
+def dry_tokens(tokens: list[Token], water: list[SamObject]) -> list[Token]:
+    """Tokens whose mask bottom is above the water edge by frame_draft's margin; all of them if no edge is found."""
+    we = measure.water_edge(water, min(t.box[0] for t in tokens), max(t.box[2] for t in tokens)) if tokens else None
+    if we is None:
+        return tokens
+    w, mad, _ = we
+    margin = max(5.0, 3.0 * 1.4826 * mad)
+    return [t for t in tokens if t.mask_bottom() <= w - margin]
 
 
 def finish(geom: dict, drafts: dict[str, float], u_sys_parts: dict | None = None

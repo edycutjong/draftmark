@@ -88,3 +88,17 @@ def test_water_edge_bridges_a_small_hole_below_the_surface():
     m[5:7, :] = False  # a 2-px glare hole just under the surface at y=100
     w, _, _ = measure.water_edge([SamObject(0, 1, (0.0, 100.0, 10.0, 140.0), m)], 0, 10)
     assert w == 100.0
+
+
+def test_numeral_cut_by_the_frame_top_is_not_perspective():
+    from synth import glyph
+
+    from api._core.sam import SamObject
+    # four dry numerals on a 120 px pitch (bottoms 400, 280, 160, 40); the top one is cut by the frame edge (box top 0,
+    # 40 px tall against 60), its bottom edge is still where the print puts it
+    objs = [glyph(0, k, 100, b - h, 40, h) for k, (b, h) in enumerate([(400, 60), (280, 60), (160, 60), (40, 40)])]
+    toks = marks.group_glyphs(objs, marks.BARGE)
+    z = {t.track: 0.02 * (k + 1) for k, t in enumerate(toks)}
+    water = [SamObject(0, 99, (0.0, 500.0, 300.0, 600.0), np.ones((100, 300), dtype=bool))]
+    fg = measure.frame_draft(0, toks, z, water, marks.BARGE)
+    assert fg.drop_reason != "PERSPECTIVE" and fg.kept

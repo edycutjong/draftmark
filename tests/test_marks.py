@@ -19,6 +19,19 @@ def test_barge_1m_split_in_two():
     assert len(toks) == 3 and toks[0].n_glyphs == 2
 
 
+def test_metre_token_groups_when_the_water_cuts_one_glyph():
+    # "1" is cut by the water (bottom 8 px higher than "M"'s) but both keep the cap line: still one token
+    objs = [glyph(0, 0, 100, 500, 10, 12), glyph(0, 1, 115, 500, 20, 20), glyph(0, 2, 103, 460, 10, 20),
+            glyph(0, 3, 103, 420, 10, 20)]
+    toks = marks.group_glyphs(objs, marks.BARGE)
+    assert len(toks) == 3 and toks[0].n_glyphs == 2
+
+
+def test_other_marks_do_not_group_by_cap_line():
+    objs = [glyph(0, 0, 100, 500, 10, 20), glyph(0, 1, 100, 380, 10, 20)]  # a full pitch apart, same column
+    assert len(marks.group_glyphs(objs, marks.BARGE)) == 2
+
+
 def test_object_cap():
     objs = [glyph(0, i, 100, 40 * i, 10, 20) for i in range(16)]
     with pytest.raises(marks.ObjectCapError):
