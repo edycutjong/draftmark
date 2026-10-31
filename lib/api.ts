@@ -9,14 +9,16 @@ export type Reason =
   | "NO_FIXTURE"
   | "TIMEOUT"
   | "NO_EVIDENCE"
-  | "LABEL_FRAMES";
+  | "LABEL_FRAMES"
+  | "UNSIGNED"
+  | "NO_BOOKLET";
 
 export type ApiResult<T> = { ok: true; data: T; ms: number } | { ok: false; reason: Reason; detail: string; ms: number };
 
 export const TIMEOUT_MS = 280_000;
 
 const KNOWN: Reason[] = ["PAYLOAD", "JUDGE_CODE", "BUDGET", "RATE", "UPSTREAM", "NO_FIXTURE", "TIMEOUT", "NO_EVIDENCE",
-  "LABEL_FRAMES"];
+  "LABEL_FRAMES", "UNSIGNED", "NO_BOOKLET"];
 
 export async function api<T>(path: string, body?: unknown, timeoutMs = TIMEOUT_MS): Promise<ApiResult<T>> {
   const ctrl = new AbortController();
@@ -66,6 +68,8 @@ export const REASON_NEXT: Record<Reason, string> = {
   UPSTREAM: "The Meta API call failed. Try again, or open the recorded run.",
   NO_FIXTURE: "That fixture clip is not on this deployment.",
   TIMEOUT: "The call ran past the function limit. Open the recorded run, or try a shorter clip.",
+  UNSIGNED: "This measurement was not produced by this server's stations (or was edited): measure the clip again.",
+  NO_BOOKLET: "That vessel booklet is not on this deployment.",
 };
 
 export const LOCAL_RUN_KEY = "draftmark:run:local";

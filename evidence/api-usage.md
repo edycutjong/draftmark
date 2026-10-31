@@ -69,3 +69,5 @@ Price-list estimates from `api/_core/meta.py` PRICES (not an invoice). Appended 
 | 2026-10-31 11:29 | live-p1d-1793446130 | muse-spark-1.3 | spark labels f0 try 1 | 462 (0) / 880 | 0.0043 | 2983 | resp_6ae5d12a9ca6989f37164fcf |
 | 2026-10-31 11:29 | live-p1d-1793446130 | muse-spark-1.3 | spark labels f10 try 1 | 462 (0) / 2938 | 0.0131 | 13446 | resp_6ae5d133bcf4e867510c4478 |
 | 2026-10-31 18:20 | p1d-review-r1 | muse-wonder-1.0 | outside architecture review r1 (reasoning high, no tools; ~157k-char packet; token counts estimated) | ~45k / ~10-15k | 0.4500 |  |  |
+| 2026-10-31 19:06 | p1d-review-r2a | muse-wonder-1.0 | outside architecture review r2 (reasoning high; EMPTY — all 16k output tokens spent reasoning; estimated) | ~50k / 16k | 0.5200 |  |  |
+| 2026-10-31 19:09 | p1d-review-r2b | muse-wonder-1.0 | outside architecture review r2 re-run (reasoning medium, no tools; estimated) | ~50k / ~5-10k | 0.3500 |  |  |
