@@ -113,9 +113,9 @@ async def measure_ep(req: Request):
         if info["scale"] not in SCALES:
             return _err(400, "PAYLOAD", f"scale must be one of {SCALES}")
         if info["fps"] < 1.0 or info["frames"] / info["fps"] > 10.5:  # > 8 fps is the 413 below
-            return _err(400, "PAYLOAD", ">= 1 fps and at most 10 s of frames")
+            return _err(400, "PAYLOAD", ">= 1 fps and at most 10.5 s of frames")
         if info["fps"] > 8.01 or info["frames"] > 64:
-            return _err(413, "PAYLOAD", "<= 8 s at <= 8 fps")
+            return _err(413, "PAYLOAD", "<= 64 frames at <= 8 fps")
         if info["frames"] <= 0:
             return _err(400, "PAYLOAD", "send the clip's frame count (frames > 0)")
         url = upload

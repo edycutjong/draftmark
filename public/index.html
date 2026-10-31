@@ -92,7 +92,7 @@ img,svg{display:block;max-width:100%}
   background:repeating-linear-gradient(180deg,transparent 0 79px,rgba(58,46,40,.55) 79px 80px)}
 .hero__world{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
 .hero__marks{position:absolute;right:2vw;top:2%;display:flex;flex-direction:column;align-items:flex-end;gap:2.2vw;font:800 clamp(130px,17vw,270px)/.78 var(--font-display);font-stretch:62%;color:rgba(242,238,230,.028)}
-.hero__swell{position:absolute;left:0;bottom:7%;width:200%;height:120px;animation:drift 22s linear infinite}
+.hero__swell{position:absolute;left:0;bottom:1%;width:200%;height:120px;animation:drift 22s linear infinite}
 .hero__swell path{fill:none;stroke:rgba(111,140,138,.28);stroke-width:2}
 @keyframes drift{to{transform:translateX(-50%)}}
 .hero__grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:clamp(28px,4vw,64px);align-items:center}
@@ -125,18 +125,14 @@ h1 em{font-style:normal;color:var(--after);text-shadow:0 0 34px rgba(242,179,61,
 .replay:active{transform:scale(.97)}
 .verdict{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin:12px 4px 0;padding:11px 14px;border:1.5px solid var(--refuse);border-radius:3px;background:rgba(217,84,59,.07);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1)}
 .verdict{position:relative}
-.verdict__wait{display:none;position:absolute;left:14px;bottom:12px;font:500 12px/1.4 var(--font-data);color:var(--muted)}
-.js .inst:not(.held) .verdict{border-color:var(--rule);background:transparent}
-.js .inst:not(.held) .verdict__wait{display:block}
-.js .inst:not(.held) .verdict__w,.js .inst:not(.held) .verdict__r{color:var(--muted)}
-.js .inst:not(.held) .verdict__t{visibility:hidden}
 .inst.held .verdict{animation:stamp .5s cubic-bezier(.2,.8,.2,1)}
 @keyframes stamp{from{transform:scale(1.035);box-shadow:0 0 0 6px rgba(217,84,59,.18)}to{transform:none;box-shadow:none}}
 .verdict__w{font:800 24px/1 var(--font-display);font-stretch:62%;letter-spacing:.05em;color:var(--refuse-text)}
 .verdict__r{font:500 11.5px/1.2 var(--font-data);color:var(--refuse-text)}
 .verdict__t{flex-basis:100%;font-size:13.5px;line-height:1.5;color:#D6CFC4}
-.verdict__t a{color:var(--after);text-decoration:underline;text-underline-offset:3px;display:inline-block;min-height:24px}
-.cap{font-size:12.5px;line-height:1.5;color:var(--muted);margin:12px 4px 0;max-width:62ch}
+.vlink{margin:8px 4px 0;font-size:13px;line-height:1.4}
+.vlink a{color:var(--after);text-decoration:underline;text-underline-offset:3px;display:inline-block;min-height:24px}
+.cap{font-size:13px;line-height:1.5;color:var(--muted);margin:12px 4px 0;max-width:62ch}
 /* svg parts */
 .sv-num{font:700 64px/1 var(--font-display);font-stretch:62%;fill:var(--ink)}
 .sv-grid{stroke:rgba(58,46,40,.9);stroke-width:1}
@@ -145,10 +141,10 @@ h1 em{font-style:normal;color:var(--after);text-shadow:0 0 34px rgba(242,179,61,
 .sv-mean{fill:none;stroke:var(--after);stroke-width:2.6;stroke-linejoin:round}
 .sv-band{fill:var(--after);opacity:.13}
 .sv-held{stroke:var(--after);stroke-width:2.6}
-.sv-val{font:500 19px/1 var(--font-data);fill:var(--after)}
+.sv-val{font:500 22px/1 var(--font-data);fill:var(--after)}
 .sv-u{font:400 12px/1 var(--font-data);fill:var(--muted)}
 .sv-val,.sv-u{paint-order:stroke;stroke:#1b1411;stroke-width:5px;stroke-linejoin:round}
-.sv-ax{font:400 11px/1 var(--font-data);fill:var(--muted)}
+.sv-ax{font:400 15px/1 var(--font-data);fill:var(--muted)}
 .sv-tie{stroke:var(--before);stroke-width:1;stroke-dasharray:3 4;opacity:.8}
 .inst.held .sv-held{filter:drop-shadow(0 0 6px rgba(242,179,61,.75))}
 
@@ -234,7 +230,7 @@ h2 em{font-style:normal;color:var(--after)}
 .grade__notes p:not(.base){margin:0;font-size:15.5px;line-height:1.55;color:#D6CFC4}
 .grade__notes p b{color:var(--ink);font-weight:600}
 .grade__notes .base{grid-column:1/-1}
-.js .grade td.ok,.js .grade td.no{transform:scaleY(.12);opacity:.25;transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .5s}
+.js .grade td.ok,.js .grade td.no{transform:scaleY(.12);opacity:.25;transition:transform .3s cubic-bezier(.2,.8,.2,1),opacity .3s}
 .js .grade-wrap.in td.ok,.js .grade-wrap.in td.no{transform:none;opacity:1}
 .base{display:flex;flex-wrap:wrap;gap:8px 22px;margin:4px 0 0;font:400 12.5px/1.6 var(--font-data);color:var(--muted)}
 .base b{color:var(--ink);font-weight:500}
@@ -249,8 +245,6 @@ h2 em{font-style:normal;color:var(--after)}
 .sec--paper p.intro{color:#3B322A}
 .stamps{display:grid;gap:18px;margin-top:6px}
 .pin{background:#120e0c;border-radius:4px;padding:10px;box-shadow:0 1px 0 rgba(0,0,0,.12),0 18px 34px -18px rgba(40,25,10,.55);position:relative}
-.pin:nth-child(1){transform:rotate(-.8deg)}
-.pin:nth-child(2){transform:rotate(.6deg)}
 .pin img{width:100%;height:auto;border-radius:2px}
 .pin figcaption{font:400 11.5px/1.45 var(--font-data);color:#B8AEA3;padding:9px 4px 2px}
 .pin::before{content:"";position:absolute;top:-9px;left:50%;width:74px;height:18px;margin-left:-37px;background:rgba(243,238,226,.7);border:1px solid rgba(216,205,184,.9);transform:rotate(-2deg)}
@@ -324,7 +318,8 @@ h2 em{font-style:normal;color:var(--after)}
 /* ---------- close + footer ---------- */
 .close{position:relative;text-align:center;padding:clamp(80px,11vw,140px) 0;overflow:hidden;isolation:isolate}
 .close::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(50% 60% at 50% 100%,rgba(242,179,61,.16),transparent 70%),radial-gradient(80% 50% at 50% 115%,rgba(142,43,34,.5),transparent 70%)}
-.close h2{margin:0 auto 26px;max-width:16ch}
+.close h2{margin:0 auto 14px;max-width:16ch}
+.close__sub{margin:0 auto 28px;font-size:19px;color:#D6CFC4}
 .close .cta{justify-content:center}
 .foot{border-top:1px solid var(--rule);padding:34px 0 46px;font-size:13.5px;color:var(--muted)}
 .foot__in{display:flex;flex-wrap:wrap;gap:16px 34px;justify-content:space-between}
@@ -386,7 +381,7 @@ h2 em{font-style:normal;color:var(--after)}
         <g clip-path="url(#hullClip)">
           <rect x="0" y="0" width="152" height="520" fill="url(#hullG)"/>
           <g stroke="rgba(242,238,230,.06)"><line x1="0" x2="152" y1="140" y2="140"/><line x1="0" x2="152" y1="300" y2="300"/><line x1="0" x2="152" y1="460" y2="460"/></g>
-          <text class="sv-ax" x="12" y="28">painted marks</text>
+          <text class="sv-ax" x="10" y="30">painted marks</text>
           <g id="nums"></g>
           <path id="sea" fill="url(#seaG)"/>
           <path id="seaEdge" fill="none" stroke="#cfe1dc" stroke-width="1.6" stroke-opacity=".85"/>
@@ -403,7 +398,8 @@ h2 em{font-style:normal;color:var(--after)}
         <text id="valu" class="sv-u" x="632" text-anchor="end">±0.086 m · k=1</text>
         <text class="sv-ax" x="178" y="512">frame 0</text><text class="sv-ax" x="632" y="512" text-anchor="end">frame 59 · 10 s</text>
       </svg>
-      <div class="verdict" id="verdict"><span class="verdict__wait" aria-hidden="true">certificate · waiting for the mean to hold…</span><span class="verdict__w">REFUSE</span><span class="verdict__r">OUT_OF_TABLE · matrix row 4</span><span class="verdict__t">12.761&nbsp;m is past the only booklet's 0.5–9.3&nbsp;m table, so no tonnage is guessed. <a href="#replay">The booklet case issues, with a warning: displacement 17825.8&nbsp;t →</a></span></div>
+      <div class="verdict" id="verdict"><span class="verdict__w">REFUSE</span><span class="verdict__r">OUT_OF_TABLE · matrix row 4</span><span class="verdict__t">12.761&nbsp;m is past the only booklet's 0.5–9.3&nbsp;m table, so no tonnage is guessed.</span></div>
+      <p class="vlink"><a href="#replay">Booklet condition 4.1 (six drafts typed in) issues, with a warning&nbsp;→</a></p>
       <div class="inst__foot"><p class="tick" id="tick" aria-live="off"><b>60/60</b> frames kept · mean <b>12.761 m</b> ± 0.086 m · held</p><button class="replay" id="replayBtn" type="button">↻ Replay 10 s</button></div>
       <figcaption class="cap">Redrawn from 60 waterline heights measured on a real third-party clip, no ground truth. Band illustrative; repeatability ±0.086&nbsp;m; a one-pitch label error would move it 0.20&nbsp;m.</figcaption>
     </figure>
@@ -417,7 +413,7 @@ h2 em{font-style:normal;color:var(--after)}
     <div class="rc">
       <div><b><span class="cu" data-to="22">22</span><small>/22</small></b><p>printed booklet conditions reproduced by the program Wonder wrote</p><a href="https://github.com/edycutjong/draftmark/blob/main/evidence/selftest-booklet.md" data-proof="evidence/selftest-booklet.md">evidence/selftest-booklet.md</a></div>
       <div><b><span class="cu" data-to="60">60</span><small>/60</small></b><p>frames kept on real hull clip dB7X, numerals and water in every one</p><a href="https://github.com/edycutjong/draftmark/blob/main/evidence/core-run-dB7X.md" data-proof="evidence/core-run-dB7X.md">evidence/core-run-dB7X.md</a></div>
-      <div><b><span class="cu" data-to="17825.8" data-dec="1">17825.8</span><small>t</small></b><p>computed for booklet condition 4.1, printed 17827.7 t (−0.0106 %)</p><a href="https://github.com/edycutjong/draftmark/blob/main/evidence/core-run-trieste.md" data-proof="evidence/core-run-trieste.md">evidence/core-run-trieste.md</a></div>
+      <div><b><span class="cu" data-to="-0.0106" data-dec="4">−0.0106</span><small>%</small></b><p>booklet condition 4.1: the program computes 17825.8 t, the booklet prints 17827.7 t</p><a href="https://github.com/edycutjong/draftmark/blob/main/evidence/core-run-trieste.md" data-proof="evidence/core-run-trieste.md">evidence/core-run-trieste.md</a></div>
       <div><b><span class="cu" data-to="124">124</span><small>tests</small></b><p>pytest, with both sandbox escapes kept as regressions</p><a href="https://github.com/edycutjong/draftmark/tree/main/tests" data-proof="README.md">tests/</a></div>
     </div>
     <p class="rc-note"><span data-proof="evidence/core-run-dB7X.md">$0.0397</span> of Meta calls for the dB7X run (price-list estimate) · est $0.481 for the three Wonder calls that wrote the proven program</p>
@@ -535,12 +531,12 @@ h2 em{font-style:normal;color:var(--after)}
       <p class="line-no">Line 005 · Check</p>
       <span class="tag">SYNTHETIC</span>
       <h2>Weighed against a known truth. <em>A rendered one, for now.</em></h2>
-      <p class="intro">Both real clips refuse, so where is the weight checked? On a barge generated as geometry in code, its truth known by construction, with swell, edge jitter and dropped frames added on purpose. There is no physical scale check yet.</p>
+      <p class="intro">The real clips end in refusal, so where is the weight checked? On a barge generated as geometry in code, its truth known by construction, with swell, edge jitter and dropped frames added on purpose. There is no physical scale check yet.</p>
     </div>
     <div class="synth rv">
       <div><b data-proof="evidence/core-run-synth-barge.md">−0.155 mm</b><p>draft vs the synthetic calm truth, 58 of 60 frames kept</p></div>
-      <div><b data-proof="evidence/core-run-synth-barge.md">−0.17 %</b><p>cargo vs truth; it warns that 2u is wider than a ±2 % pass</p></div>
-      <div><b data-proof="README.md">96 / 100</b><p>seeds with the truth inside ±2u (RMSE 0.519 mm)</p></div>
+      <div><b data-proof="evidence/core-run-synth-barge.md">−0.17 %</b><p>cargo vs the synthetic truth; it warns that 2u is wider than a ±2 % pass</p></div>
+      <div><b data-proof="README.md">96 / 100</b><p>synthetic seeds with the truth inside ±2u (RMSE 0.519 mm)</p></div>
     </div>
   </div>
 </section>
@@ -655,7 +651,7 @@ h2 em{font-style:normal;color:var(--after)}
       <details><summary><span>Q3</span>Why do both real clips end in REFUSE?</summary><div class="ans">The only booklet we have is the Trieste's, a Ro-Ro/passenger ship whose table covers 0.5–9.3&nbsp;m. Clip dB7X reads 12.761&nbsp;m and UKTRQ 20.830&nbsp;m, so the program raises <span class="data">OutOfTable</span> instead of extrapolating. The measurement stands; the weight is refused.</div></details>
       <details><summary><span>Q4</span>How do you know Wonder's program is right?</summary><div class="ans">It has to reproduce at least 20 of the booklet's 22 printed conditions within 0.1&nbsp;% (it reproduces 22), agree with our reference program over 200 random cases (largest difference 0.00007&nbsp;%), and raise on two out-of-table probes. The printed displacements were never in Wonder's context.</div></details>
       <details><summary><span>Q5</span>How accurate is the weight?</summary><div class="ans">So far it is shown only on a synthetic barge: the draft came out 0.155&nbsp;mm from a truth known by construction, the cargo −0.17&nbsp;%, and over 100 seeds the truth sat inside ±2u in 96. There is no physical scale check and no real-ship accuracy claim.</div></details>
-      <details><summary><span>Q6</span>What does a run cost?</summary><div class="ans">The dB7X measurement used two SAM&nbsp;3.1 video calls and two Spark&nbsp;1.3 reads: $0.0397 at list prices. Writing the program took three Wonder calls, est $0.481, once per ship.</div></details>
+      <details><summary><span>Q6</span>What does a run cost?</summary><div class="ans">The dB7X measurement used two SAM&nbsp;3.1 video calls and two Spark&nbsp;1.3 reads: $0.0397 at list prices. Writing the program took three Wonder calls, est $0.481, once per booklet (one booklet so far).</div></details>
     </div>
   </div>
 </section>
@@ -663,7 +659,8 @@ h2 em{font-style:normal;color:var(--after)}
 <!-- ===================== CLOSE ===================== -->
 <section class="close" data-no="010">
   <div class="wrap">
-    <h2 class="rv">Film ten seconds. <em>Keep the number that holds.</em></h2>
+    <h2 class="rv">It would rather refuse <em>than guess.</em></h2>
+    <p class="close__sub rv">Film ten seconds. Keep the number that holds.</p>
     <div class="cta rv">
       <a class="btn" href="https://github.com/edycutjong/draftmark">GitHub</a>
       <a class="btn" href="/deck">Pitch deck</a>
@@ -725,9 +722,8 @@ document.documentElement.classList.add("js");
   function setHeld(v, show) {
     var yy = y(v).toFixed(1);
     ["held"].forEach(function (id) { $(id).setAttribute("y1", yy); $(id).setAttribute("y2", yy); });
-    $("held").setAttribute("opacity", show ? 1 : 0.35);
+    $("held").setAttribute("opacity", show ? 1 : 0.45);
     $("val").setAttribute("y", (y(v) - 12).toFixed(1)); $("valu").setAttribute("y", (y(v) + 22).toFixed(1));
-    $("val").setAttribute("opacity", show ? 1 : 0); $("valu").setAttribute("opacity", show ? 1 : 0);
   }
   var inst = $("inst"), tick = $("tick");
   function finalState(now) { // already-visible default: full trace, final band, held line, value written
@@ -740,32 +736,35 @@ document.documentElement.classList.add("js");
   finalState(0);
   if (reduce) return wireRest();
 
-  var t0 = null, running = false, visible = true, raf = 0;
+  var t0 = null, tHold = null, phase = "hold", running = true, visible = true, raf = 0;
   function frame(now) {
     raf = 0; if (!running) return;
-    if (t0 === null) t0 = now;
-    var t = (now - t0) / 1000, f = t * FPS;
-    if (f < N - 1) {
-      var i = Math.floor(f), lv = level(f);
-      $("trace").setAttribute("d", pathTo(DS, i) + "L" + (x(i) + (x(i + 1) - x(i)) * (f - i)).toFixed(1) + "," + y(lv).toFixed(1));
-      $("mean").setAttribute("d", pathTo(mean, i)); $("band").setAttribute("d", bandTo(i));
-      drawSea(lv, now); var px = x(i) + (x(i + 1) - x(i)) * (f - i);
-      $("pen").setAttribute("cx", px.toFixed(1)); $("pen").setAttribute("cy", y(lv).toFixed(1)); $("tie").setAttribute("x2", px.toFixed(1));
-      setHeld(mean[i], false);
-      tick.innerHTML = "frame <b>" + (i + 1) + "/60</b> · running mean " + mean[i].toFixed(3) + " m";
-    } else {
-      if (!inst.classList.contains("held")) {
+    if (phase === "replay") {
+      if (t0 === null) t0 = now;
+      var f = (now - t0) / 1000 * FPS;
+      if (f < N - 1) {
+        var i = Math.floor(f), lv = level(f), px = x(i) + (x(i + 1) - x(i)) * (f - i);
+        $("trace").setAttribute("d", pathTo(DS, i) + "L" + px.toFixed(1) + "," + y(lv).toFixed(1));
+        $("mean").setAttribute("d", pathTo(mean, i)); $("band").setAttribute("d", bandTo(i));
+        drawSea(lv, now); $("pen").setAttribute("cx", px.toFixed(1)); $("pen").setAttribute("cy", y(lv).toFixed(1)); $("tie").setAttribute("x2", px.toFixed(1));
+        setHeld(D, false); // the held reading and the verdict stay on screen; the running mean converges onto them
+        tick.innerHTML = "frame <b>" + (i + 1) + "/60</b> · running mean " + mean[i].toFixed(3) + " m";
+      } else {
         $("trace").setAttribute("d", pathTo(DS, N - 1)); $("mean").setAttribute("d", pathTo(mean, N - 1)); $("band").setAttribute("d", bandTo(N - 1));
         setHeld(D, true); inst.classList.add("held"); $("recLabel").textContent = "clip dB7X · reading held";
-        $("pen").setAttribute("cx", x(N - 1)); $("pen").setAttribute("cy", y(DS[N - 1])); $("tie").setAttribute("x2", x(N - 1));
         tick.innerHTML = "<b>60/60</b> frames kept · mean <b>12.761 m</b> ± 0.086 m · held. The sea keeps moving.";
+        phase = "hold"; tHold = null;
       }
-      drawSea(level(f), now); // the sea keeps replaying the measured swell; the reading holds still
+    }
+    if (phase === "hold") { // the sea keeps replaying the measured swell and the pen rides the trace; the reading holds still
+      if (tHold === null) tHold = now;
+      var g = ((now - tHold) / 1000 * FPS) % (N - 1), gi = Math.floor(g), gl = level(g), gx = x(gi) + (x(gi + 1) - x(gi)) * (g - gi);
+      drawSea(gl, now); $("pen").setAttribute("cx", gx.toFixed(1)); $("pen").setAttribute("cy", y(gl).toFixed(1)); $("tie").setAttribute("x2", gx.toFixed(1));
     }
     if (visible) raf = requestAnimationFrame(frame);
   }
   function play() {
-    inst.classList.remove("held"); $("recLabel").textContent = "clip dB7X · real time"; t0 = null; running = true;
+    phase = "replay"; inst.classList.remove("held"); $("recLabel").textContent = "clip dB7X · real time"; t0 = null; running = true;
     if (!raf && visible) raf = requestAnimationFrame(frame);
   }
   $("replayBtn").addEventListener("click", play);
@@ -776,7 +775,8 @@ document.documentElement.classList.add("js");
     }).observe(inst);
   }
   document.addEventListener("visibilitychange", function () { if (document.hidden) { visible = false; } else { visible = true; if (running && !raf) raf = requestAnimationFrame(frame); } });
-  setTimeout(play, 2600); // open on the held result (verdict visible in the first seconds), then replay in real time
+  raf = requestAnimationFrame(frame);
+  setTimeout(play, 1200); // open on the held reading and its verdict, then replay the measurement in real time underneath them
   wireRest();
 
   function wireRest() {
@@ -790,7 +790,7 @@ document.documentElement.classList.add("js");
     }
     // grade matrix: each attempt fills left to right when it scrolls in (attempt 2, then attempt 3)
     [].forEach.call(document.querySelectorAll(".grade tbody tr"), function (tr, r) {
-      [].forEach.call(tr.querySelectorAll("td.ok,td.no"), function (td, c) { td.style.transitionDelay = ((r - 1) * 0.55 + c * 0.03).toFixed(2) + "s"; });
+      [].forEach.call(tr.querySelectorAll("td.ok,td.no"), function (td, c) { td.style.transitionDelay = ((r - 1) * 0.25 + c * 0.012).toFixed(3) + "s"; });
     });
     // terminal replay: the full text is already there; typing replays it once per view
     var terms = [].slice.call(document.querySelectorAll("[data-term]"));

@@ -57,7 +57,7 @@ p.say b{color:var(--ink)}
 .cover-trace{position:absolute;right:92px;top:330px;width:540px;height:auto;opacity:.72}
 .icon{position:absolute;right:120px;top:96px;width:120px;height:120px;filter:drop-shadow(0 0 30px rgba(242,179,61,.45))}
 .word{position:absolute;right:120px;top:232px;font:800 30px/1 var(--font-display);font-stretch:70%;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.stamp{font:400 22px/1.3 var(--font-data);color:var(--muted);position:absolute;right:120px;bottom:60px}
+.stamp{font:400 24px/1.3 var(--font-data);color:var(--muted);position:absolute;right:120px;bottom:60px}
 .foot{position:absolute;left:170px;bottom:56px;font:400 24px/1 var(--font-data);color:var(--muted)}
 /* slide-specific */
 .sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
@@ -71,10 +71,10 @@ p.say b{color:var(--ink)}
 .sv-mean{fill:none;stroke:var(--after);stroke-width:3.2;stroke-linejoin:round}
 .sv-band{fill:var(--after);opacity:.13}
 .sv-held{stroke:var(--after);stroke-width:3}
-.sv-val{font:500 34px/1 var(--font-data);fill:var(--after)}
-.sv-u{font:400 23px/1 var(--font-data);fill:#B5ABA1}
+.sv-val{font:500 36px/1 var(--font-data);fill:var(--after)}
+.sv-u{font:400 26px/1 var(--font-data);fill:#B5ABA1}
 .sv-val,.sv-u{paint-order:stroke;stroke:#1b1411;stroke-width:8px;stroke-linejoin:round}
-.sv-ax{font:400 20px/1 var(--font-data);fill:var(--muted)}
+.sv-ax{font:400 24px/1 var(--font-data);fill:var(--muted)}
 .sv-tie{stroke:var(--before);stroke-width:1.2;stroke-dasharray:4 5;opacity:.8}
 /* 2 · the raw swell */
 .cols--moment{grid-template-columns:.8fr 1.2fr;gap:70px}
@@ -90,12 +90,11 @@ p.say b{color:var(--ink)}
 .inst__note{font:400 24px/1.3 var(--font-data);color:var(--muted);white-space:nowrap}
 .ticker{font:500 28px/1.3 var(--font-data);color:var(--muted);margin:0;white-space:nowrap}
 .ticker b{color:var(--after);font-weight:500}
-.dv{min-height:96px;margin-top:20px;border:2px solid var(--rule);border-radius:6px;padding:16px 26px;display:flex;align-items:center}
-.dv__wait{font:500 26px/1.3 var(--font-data);color:var(--muted)}
-.dv__on{display:none}
-.held .dv{border-color:var(--refuse);background:rgba(217,84,59,.08);animation:stamp .5s cubic-bezier(.2,.8,.2,1)}
-.held .dv__wait{display:none}
-.held .dv__on{display:flex;align-items:baseline;gap:22px;white-space:nowrap}
+.dv{min-height:96px;margin-top:20px;border:2px solid var(--refuse);background:rgba(217,84,59,.08);border-radius:6px;padding:16px 26px;display:flex;align-items:center}
+.held .dv{animation:stamp .5s cubic-bezier(.2,.8,.2,1)}
+.dv__on{display:flex;align-items:baseline;gap:22px;white-space:nowrap}
+.p3{height:4px;background:rgba(242,238,230,.08);margin:0 4px 12px;border-radius:2px;overflow:hidden}
+.p3 i{display:block;height:100%;background:var(--after);transform-origin:0 50%}
 .dv__on b{font:800 60px/1 var(--font-display);font-stretch:62%;letter-spacing:.04em;color:var(--refuse-text)}
 .dv__on span{font:500 26px/1 var(--font-data);color:var(--refuse-text)}
 .dv__on p{margin:0;font-size:28px;line-height:1.35;color:#D6CFC4}
@@ -112,17 +111,17 @@ p.say b{color:var(--ink)}
 .checks li b{font:500 30px/1 var(--font-data);color:var(--after)}
 .checks__f{font-size:28px;line-height:1.45;color:var(--muted);margin:22px 0 0}
 /* 5 · the booklet grades each attempt (evidence/selftest-booklet.md) */
-.grade{width:100%;border-collapse:separate;border-spacing:6px 12px;table-layout:fixed;margin:40px 0 0}
-.grade th{font:500 20px/1 var(--font-data);color:var(--muted);text-align:center;padding:0 0 2px;font-weight:500}
-.grade thead th:first-child,.grade tbody th{width:196px;text-align:left}
-.grade thead th:last-child{width:176px;text-align:right}
+.grade{width:100%;border-collapse:separate;border-spacing:5px 12px;table-layout:fixed;margin:40px 0 0}
+.grade th{font:500 24px/1 var(--font-data);color:var(--muted);text-align:center;padding:0 0 2px;font-weight:500}
+.grade thead th:first-child,.grade tbody th{width:170px;text-align:left}
+.grade thead th:last-child{width:150px;text-align:right}
 .grade tbody th{font-size:24px;letter-spacing:.06em;text-transform:uppercase;line-height:1.2}
 .grade td{height:68px;padding:0;border-radius:5px}
 .grade td.ok{background:var(--after);box-shadow:inset 0 -5px 0 rgba(0,0,0,.18)}
 .grade td.no{background:#C9472F;box-shadow:inset 0 -5px 0 rgba(0,0,0,.25)}
 .grade td.gate{background:repeating-linear-gradient(135deg,rgba(217,84,59,.16) 0 12px,transparent 12px 24px);outline:2px dashed rgba(217,84,59,.6);outline-offset:-2px;font-size:28px;color:#D6CFC4;padding:0 26px}
 .grade td.gate code{font-family:var(--font-data);color:var(--refuse-text)}
-.grade td.s{font:800 68px/1 var(--font-display);font-stretch:62%;text-align:right;background:none;height:auto}
+.grade td.s{font:800 60px/1 var(--font-display);font-stretch:62%;text-align:right;background:none;height:auto}
 .grade td.s--no{color:var(--refuse-text)}
 .grade td.s--ok{color:var(--after);text-shadow:0 0 24px rgba(242,179,61,.4)}
 .armed .grade td.ok,.armed .grade td.no{transform:scaleY(.1);opacity:.2}
@@ -142,24 +141,23 @@ p.say b{color:var(--ink)}
 .paper::after{color:var(--stamp);border-color:var(--stamp)}
 .paper p.say{color:#3B322A}
 .paper p.say b{color:var(--stamp)}
-.cols--cert{grid-template-columns:.82fr 1.18fr;gap:80px}
+.cols--cert{grid-template-columns:.7fr 1.3fr;gap:70px}
 .pin{background:#120e0c;border-radius:10px;padding:20px;box-shadow:0 30px 50px -30px rgba(40,25,10,.6);margin:0 0 46px}
-.pin:nth-child(1){transform:rotate(-1deg)}.pin:nth-child(2){transform:rotate(.8deg)}
 .pin img{display:block;width:100%;height:auto}
 .pin figcaption{font:400 24px/1.4 var(--font-data);color:#B8AEA3;padding:14px 4px 0}
 /* 7 · synthetic */
-.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:44px;border-top:1.5px solid var(--rule)}
+.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:40px;border-top:1.5px solid var(--rule)}
 .nums > div{padding:44px 40px 0 0}
-.nums b{display:block;font:800 140px/1 var(--font-display);font-stretch:62%}
+.nums b{display:block;font:800 100px/1 var(--font-display);font-stretch:62%}
 .nums p{font-size:30px;line-height:1.45;color:var(--muted);margin:16px 0 0;max-width:22ch}
-.tag{display:inline-block;font:600 22px/1 var(--font-data);letter-spacing:.14em;color:var(--bg);background:var(--before);padding:10px 14px;border-radius:3px;margin-bottom:28px;align-self:flex-start}
+.tag{display:inline-block;font:600 24px/1 var(--font-data);letter-spacing:.14em;color:var(--bg);background:var(--before);padding:10px 14px;border-radius:3px;margin-bottom:28px;align-self:flex-start}
 /* 8 · three models, one job each, each with its receipt */
 .jobs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;margin-top:54px}
 .jobs > div{background:var(--plate);border:1.5px solid var(--rule);border-radius:10px;padding:32px 30px 28px;display:flex;flex-direction:column}
 .jobs > div.code{background:transparent;border-style:dashed}
-.jobs h3{font:800 50px/1 var(--font-display);font-stretch:70%;text-transform:uppercase;margin:8px 0 16px}
-.jobs p{font-size:28px;line-height:1.4;color:#C9C0B5;margin:0 0 24px}
-.jobs .r{margin-top:auto;border-top:1.5px solid var(--rule);padding-top:20px}
+.jobs h3{font:800 46px/1 var(--font-display);font-stretch:70%;white-space:nowrap;text-transform:uppercase;margin:8px 0 16px}
+.jobs p{font-size:28px;line-height:1.4;color:#C9C0B5;margin:0 0 24px;min-height:118px}
+.jobs .r{border-top:1.5px solid var(--rule);padding-top:20px}
 .jobs .r b{display:block;font:800 84px/1 var(--font-display);font-stretch:62%;color:var(--after)}
 .jobs .r b small{font-size:.42em;color:var(--muted);margin-left:6px}
 .jobs .r span{display:block;font:400 24px/1.35 var(--font-data);color:var(--muted);margin-top:10px}
@@ -167,6 +165,9 @@ p.say b{color:var(--ink)}
 .field-h{font:500 24px/1 var(--font-data);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:60px 0 20px}
 .field{display:flex;flex-wrap:wrap;gap:14px}
 .field span{font:400 28px/1 var(--font-data);color:#B5ABA1;border:1.5px solid var(--rule);border-radius:4px;padding:16px 20px}
+.ladder9 b small{font-size:.42em;color:var(--muted);margin-left:6px}
+.ladder9 .r9{color:var(--refuse-text)}
+.ladder9 .a9{color:var(--after);text-shadow:0 0 30px rgba(242,179,61,.35)}
 .newline{margin-top:58px;border-top:3px solid var(--after);padding-top:32px;max-width:1500px}
 .newline h3{font:500 24px/1 var(--font-data);letter-spacing:.12em;text-transform:uppercase;color:var(--after);margin:0 0 22px}
 .newline p{font-size:48px;line-height:1.35;margin:0;color:#E5DED3}
@@ -210,7 +211,7 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
   <div class="glow"></div>
   <img class="icon" src="../icon.svg" alt="">
   <div class="word">DraftMark</div>
-  <svg id="coverTrace" class="cover-trace" viewBox="0 0 640 520" aria-hidden="true"><path id="ctTrace" fill="none" stroke="#6F8C8A" stroke-width="2.6" stroke-linejoin="round"/><path id="ctMean" fill="none" stroke="#F2B33D" stroke-width="3.4"/><text id="ctVal" x="636" text-anchor="end" font-family="Martian Mono,monospace" font-size="30" fill="#F2B33D">12.761 m</text></svg>
+  <svg id="coverTrace" class="cover-trace" viewBox="0 0 640 520" aria-hidden="true"><path id="ctTrace" fill="none" stroke="#6F8C8A" stroke-width="2.6" stroke-linejoin="round"/><path id="ctMean" fill="none" stroke="#F2B33D" stroke-width="3.4"/><text id="ctVal" x="636" text-anchor="end" font-family="Martian Mono,monospace" font-size="30" fill="#F2B33D" paint-order="stroke" stroke="#17120F" stroke-width="8" stroke-linejoin="round">12.761 m</text></svg>
   <p class="eyebrow">Meta AI Developer Hackathon · <b>Push the Frontier</b> · Indie</p>
   <h1><span class="l">The sea keeps</span><span class="l">moving. The reading</span><em class="l">finally holds still.</em></h1>
   <div class="term" style="position:absolute;left:170px;bottom:110px;width:1080px"><span class="p">$</span> python scripts/core_run.py clip dB7X_t45
@@ -250,10 +251,11 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
 
 <!-- 3 · the demo moment: full width, the verdict lands when the mean holds -->
 <section class="slide demo" data-line="003" aria-label="Demo: the real waterline settles" id="demoSlide">
-  <p class="eyebrow">Real clip dB7X · redrawn in real time · SAM 3.1 + code · 6 fps</p>
+  <p class="eyebrow">Real clip dB7X · redrawn in real time · 6 fps · no ground truth</p>
   <h2>Ten seconds of swell. <em>One line holds.</em></h2>
   <div class="inst">
-    <div class="inst__top"><p class="ticker" id="tick"><b>60/60</b> frames · mean <b>12.761 m</b> ± 0.086 m · held</p><span class="inst__note">no ground truth · band illustrative</span></div>
+    <div class="inst__top"><p class="ticker" id="tick"><b>60/60</b> frames · mean <b>12.761 m</b> ± 0.086 m · held</p><span class="inst__note">band illustrative · one-pitch label error 0.20 m</span></div>
+    <div class="p3" aria-hidden="true"><i id="p3"></i></div>
     <svg id="vis" viewBox="0 0 1280 400" role="img" aria-label="Clip dB7X: per-frame waterline across the painted marks and the running mean settling at 12.761 m">
       <defs>
         <linearGradient id="hullG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1c1512"/><stop offset=".6" stop-color="#17120F"/><stop offset=".61" stop-color="#5b1d17"/><stop offset="1" stop-color="#8E2B22"/></linearGradient>
@@ -267,7 +269,7 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
       <text class="sv-ax" x="252" y="396">frame 0</text><text class="sv-ax" x="1176" y="396" text-anchor="end">frame 59 · 10 s</text>
     </svg>
   </div>
-  <div class="dv" aria-live="polite"><span class="dv__wait">certificate · pending until the mean holds</span><div class="dv__on"><b>REFUSE</b><span>OUT_OF_TABLE</span><p>12.761 m is past the only booklet's 0.5–9.3 m table: no tonnage is guessed.</p></div></div>
+  <div class="dv"><div class="dv__on"><b>REFUSE</b><span>OUT_OF_TABLE</span><p>12.761 m is past the only booklet's 0.5–9.3 m table: no tonnage is guessed.</p></div></div>
   <aside class="notes">This is the product's core idea in ten seconds of real data: the sea keeps moving, the measured mean settles and holds. SAM 3.1 segments the marks and the water in every frame; code does the averaging. The certificate refuses: this ship's draft is outside the only booklet's table.</aside>
 </section>
 
@@ -277,11 +279,11 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
     <div>
       <p class="eyebrow">Measure · SAM + Spark</p>
       <h2>SAM 3.1 finds the marks in <em>60 of 60 frames.</em></h2>
-      <p style="margin-top:36px"><span class="chip">“white number”</span><span class="chip">“water”</span><span class="chip">2× crop</span></p>
+      <p style="margin-top:36px"><span class="chip">“white number”</span><span class="chip">“water”</span></p>
     </div>
     <figure class="seen" style="margin:0">
       <svg id="s4" viewBox="60 0 360 690" role="img" aria-label="Frame 0 of clip dB7X as measured: nine SAM 3.1 numeral boxes labelled by Spark 1.3 (2, 14M, 8, 6, 4, 2, 13M, 8, 6 from the top) and the water surface just below the 6"></svg>
-      <figcaption>frame 0 as measured: SAM boxes, the water, Spark’s reads</figcaption>
+      <figcaption>frame 0, 2× crop: SAM boxes, the water, Spark’s reads</figcaption>
     </figure>
     <div>
       <p class="checks__h">A label counts only when code agrees</p>
@@ -316,7 +318,6 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
     <p><b>Attempt 2</b> missed the second trim correction on 8 conditions.</p>
     <p><b>Attempt 3</b> saw only the failing ids and its own intermediates, never the printed answers.</p>
   </div>
-  <p class="base">reference <b>22/22</b> · booklet verbatim <b>14/22</b> · generic template <b>0/22</b> · est $0.481 for three calls</p>
   <aside class="notes">Wonder reads the Trieste stability booklet and writes the survey program. Feedback was only the failing condition ids and its own intermediates; the printed displacements were never in its context. Three calls, est $0.481. 200 random cases agree with our reference to 0.00007 %.</aside>
 </section>
 
@@ -326,7 +327,7 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
     <div>
       <p class="eyebrow">Certify · code only</p>
       <h2>Code prints every number. <em>Then it signs them.</em></h2>
-      <p class="say">HMAC-SHA256 on every station. Edit a measurement: <b>REFUSE UNSIGNED</b>. Both real clips sit outside the only booklet's 0.5–9.3 m table: <b>REFUSE OUT_OF_TABLE</b>.</p>
+      <p class="say">Every station is signed (HMAC-SHA256). Edit one: <b>REFUSE UNSIGNED</b>. Past the table: <b>REFUSE OUT_OF_TABLE</b>.</p>
     </div>
     <div>
       <figure class="pin"><img src="../media/stamp-refuse.webp" alt="REFUSE, OUT_OF_TABLE, matrix row 4."><figcaption>rec-db7x-20261031 · real hull</figcaption></figure>
@@ -339,11 +340,12 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
 <!-- 7 · accuracy, honestly -->
 <section class="slide" data-line="007" aria-label="Accuracy, honestly">
   <span class="tag">SYNTHETIC</span>
-  <h2 style="max-width:22ch">Weighed against a known truth. <em>A rendered one, for now.</em></h2>
+  <h2 style="max-width:none">Weighed against a known truth.<br><em>A rendered one, for now.</em></h2>
+  <p class="say" style="max-width:56ch">The real clips end in refusal, so the weight is checked on a barge generated in code, with swell, edge jitter and dropped frames added on purpose.</p>
   <div class="nums">
-    <div><b>−0.155 mm</b><p>draft vs the synthetic calm truth</p></div>
-    <div><b>−0.17 %</b><p>cargo vs truth; issued with a warning</p></div>
-    <div><b>96 / 100</b><p>seeds with the truth inside ±2u</p></div>
+    <div><b>−0.155 mm</b><p>synthetic draft vs its calm truth</p></div>
+    <div><b>−0.17 %</b><p>synthetic cargo vs truth; issued with a warning</p></div>
+    <div><b>96 / 100</b><p>synthetic seeds with the truth inside ±2u</p></div>
   </div>
   <p class="foot">No physical scale check yet · no real-ship accuracy claim</p>
   <aside class="notes">A barge generated as geometry in code, with swell, edge jitter and dropped frames, truth known by construction. It validates the arithmetic and the error model, not the models.</aside>
@@ -357,20 +359,23 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
     <div><span class="chip">sam-3.1 · video</span><h3>Sees</h3><p>Two video calls per clip: “white number” and “water”.</p><div class="r"><b>60<small>/60</small></b><span>frames kept, clip dB7X</span></div></div>
     <div><span class="chip">muse-spark-1.3</span><h3>Reads</h3><p>Two strict-schema label reads; code must agree.</p><div class="r"><b>5<small>/5</small></b><span>label checks pass</span></div></div>
     <div><span class="chip chip--a">muse-wonder-1.0</span><h3>Writes</h3><p>The ship's survey program, from booklet pages only.</p><div class="r"><b>22<small>/22</small></b><span>conditions, 3 calls, est $0.481</span></div></div>
-    <div class="code"><span class="chip">code · no model</span><h3>Prints + signs</h3><p>Averages the swell, signs every station, decides: issue, warn or refuse.</p><div class="r"><b>124<small>tests</small></b><span>both sandbox escapes kept as regressions</span></div></div>
+    <div class="code"><span class="chip">code · no model</span><h3>Prints + signs</h3><p>Averages the swell, signs each station, issues or refuses.</p><div class="r"><b>124<small>tests</small></b><span>both sandbox escapes kept as regressions</span></div></div>
   </div>
   <p class="foot">Condition 4.1: 17825.8 t vs printed 17827.7 t · $0.0397 of Meta calls per dB7X run (estimate)</p>
   <aside class="notes">Each model owns one stage: without SAM there is nothing to measure; without Spark the labels must be typed in (marked degraded); without Wonder there is no model-written program for a new booklet. Spark 1.3 also filed a report by native computer use on our demo portal in an offline spike (read-back 6/6).</aside>
 </section>
 
-<!-- 9 · what exists vs what's new -->
-<section class="slide" data-line="009" aria-label="What exists and what is new">
-  <p class="eyebrow">Nearest neighbours · seen in public material, not individually cited</p>
-  <h2 style="max-width:none">What exists, and <em>what is new.</em></h2>
-  <p class="field-h">Exists</p>
-  <div class="field"><span>draft-survey spreadsheets and apps</span><span>academic draft-line readers</span><span>laser and radar draft systems</span><span>draft tubes</span></div>
-  <div class="newline"><h3>New here</h3><p>A <b>wave-averaged reading from video</b>, and an agent that writes the ship's program and <b>must reproduce its own booklet</b> before it computes.</p></div>
-  <aside class="notes">Seen in public material, without citations here. DraftMark does not claim to replace a surveyor's document.</aside>
+<!-- 9 · what is new, measured against our own baselines (evidence/selftest-booklet.md) -->
+<section class="slide" data-line="009" aria-label="What is new">
+  <p class="eyebrow">What is new · measured against our own baselines</p>
+  <h2 style="max-width:none">Why an agent, <em>not a template.</em></h2>
+  <div class="nums ladder9">
+    <div><b class="r9">0<small>/22</small></b><p>a generic textbook survey template</p></div>
+    <div><b class="r9">14<small>/22</small></b><p>the booklet's own procedure, applied verbatim</p></div>
+    <div><b class="a9">22<small>/22</small></b><p>the program Muse Wonder 1.0 wrote for this ship</p></div>
+  </div>
+  <div class="newline"><h3>New here</h3><p>A <b>wave-averaged reading from video</b>, and an agent whose program <b>must pass the booklet's printed conditions</b> before it computes.</p></div>
+  <aside class="notes">Printed loading conditions of the Trieste booklet reproduced within 0.1 %: a generic textbook template 0/22, the booklet's section 3.1 applied verbatim 14/22, our hand-written reference 22/22, Wonder's program 22/22 after two regenerations. Nearest neighbours seen in public material (draft-survey spreadsheets and apps, academic draft-line readers, laser and radar draft systems, draft tubes) are not cited here.</aside>
 </section>
 
 <!-- 10 · honest limits -->
@@ -456,7 +461,7 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
   function bandTo(u) { var d = ""; for (var i = 0; i <= u; i++) d += (i ? "L" : "M") + x(i).toFixed(1) + "," + cy(mean[i] + band[i]).toFixed(1); for (var j = u; j >= 0; j--) d += "L" + x(j).toFixed(1) + "," + cy(mean[j] - band[j]).toFixed(1); return d + "Z"; }
   function wave(yl, w, now, amp) { var d = ""; for (var px = 0; px <= w; px += 10) { var yy = yl + Math.sin(now / 420 + px / 22) * amp + Math.sin(now / 260 + px / 8) * amp * 0.4; d += (px ? "L" : "M") + px + "," + yy.toFixed(1); } return d; }
   function sea(lv, now) { var yl = y(lv), d = wave(yl, HW, now, 2.4); $("seaEdge").setAttribute("d", d); $("sea").setAttribute("d", d + "L" + HW + ",400L0,400Z"); $("tie").setAttribute("x1", HW); $("tie").setAttribute("y1", yl.toFixed(1)); $("tie").setAttribute("y2", yl.toFixed(1)); }
-  function held(v, on) { var yy = y(v); $("held").setAttribute("y1", yy.toFixed(1)); $("held").setAttribute("y2", yy.toFixed(1)); $("held").setAttribute("opacity", on ? 1 : 0.35); $("val").setAttribute("y", (yy + 50).toFixed(1)); $("valu").setAttribute("y", (yy + 84).toFixed(1)); $("val").setAttribute("opacity", on ? 1 : 0); $("valu").setAttribute("opacity", on ? 1 : 0); }
+  function held(v, on) { var yy = y(v); $("held").setAttribute("y1", yy.toFixed(1)); $("held").setAttribute("y2", yy.toFixed(1)); $("held").setAttribute("opacity", on ? 1 : 0.45); $("val").setAttribute("y", (yy + 50).toFixed(1)); $("valu").setAttribute("y", (yy + 84).toFixed(1)); }
   var demo = $("demoSlide"), tick = $("tick");
   function fin(now) {
     $("trace").setAttribute("d", pathTo(DS, N - 1)); $("mean").setAttribute("d", pathTo(mean, N - 1)); $("band").setAttribute("d", bandTo(N - 1));
@@ -515,10 +520,10 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
     else if (f < N - 1) {
       var p = at(f), px = x(p.i) + (x(p.i + 1) - x(p.i)) * p.t;
       $("trace").setAttribute("d", pathTo(DS, p.i) + "L" + px.toFixed(1) + "," + y(p.v).toFixed(1)); $("mean").setAttribute("d", pathTo(mean, p.i)); $("band").setAttribute("d", bandTo(p.i));
-      sea(p.v, now); $("pen").setAttribute("cx", px.toFixed(1)); $("pen").setAttribute("cy", y(p.v).toFixed(1)); $("tie").setAttribute("x2", px.toFixed(1)); held(mean[p.i], false);
+      sea(p.v, now); $("pen").setAttribute("cx", px.toFixed(1)); $("pen").setAttribute("cy", y(p.v).toFixed(1)); $("tie").setAttribute("x2", px.toFixed(1)); held(D, false); $("p3").style.transform = "scaleX(" + (f / (N - 1)).toFixed(3) + ")";
       tick.innerHTML = "frame <b>" + (p.i + 1) + "/60</b> · running mean " + mean[p.i].toFixed(3) + " m";
     } else {
-      if (!done) { done = true; fin(now); }
+      if (!done) { done = true; fin(now); $("p3").style.transform = "scaleX(1)"; }
       sea(at((f % (N - 1))).v, now);
     }
     raf = requestAnimationFrame(frame);
