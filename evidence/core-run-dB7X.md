@@ -6,8 +6,8 @@ Run `rec-db7x-20261031` on 2026-10-31 16:07 +0700 by `scripts/core_run.py clip d
 |---|---|---|---|
 | measure | SAM 3.1 video x2 concepts (stored) | 24322 | resp_6ae5afc5eaf19a98130b4b2d, resp_6ae5afc6a737472e198542a8 |
 | labels | Spark 1.3 x2 + 5 code checks (stored) | 14611 | resp_6ae5afdecc5b13667f374d5e, resp_6ae5afe8bf4fcf96229347a0 |
-| draft | pure code | 111 |  |
-| survey + certificate | proven program, one sandbox launch | 45 |  |
+| draft | pure code | 63 |  |
+| survey + certificate | proven program, one sandbox launch | 43 |  |
 
 | measure | value |
 |---|---|

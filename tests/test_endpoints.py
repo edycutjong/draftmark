@@ -75,7 +75,8 @@ def test_typed_labels_then_draft():
     assert d["result"]["n_kept"] == 12 and 12.6 < d["result"]["d_m"] < 12.8
 
 
-OK_LABELS = {"checks": {k: True for k in ("monotone", "pitch", "residual", "cross_frame", "anchor")}}
+OK_LABELS = {"checks": {k: True for k in ("monotone", "pitch", "residual", "cross_frame", "anchor", "ok")},
+             "anchor_confirmed": True}
 
 
 def test_survey_ship_out_of_table_refuses_without_cargo():
@@ -192,3 +193,26 @@ def test_reread_carries_failed_checks_by_box_number(monkeypatch):
     assert calls[0] is None and calls[1] is None and calls[2] and calls[3]
     assert all(("box" in h or "increase" in h or "disagree" in h) for h in calls[2:])
     assert not any(t in (calls[2] or "") for t in good)  # track ids never reach the prompt
+
+
+def test_live_run_needs_the_users_anchor_confirmation():
+    m = {"d_m": 0.12, "u_abs_m": 0.0005, "n_frames": 32, "n_kept": 32}
+    lab = {"checks": OK_LABELS["checks"]}  # no confirmation sent
+    live = api.post("/api/py/survey", json={"mode": "barge", "measure": m, "labels": lab}).json()["certificate"]
+    rec = api.post("/api/py/survey", json={"mode": "barge", "measure": m, "labels": lab,
+                                           "run_mode": "RECORDED"}).json()["certificate"]
+    assert live["reason"] == "NO_ANCHOR" and rec["decision"] == "ISSUE"
+
+
+def test_typed_labels_must_pass_the_checks():
+    m = {"d_m": 0.12, "u_abs_m": 0.0005, "n_frames": 32, "n_kept": 32}
+    bad = {"typed": True, "checks": {**OK_LABELS["checks"], "monotone": False, "ok": False}}
+    c = api.post("/api/py/survey", json={"mode": "barge", "measure": m, "labels": bad}).json()["certificate"]
+    assert (c["decision"], c["reason"]) == ("REFUSE", "LABEL_FAIL") and "d_m" not in c["draft"]
+    good = {"typed": True, "checks": OK_LABELS["checks"]}
+    c = api.post("/api/py/survey", json={"mode": "barge", "measure": m, "labels": good}).json()["certificate"]
+    assert c["decision"] == "ISSUE_WITH_WARNING" and [w["code"] for w in c["warnings"]] == ["LABELS_TYPED"]
+
+
+def test_bad_labels_request_is_a_400():
+    assert api.post("/api/py/labels", json={"frames": {}}).status_code == 400

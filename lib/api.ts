@@ -1,12 +1,22 @@
 /** Fetch wrapper for /api/py/*: every failure comes back as a reason code the UI can render. */
 
-export type Reason = "PAYLOAD" | "JUDGE_CODE" | "BUDGET" | "RATE" | "UPSTREAM" | "NO_FIXTURE" | "TIMEOUT";
+export type Reason =
+  | "PAYLOAD"
+  | "JUDGE_CODE"
+  | "BUDGET"
+  | "RATE"
+  | "UPSTREAM"
+  | "NO_FIXTURE"
+  | "TIMEOUT"
+  | "NO_EVIDENCE"
+  | "LABEL_FRAMES";
 
 export type ApiResult<T> = { ok: true; data: T; ms: number } | { ok: false; reason: Reason; detail: string; ms: number };
 
 export const TIMEOUT_MS = 280_000;
 
-const KNOWN: Reason[] = ["PAYLOAD", "JUDGE_CODE", "BUDGET", "RATE", "UPSTREAM", "NO_FIXTURE", "TIMEOUT"];
+const KNOWN: Reason[] = ["PAYLOAD", "JUDGE_CODE", "BUDGET", "RATE", "UPSTREAM", "NO_FIXTURE", "TIMEOUT", "NO_EVIDENCE",
+  "LABEL_FRAMES"];
 
 export async function api<T>(path: string, body?: unknown, timeoutMs = TIMEOUT_MS): Promise<ApiResult<T>> {
   const ctrl = new AbortController();
@@ -47,7 +57,9 @@ export async function api<T>(path: string, body?: unknown, timeoutMs = TIMEOUT_M
 
 /** What the user can do next, per reason (layout guidance; decision hints come from the API). */
 export const REASON_NEXT: Record<Reason, string> = {
-  PAYLOAD: "The clip was rejected before any model call: check MP4, size and length, then try again.",
+  PAYLOAD: "The request was rejected before any model call: check the clip (MP4, size, length) or frame size.",
+  NO_EVIDENCE: "A certificate needs a measured clip (or a ship survey on a named booklet).",
+  LABEL_FRAMES: "Send exactly the two label frames chosen by the measure step.",
   JUDGE_CODE: "Uploads need the judge code from the submission notes.",
   BUDGET: "Live runs are off on this deployment right now. Open the recorded run instead.",
   RATE: "Too many live runs from this address. Wait a minute, or open the recorded run.",

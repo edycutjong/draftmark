@@ -265,7 +265,7 @@ export function SurveyFlow() {
     const r = await api<Labels>("labels", { geometry: geom, typed: clean, frame: geom.label_frames?.[0], run_id: runId.current });
     if (!r.ok) return setTypedRes({ state: "error", err: { reason: r.reason, detail: r.detail } });
     setTypedRes({ state: "done", data: r.data, ms: r.ms });
-    void acceptLabels(r.data);
+    if (r.data.checks.ok) void acceptLabels(r.data); // failing typed values stay editable with their ticks shown
   }
 
   /* station 4: draft (code only), then station 5: program */

@@ -160,9 +160,13 @@ async def labels_ep(req: Request):
     """Two frames >= 1 s apart (JPEG data URLs, cropped like the clip) + geometry -> Spark 1.3 reads both
     (strict json_schema) -> five code checks. One re-read on failure; typed labels skip Spark (degraded)."""
     body = await req.json()
-    geom = body["geometry"]
-    system = pipeline.system_of(geom)
-    toks, _ = pipeline.rebuild(geom)
+    try:
+        geom = body["geometry"]
+        system = pipeline.system_of(geom)
+        toks, _ = pipeline.rebuild(geom)
+        [int(k) for k in (body.get("frames") or {})]
+    except (KeyError, TypeError, ValueError) as e:
+        return _err(400, "PAYLOAD", f"bad labels request: {type(e).__name__}")
     strip = marks.strip_sequence() if system.scale < 1 else None
     typed = body.get("typed")
     lf = geom.get("label_frames")
