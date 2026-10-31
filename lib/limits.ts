@@ -1,6 +1,6 @@
 /** Client-side upload limits; they mirror the server's checks in api/index.py (MAX_UPLOAD, fps, frames). */
 export const MAX_BYTES = 3 * 1024 * 1024;
-export const MAX_SECONDS = 8;
+export const MAX_SECONDS = 10.5;
 export const MAX_FPS = 8;
 export const MAX_FRAMES = 64;
 /** Mark systems the measurement code supports: metric ship marks (scale 1.0) and the 1:10 barge strip (0.1). */

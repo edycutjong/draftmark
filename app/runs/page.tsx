@@ -36,7 +36,7 @@ export default function Home() {
         <section className="hero">
           <div className="hero__text">
             <p className="eyebrow">Recorded runs · real API calls · every printed number computed or checked by code</p>
-            <h1 className="hero__title">Weigh a ship&apos;s cargo from a phone video of its draft marks.</h1>
+            <h1 className="hero__title">Read a ship&apos;s draft from ten seconds of video. Compute only with a program that proved itself.</h1>
             <p className="lede">
               SAM 3.1 tracks the painted draft numerals and the water surface in every frame; code averages the
               waterline through the swell into one draft with a stated uncertainty. Muse Spark 1.3 reads the mark
@@ -45,6 +45,8 @@ export default function Home() {
             </p>
             <p className="caveat small">
               Synthetic barge only for weight accuracy; no physical scale check yet. Prototype, not a surveyor&apos;s certificate.
+              The model calls on this page are recorded (response ids on <Link href="/evidence">/evidence</Link>); the live action
+              without a judge code is the <a href="#program-h">self-test re-run</a> of Wonder&apos;s program in the sandbox.
             </p>
             <p>
               <Link href="/survey" className="btn btn--accent">

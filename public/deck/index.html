@@ -254,7 +254,7 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
   <p class="eyebrow">Real clip dB7X · redrawn in real time · 6 fps · no ground truth</p>
   <h2>Ten seconds of swell. <em>One line holds.</em></h2>
   <div class="inst">
-    <div class="inst__top"><p class="ticker" id="tick"><b>60/60</b> · mean <b>12.761 m</b> ± 0.086 m · held</p><span class="inst__note">band illustrative · label error 0.20 m</span></div>
+    <div class="inst__top"><p class="ticker" id="tick"><b>60/60</b> · mean <b>12.761 m</b> · u_rep ±0.086 m · held</p><span class="inst__note">band illustrative · label error 0.20 m</span></div>
     <div class="p3" aria-hidden="true"><i id="p3"></i></div>
     <svg id="vis" viewBox="0 0 1280 400" role="img" aria-label="Clip dB7X: per-frame waterline across the painted marks and the running mean settling at 12.761 m">
       <defs>
@@ -384,11 +384,12 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
   <h2>What it does <em>not</em> prove yet.</h2>
   <ul class="ledger">
     <li><span>§1</span>The weight check is on a rendered synthetic barge.</li>
-    <li><span>§2</span>Real-ship clips: third-party footage, no ground truth.</li>
+    <li><span>§2</span>Real-ship clips: third-party footage, no ground truth; the ± is repeatability only.</li>
     <li><span>§3</span>The test booklet is a Ro-Ro/passenger ship, not a bulk carrier.</li>
+    <li><span>§5</span>A consistent whole-metre misread passes the geometry checks; the user confirms the anchor crop.</li>
     <li><span>§6</span>A clip reads only the port midship mark; the other positions are typed in. A prototype.</li>
   </ul>
-  <aside class="notes">Condensed from README Honest limits 1, 2, 3 and 6.</aside>
+  <aside class="notes">Condensed from README Honest limits 1-6 (limit 4 folded into §2).</aside>
 </section>
 
 <!-- 11 · try it -->
@@ -466,7 +467,7 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
   function fin(now) {
     $("trace").setAttribute("d", pathTo(DS, N - 1)); $("mean").setAttribute("d", pathTo(mean, N - 1)); $("band").setAttribute("d", bandTo(N - 1));
     sea(DS[N - 1], now || 0); $("pen").setAttribute("cx", x(N - 1)); $("pen").setAttribute("cy", y(DS[N - 1])); $("tie").setAttribute("x2", x(N - 1)); held(D, true);
-    demo.classList.add("held"); tick.innerHTML = "<b>60/60</b> · mean <b>12.761 m</b> ± 0.086 m · held";
+    demo.classList.add("held"); tick.innerHTML = "<b>60/60</b> · mean <b>12.761 m</b> · u_rep ±0.086 m · held";
   }
   $("ghost").setAttribute("d", pathTo(DS, N - 1)); fin(0);
 

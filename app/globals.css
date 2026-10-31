@@ -66,9 +66,7 @@ img { max-width: 100%; }
 }
 .brand { display: inline-flex; align-items: center; gap: 0.6rem; text-decoration: none; min-height: 44px; }
 .brand__word { font: 800 1.6rem/1 var(--font-display); font-stretch: 62%; letter-spacing: 0.08em; }
-.brandmark { width: 22px; height: 32px; }
-.brandmark__tick { fill: var(--ink); }
-.brandmark__line { fill: var(--after); }
+.brandmark { width: 30px; height: 30px; display: block; }
 .nav { display: flex; gap: 1.25rem; align-items: center; list-style: none; margin: 0; padding: 0; }
 .nav a:not(.btn) { color: var(--muted); text-decoration: none; display: inline-flex; align-items: center; min-height: 44px; padding: 0 0.15rem; transition: color 160ms var(--ease); }
 .nav a:not(.btn):hover { color: var(--ink); }
@@ -392,3 +390,7 @@ img { max-width: 100%; }
   .nav { gap: 0.6rem; font-size: 0.92rem; }
   .nav .btn { padding: 0.5rem 0.7rem; }
 }
+
+/* station 1 without a fixture: the no-code live step */
+.nocode { display: grid; gap: 0.75rem; justify-items: start; }
+.nocode .verdict { margin: 0; }

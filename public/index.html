@@ -357,7 +357,7 @@ h2 em{font-style:normal;color:var(--after)}
   <div class="hero__world" aria-hidden="true"><svg class="hero__swell" viewBox="0 0 2880 120" preserveAspectRatio="none"><path d="M0 60 C60 30 180 30 240 60 C300 90 420 90 480 60 C540 30 660 30 720 60 C780 90 900 90 960 60 C1020 30 1140 30 1200 60 C1260 90 1380 90 1440 60 C1500 30 1620 30 1680 60 C1740 90 1860 90 1920 60 C1980 30 2100 30 2160 60 C2220 90 2340 90 2400 60 C2460 30 2580 30 2640 60 C2700 90 2820 90 2880 60"/></svg></div>
   <div class="wrap hero__grid">
     <div>
-      <p class="where stag"><b>DraftMark</b> · reads draft marks from ten seconds of video</p>
+      <p class="where stag"><b>DraftMark</b> · measures a moving waterline over 60 frames of video</p>
       <h1 class="stag"><span class="l">The sea keeps</span> <span class="l">moving. The reading</span> <em class="l">finally holds still.</em></h1>
       <p class="lede stag">Before dawn, a surveyor must turn a moving waterline into one number that decides the cargo. SAM&nbsp;3.1 finds the marks in <b data-proof="evidence/core-run-dB7X.md">60 of 60 frames</b>; the program Muse Wonder&nbsp;1.0 wrote reproduces <b data-proof="evidence/selftest-booklet.md">22 of 22</b> booklet conditions before it computes.</p>
       <div class="cta stag">
@@ -369,7 +369,7 @@ h2 em{font-style:normal;color:var(--after)}
     </div>
 
     <figure class="inst" id="inst" style="margin:0">
-      <div class="inst__top"><span class="rec" id="recLabel">clip dB7X · real time</span><span>SAM 3.1 + code · 6 fps</span></div>
+      <div class="inst__top"><span class="rec" id="recLabel">clip dB7X · recorded · replayed 1×</span><span>SAM 3.1 + code · 6 fps</span></div>
       <svg id="vis" viewBox="0 0 640 520" role="img" aria-labelledby="visT">
         <title id="visT">Real clip dB7X: the waterline measured in each of 60 frames moves across the painted marks 6, 8, 13M and 2; the running mean settles and holds at 12.761 metres, plus or minus 0.086 metres (repeatability).</title>
         <defs>
@@ -394,12 +394,12 @@ h2 em{font-style:normal;color:var(--after)}
         <circle id="pen" r="4.2" fill="#cfe1dc"/>
         <line id="held" class="sv-held" x1="0" x2="640"/>
         <text id="val" class="sv-val" x="632" text-anchor="end">12.761 m</text>
-        <text id="valu" class="sv-u" x="632" text-anchor="end">±0.086 m · k=1</text>
+        <text id="valu" class="sv-u" x="632" text-anchor="end">u_rep ±0.086 m · k=1</text>
         <text class="sv-ax" x="178" y="512">frame 0</text><text class="sv-ax" x="632" y="512" text-anchor="end">frame 59 · 10 s</text>
       </svg>
       <div class="verdict" id="verdict"><span class="verdict__w">REFUSE</span><span class="verdict__r">OUT_OF_TABLE · matrix row 4</span><span class="verdict__t">12.761&nbsp;m is past the only booklet's 0.5–9.3&nbsp;m table, so no tonnage is guessed.</span></div>
       <p class="vlink"><a href="#replay">Booklet condition 4.1 (six drafts typed in) issues, with a warning&nbsp;→</a></p>
-      <div class="inst__foot"><p class="tick" id="tick" aria-live="off"><b>60/60</b> frames kept · mean <b>12.761 m</b> ± 0.086 m · held</p><button class="replay" id="replayBtn" type="button">↻ Replay 10 s</button></div>
+      <div class="inst__foot"><p class="tick" id="tick" aria-live="off"><b>60/60</b> frames kept · mean <b>12.761 m</b> · u_rep ±0.086 m · held</p><button class="replay" id="replayBtn" type="button">↻ Replay 10 s</button></div>
       <figcaption class="cap">Redrawn from 60 waterline heights measured on a real third-party clip, no ground truth. Band illustrative; repeatability ±0.086&nbsp;m; a one-pitch label error would move it 0.20&nbsp;m.</figcaption>
     </figure>
   </div>
@@ -412,7 +412,7 @@ h2 em{font-style:normal;color:var(--after)}
     <div class="rc">
       <div><b><span class="cu" data-to="22">22</span><small>/22</small></b><p>printed booklet conditions reproduced by the program Wonder wrote</p><a href="https://github.com/edycutjong/draftmark/blob/main/evidence/selftest-booklet.md" data-proof="evidence/selftest-booklet.md">evidence/selftest-booklet.md</a></div>
       <div><b><span class="cu" data-to="60">60</span><small>/60</small></b><p>frames kept on real hull clip dB7X, numerals and water in every one</p><a href="https://github.com/edycutjong/draftmark/blob/main/evidence/core-run-dB7X.md" data-proof="evidence/core-run-dB7X.md">evidence/core-run-dB7X.md</a></div>
-      <div><b><span class="cu" data-to="-0.0106" data-dec="4">−0.0106</span><small>%</small></b><p>booklet condition 4.1: the program computes 17825.8 t, the booklet prints 17827.7 t</p><a href="https://github.com/edycutjong/draftmark/blob/main/evidence/core-run-trieste.md" data-proof="evidence/core-run-trieste.md">evidence/core-run-trieste.md</a></div>
+      <div><b><span class="cu" data-to="-0.0106" data-dec="4">−0.0106</span><small>%</small></b><p>booklet condition 4.1: the program computes 17825.8 t, the booklet prints 17827.7 t (one of the 22 acceptance rows, not held out)</p><a href="https://github.com/edycutjong/draftmark/blob/main/evidence/core-run-trieste.md" data-proof="evidence/core-run-trieste.md">evidence/core-run-trieste.md</a></div>
       <div><b><span class="cu" data-to="124">124</span><small>tests</small></b><p>pytest, with both escapes kept as regression tests</p><a href="https://github.com/edycutjong/draftmark/tree/main/tests" data-proof="README.md">tests/</a></div>
     </div>
     <p class="rc-note"><span data-proof="evidence/core-run-dB7X.md">$0.0397</span> of Meta calls for the dB7X run (price-list estimate) · est $0.481 for the three Wonder calls that wrote the proven program</p>
@@ -530,7 +530,7 @@ h2 em{font-style:normal;color:var(--after)}
       <p class="line-no">Line 005 · Check</p>
       <span class="tag">SYNTHETIC</span>
       <h2>Weighed against a known truth. <em>A rendered one, for now.</em></h2>
-      <p class="intro">The real clips end in refusal, so where is the weight checked? On a barge generated as geometry in code, its truth known by construction, with swell, edge jitter and dropped frames added on purpose. There is no physical scale check yet.</p>
+      <p class="intro">The real clips end in refusal, so where is the weight checked? On a barge generated as geometry in code, its truth known by construction, with swell, edge jitter and dropped frames added on purpose. SAM is not run on it (it does not detect rendered water), so this checks the arithmetic and the error model, not perception. There is no physical scale check yet.</p>
     </div>
     <div class="synth rv">
       <div><b data-proof="evidence/core-run-synth-barge.md">−0.155 mm</b><p>draft vs the synthetic calm truth, 58 of 60 frames kept</p></div>
@@ -729,7 +729,7 @@ document.documentElement.classList.add("js");
     $("trace").setAttribute("d", pathTo(DS, N - 1)); $("mean").setAttribute("d", pathTo(mean, N - 1)); $("band").setAttribute("d", bandTo(N - 1));
     drawSea(DS[N - 1], now || 0); $("pen").setAttribute("cx", x(N - 1)); $("pen").setAttribute("cy", y(DS[N - 1]));
     $("tie").setAttribute("x2", x(N - 1)); setHeld(D, true); inst.classList.add("held");
-    $("recLabel").textContent = "clip dB7X · reading held";
+    $("recLabel").textContent = "clip dB7X · recorded · held";
   }
   $("ghost").setAttribute("d", pathTo(DS, N - 1)); // the whole measured swell, faint, so the recorder never starts empty
   finalState(0);
@@ -750,8 +750,8 @@ document.documentElement.classList.add("js");
         tick.innerHTML = "frame <b>" + (i + 1) + "/60</b> · running mean " + mean[i].toFixed(3) + " m";
       } else {
         $("trace").setAttribute("d", pathTo(DS, N - 1)); $("mean").setAttribute("d", pathTo(mean, N - 1)); $("band").setAttribute("d", bandTo(N - 1));
-        setHeld(D, true); inst.classList.add("held"); $("recLabel").textContent = "clip dB7X · reading held";
-        tick.innerHTML = "<b>60/60</b> frames kept · mean <b>12.761 m</b> ± 0.086 m · held. The sea keeps moving.";
+        setHeld(D, true); inst.classList.add("held"); $("recLabel").textContent = "clip dB7X · recorded · held";
+        tick.innerHTML = "<b>60/60</b> frames kept · mean <b>12.761 m</b> · u_rep ±0.086 m · held. The sea keeps moving.";
         phase = "hold"; tHold = null;
       }
     }
@@ -763,7 +763,7 @@ document.documentElement.classList.add("js");
     if (visible) raf = requestAnimationFrame(frame);
   }
   function play() {
-    phase = "replay"; inst.classList.remove("held"); $("recLabel").textContent = "clip dB7X · real time"; t0 = null; running = true;
+    phase = "replay"; inst.classList.remove("held"); $("recLabel").textContent = "clip dB7X · recorded · replayed 1×"; t0 = null; running = true;
     if (!raf && visible) raf = requestAnimationFrame(frame);
   }
   $("replayBtn").addEventListener("click", play);

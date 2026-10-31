@@ -12,12 +12,51 @@ import { WaveChart } from "@/components/WaveChart";
 import { ResultCard } from "@/components/ResultCard";
 import { LabelChecks } from "@/components/LabelChecks";
 import { ProgramProof } from "@/components/ProgramProof";
+import { SelfTestVerdict } from "@/components/SelfTestTable";
 import { DecisionStamp } from "@/components/DecisionStamp";
 import { SurveyResult } from "@/components/SurveyResult";
 import { ModelStrip } from "@/components/ModelStrip";
 
 type Err = { reason: Reason; detail: string };
 type Async<T> = { state: "idle" } | { state: "busy"; t0: number } | { state: "done"; data: T; ms: number } | { state: "error"; err: Err };
+
+/** Station 1 without a fixture clip: the live step anyone can run (no judge code, no model call). */
+function NoCodePath() {
+  const [st, setSt] = useState<{ state: "idle" | "busy" } | { state: "done"; data: Selftest; ms: number } | { state: "error"; err: Err }>({
+    state: "idle",
+  });
+  async function rerun() {
+    setSt({ state: "busy" });
+    const r = await api<{ ok: true; selftest: Selftest }>("selftest/rerun", {});
+    setSt(r.ok ? { state: "done", data: r.data.selftest, ms: r.ms } : { state: "error", err: { reason: r.reason, detail: r.detail } });
+  }
+  return (
+    <div className="nocode">
+      <p>
+        No one-click clip here: our real-hull test clips are third-party footage we may not re-host. Without a judge code,
+        run the one live step anyone can: re-run the survey program Muse Wonder 1.0 wrote against the booklet&apos;s 22
+        printed conditions, in the sandbox (no model call, no cost).
+      </p>
+      <button type="button" className="btn btn--accent" onClick={() => void rerun()} disabled={st.state === "busy"}>
+        {st.state === "busy" ? "Re-running in the sandbox…" : "Re-run Wonder's self-test live"}
+      </button>
+      {st.state === "done" ? (
+        <>
+          <SelfTestVerdict st={st.data} />
+          <p className="small">
+            <Badge tone="live">LIVE</Badge> sandbox {st.data.wall_ms ?? DASH} ms · round trip {st.ms} ms
+          </p>
+        </>
+      ) : null}
+      {st.state === "error" ? <ErrorBox err={st.err} /> : null}
+      <p className="small">
+        Then <Link href="/runs">open the recorded runs</Link>: real SAM 3.1 and Spark 1.3 output on a real hull clip, every
+        number re-derivable from the run record.
+      </p>
+    </div>
+  );
+}
+
 
 interface Health {
   ok: boolean;
@@ -314,11 +353,7 @@ export function SurveyFlow() {
                 </p>
               </div>
             ) : null}
-            {health.state === "done" && fixtures.length === 0 ? (
-              <p>
-                No live fixture clip is registered on this deployment yet; until then, <Link href="/runs">open the recorded runs</Link>.
-              </p>
-            ) : null}
+            {health.state === "done" && fixtures.length === 0 ? <NoCodePath /> : null}
             {fixtures.length ? (
               <ul className="fixture-list">
                 {fixtures.map((f) => (
@@ -419,7 +454,7 @@ export function SurveyFlow() {
       <Station n={2} title="Measure" open={measure.state !== "idle" || !!videoUrl} done={draft.state === "done"} live>
         {measure.state === "busy" ? (
           <p>
-            SAM 3.1 is tracking the numerals and the water (usually 30–45 s)… <Elapsed t0={measure.t0} />
+            SAM 3.1 is tracking the numerals and the water (usually 45–60 s on this deployment)… <Elapsed t0={measure.t0} />
           </p>
         ) : null}
         {measure.state === "error" ? <ErrorBox err={measure.err} /> : null}

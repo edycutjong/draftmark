@@ -30,8 +30,9 @@
 </p>
 
 Try it at **https://draftmark.edycu.dev** (the landing replays the real dB7X waterline): the committed example runs at
-[/runs](https://draftmark.edycu.dev/runs) replay real SAM 3.1 and Spark 1.3 output (labelled as recorded runs), the
-Wonder self-test re-runs live at [/survey](https://draftmark.edycu.dev/survey), and an upload needs a judge code.
+[/runs](https://draftmark.edycu.dev/runs) replay real SAM 3.1 and Spark 1.3 output (labelled as recorded runs); the
+Wonder self-test re-runs live, with no code, on [/runs](https://draftmark.edycu.dev/runs#program-h) and in step 1 of
+[/survey](https://draftmark.edycu.dev/survey); uploading your own prepared clip needs a judge code.
 
 ## 💡 The Problem & Solution
 
@@ -40,7 +41,9 @@ Wonder self-test re-runs live at [/survey](https://draftmark.edycu.dev/survey), 
 A draft survey weighs a bulk cargo from the six painted draft marks on a hull: read the waterline, convert to
 displacement through the ship's hydrostatic booklet, subtract ballast, fuel and constants. The reading is the weak
 step: the sea moves across the numerals and the surveyor eyeballs a mean. The paperwork after it is a per-ship
-spreadsheet. Nearby tools exist as far as we saw in public material, without citations here (Excel draft-survey
+spreadsheet. A P&I club's guide expects "a well-conducted draught survey of a large vessel" to be accurate "to within
+0.5%" ([North of England P&I, *Draught Surveys: A Guide to Good Practice*](https://www.amnautical.com/products/draught-surveys-a-guide-to-good-practice-second-edition));
+on an illustrative 60,000 t cargo that is 300 t, and on our test booklet 1 cm of draft at 6.5 m is 36.99 t. Nearby tools exist as far as we saw in public material (named, not from a systematic prior-art search; no benchmark against them is claimed) (Excel draft-survey
 calculators and apps, academic draft-line readers, laser/radar draft systems, "draft tube" practice); DraftMark does not claim to replace a surveyor's document.
 
 ### The Solution
@@ -94,7 +97,7 @@ Friction we met and what we did about it: [docs/DX-REPORT.md](docs/DX-REPORT.md)
 |---|---|---|
 | Tests | 124 pytest passing | `tests/` |
 | Wonder program self-test | 22/22 printed booklet conditions, 2 regenerations (reference 22/22, verbatim copy 14/22, generic 0/22) | [selftest-booklet.md](evidence/selftest-booklet.md) |
-| Survey on Trieste condition 4.1 | 17825.8 t vs printed 17827.7 t (-0.0106 %) | [core-run-trieste.md](evidence/core-run-trieste.md) |
+| Survey on Trieste condition 4.1 | 17825.8 t vs printed 17827.7 t (-0.0106 %; one of the 22 acceptance rows, not held out) | [core-run-trieste.md](evidence/core-run-trieste.md) |
 | Real clip dB7X | 60/60 frames, draft 12.761 m, u_rep 0.086 m (repeatability only) | [core-run-dB7X.md](evidence/core-run-dB7X.md) |
 | Real clip UKTRQ | 46/48 frames, draft 20.830 m, u_rep 0.055 m | [core-run-UKTRQ.md](evidence/core-run-UKTRQ.md) |
 | Synthetic error model (100 seeds) | truth inside ±2u in 96 %, RMSE 0.519 mm | [error-model-synthetic.md](evidence/error-model-synthetic.md) |
