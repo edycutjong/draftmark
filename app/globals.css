@@ -394,3 +394,5 @@ img { max-width: 100%; }
 /* station 1 without a fixture: the no-code live step */
 .nocode { display: grid; gap: 0.75rem; justify-items: start; }
 .nocode .verdict { margin: 0; }
+.tamper { display: grid; gap: 0.6rem; justify-items: start; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px dashed var(--rule); }
+.tamper .refusal { margin: 0; }

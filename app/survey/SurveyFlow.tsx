@@ -732,6 +732,49 @@ const SOURCES = Object.fromEntries(POSITIONS.map((p) => [p, p === "mid_p" ? "liv
   "live" | "entered"
 >;
 
+// inside the Trieste table (0.5-9.3 m): if the server accepted it, it would print a tonnage; only the signature is wrong
+const FORGED_M = 6.5;
+
+/** Tamper test: edit the signed measurement the way a forger would and send it to the same live endpoint. */
+function TamperTest({ body }: { body: Record<string, unknown> }) {
+  const [st, setSt] = useState<Async<{ certificate: Certificate }>>({ state: "idle" });
+  const signed = (body.measure as { token?: { payload?: { d_m?: unknown } } } | undefined)?.token?.payload?.d_m;
+  if (!isNum(signed)) return null;
+  async function forge() {
+    const b = JSON.parse(JSON.stringify(body));
+    b.measure.d_m = FORGED_M;
+    b.measure.token.payload.d_m = FORGED_M; // the payload changes, the signature does not
+    for (const p of Object.keys(b.survey?.drafts ?? {})) b.survey.drafts[p] = FORGED_M;
+    setSt({ state: "busy", t0: Date.now() });
+    const r = await api<{ certificate: Certificate }>("survey", b);
+    setSt(r.ok ? { state: "done", data: r.data, ms: r.ms } : { state: "error", err: { reason: r.reason, detail: r.detail } });
+  }
+  const c = st.state === "done" ? st.data.certificate : null;
+  return (
+    <div className="tamper">
+      <h3 className="h4">Tamper test</h3>
+      <p className="small">
+        Edit this signed measurement the way a forger would: draft <span className="data">{fx(signed, 3)} m</span> →{" "}
+        <span className="data">{fx(FORGED_M, 3)} m</span> on every mark, inside this booklet&apos;s table. Then send it to the same
+        live endpoint.
+      </p>
+      <button type="button" className="btn" onClick={() => void forge()} disabled={st.state === "busy"}>
+        {st.state === "busy" ? "Resubmitting…" : "Edit the signed draft and resubmit"}
+      </button>
+      {c ? (
+        <>
+          <DecisionStamp decision={c.decision} reason={c.reason} hint={c.hint} warnings={c.warnings} row={c.decision_row} />
+          <p className="small data">
+            <Badge tone="live">LIVE</Badge> inputs: {c.inputs ?? DASH} · models credited: {c.models.length ? c.models.join(", ") : "none"} ·
+            round trip {st.state === "done" ? st.ms : DASH} ms
+          </p>
+        </>
+      ) : null}
+      {st.state === "error" ? <ErrorBox err={st.err} /> : null}
+    </div>
+  );
+}
+
 function SurveyStation({
   mode,
   runId,
@@ -976,6 +1019,7 @@ function SurveyStation({
             <button type="button" className="btn btn--accent" onClick={openPrintable}>
               Open printable certificate
             </button>
+            {mode === "ship" && cert.inputs === "signed" && body ? <TamperTest body={body} /> : null}
           </>
         ) : null}
       </div>
