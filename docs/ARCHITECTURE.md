@@ -99,8 +99,8 @@ is logged with an estimated cost in `evidence/api-usage.md`.
 ## Known limits (stated, not hidden)
 
 - Entered drafts (typed by hand) can be certified; the certificate prints each draft's source and a
-  POSITIONS_ENTERED warning. A clip reading stands only for the midship pair (one clip films one mark column);
-  any other position claiming it is printed as entered. Typed numbers are range-checked (drafts 0-30 m, sg
+  POSITIONS_ENTERED warning. A clip reading stands only for the port midship mark (one clip films one mark
+  column, one side); every other position is printed as entered, so the port/starboard gate tests a real pair. Typed numbers are range-checked (drafts 0-30 m, sg
   0.990-1.040, deductibles and constants >= 0, tolerance 0-10 %) or answered 400. It is a prototype, not a
   surveyor's document.
 - Ship u is the repeatability of the live draft (wave averaging) only: real ships have no absolute calibration. A

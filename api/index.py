@@ -332,7 +332,7 @@ async def survey_ep(req: Request):
     srv_in = dict(body.get("survey") or {}) if body.get("survey") else None
     if srv_in is not None:
         srv_in["sources"] = survey.clean_sources(srv_in.get("sources"))
-        bad = survey.validate(srv_in, body) if mode == "ship" else []
+        bad = survey.validate(srv_in, body)  # whatever mode the body claims: the token may make it a ship survey
         if bad:
             return _err(400, "PAYLOAD", "; ".join(bad[:5]))
     claims_live = bool(meas.get("n_frames")) or any(v in ("live", "clip") for v in ((srv_in or {}).get("sources") or {}).values())
@@ -340,6 +340,8 @@ async def survey_ep(req: Request):
     live_src = any(v in ("live", "clip") for v in ((srv_in or {}).get("sources") or {}).values())
     entered_only = bool(tok and mode != "barge" and tok["scale"] >= 1 and srv_in and not live_src)
     models: list[str] = []
+    if tok and entered_only:  # no position uses the clip: the token is ignored, not printed as evidence
+        tok, meas, lab = None, {}, None
     if tok:
         mode = "barge" if tok["scale"] < 1 else "ship"
         meas = {**meas, **{k: tok.get(k) for k in MEAS_KEYS}}
@@ -366,7 +368,13 @@ async def survey_ep(req: Request):
             srv = survey.barge({"d_m": meas["d_m"], "u_m": u, "what_if": body.get("what_if")})  # no client expected u
         st = None
     else:
-        p = survey.proven(body.get("booklet", "trieste"))
+        try:
+            p = survey.proven(body.get("booklet", "trieste"))
+        except RuntimeError as e:  # a stale or corrupt proof is a certified refusal, not a 500
+            p = None
+            srv = {"program_author": None, "program_error": True, "error": str(e)[:200], "out_of_table": False}
+            st = {"verdict": "FAIL", "failed_rows": [], "fallback": None}
+    if mode != "barge" and p is not None:
         if srv_in:
             srv = survey.ship(srv_in, p)
         else:  # the measurement refused before any draft existed: certify the refusal, run no program

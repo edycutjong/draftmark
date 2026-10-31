@@ -71,3 +71,5 @@ Price-list estimates from `api/_core/meta.py` PRICES (not an invoice). Appended 
 | 2026-10-31 18:20 | p1d-review-r1 | muse-wonder-1.0 | outside architecture review r1 (reasoning high, no tools; ~157k-char packet; token counts estimated) | ~45k / ~10-15k | 0.4500 |  |  |
 | 2026-10-31 19:06 | p1d-review-r2a | muse-wonder-1.0 | outside architecture review r2 (reasoning high; EMPTY — all 16k output tokens spent reasoning; estimated) | ~50k / 16k | 0.5200 |  |  |
 | 2026-10-31 19:09 | p1d-review-r2b | muse-wonder-1.0 | outside architecture review r2 re-run (reasoning medium, no tools; estimated) | ~50k / ~5-10k | 0.3500 |  |  |
+| 2026-10-31 19:48 | p1d-review-r3a | muse-wonder-1.0 | outside architecture review r3 (reasoning medium; EMPTY — max_output_tokens; estimated) | ~52k / 16k | 0.5300 |  |  |
+| 2026-10-31 19:57 | p1d-review-r3b | muse-wonder-1.0 | outside architecture review r3 re-run on the slim packet (reasoning low, no tools; estimated) | ~28k / ~4k | 0.2000 |  |  |

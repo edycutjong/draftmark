@@ -329,3 +329,23 @@ def test_round3_guards():
     g = sign.seal_geometry({**g, "row1": "OBJECT_CAP"})
     r = api.post("/api/py/labels", json={"geometry": g, "frames": {}})
     assert r.status_code == 400 and "row 1" in r.json()["detail"]
+
+
+def test_round3_muse_guards(monkeypatch):
+    m = seal({"d_m": 6.5, "u_rep_m": 0.01, "n_frames": 12, "n_kept": 12}, OK_LABELS, ["sam-3.1"], 1.0)
+    s = {"drafts": {p: 6.5 for p in ("fore_p", "fore_s", "mid_p", "mid_s", "aft_p", "aft_s")}, "sg": 9,
+         "sources": {"mid_p": "live"}, "deductibles": {"x": -1e9}}
+    r = api.post("/api/py/survey", json={"mode": "barge", "measure": m, "labels": OK_LABELS, "survey": s})
+    assert r.status_code == 400  # a body claiming barge cannot skip the ship validation
+    s = {**s, "sg": 1.025, "deductibles": {}, "sources": {}}
+    c = api.post("/api/py/survey", json={"mode": "ship", "measure": m, "labels": OK_LABELS, "survey": s,
+                                         "booklet_info": {"id": "trieste"}}).json()["certificate"]
+    assert c["inputs"] == "entered" and (c["draft"] or {}).get("d_m") is None  # an unused clip is not evidence
+    from api._core import survey as S
+    monkeypatch.setattr(S, "proven", lambda booklet="trieste": (_ for _ in ()).throw(RuntimeError("stale proof")))
+    s = {**s, "sources": {"mid_p": "live"}}
+    c = api.post("/api/py/survey", json={"mode": "ship", "measure": m, "labels": OK_LABELS, "survey": s}).json()
+    assert c["certificate"]["reason"] == "PROGRAM_ERROR"
+    g = _geom()
+    monkeypatch.setattr(sign.time, "time", lambda: g["iat"] + sign.MAX_AGE_S + 5)
+    assert not sign.geometry_ok(g)

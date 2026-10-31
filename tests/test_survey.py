@@ -24,9 +24,9 @@ def test_proven_program_reproduces_printed_condition():
 def test_sensitivity_and_finite_difference_u():
     r = run(drafts_of("4.1"))
     assert r["t_per_mm"]["mid_p"] > r["t_per_mm"]["aft_p"] > r["t_per_mm"]["fore_p"] > 0
-    expect = (r["t_per_mm"]["mid_p"] + r["t_per_mm"]["mid_s"]) * 10  # u = 10 mm on both live positions
+    expect = r["t_per_mm"]["mid_p"] * 10  # u = 10 mm on the one live position (one clip = one mark column)
     assert r["u_disp"] == pytest.approx(expect, rel=0.02)
-    assert r["n_entered"] == 4 and r["consequence"]["tpc_t_per_cm"] > 0
+    assert r["n_entered"] == 5 and r["consequence"]["tpc_t_per_cm"] > 0
 
 
 def test_out_of_table_refuses_to_extrapolate():
@@ -35,7 +35,7 @@ def test_out_of_table_refuses_to_extrapolate():
 
 
 def test_perturbation_off_table():
-    r = run({p: 8.78 for p in S.POSITIONS}, live=S.POSITIONS, u=0.05)  # +u walks past 8.8 m (Nemoto edge)
+    r = run({p: 8.79 for p in S.POSITIONS}, live=S.POSITIONS, u=0.05)  # +u on mid_p walks past 8.8 m (Nemoto edge)
     assert not r["out_of_table"] and r["perturb_oot"]
 
 
@@ -92,7 +92,7 @@ def test_proven_refuses_a_stale_selftest(tmp_path, monkeypatch):
 
 def test_a_clip_reading_stands_only_for_midships():
     r = run(drafts_of("4.1"), live=S.POSITIONS)
-    assert [p for p in S.POSITIONS if r["sources"][p] == "live"] == ["mid_p", "mid_s"] and r["n_entered"] == 4
+    assert [p for p in S.POSITIONS if r["sources"][p] == "live"] == ["mid_p"] and r["n_entered"] == 5
 
 
 def test_a_program_failure_is_not_an_issue(monkeypatch):
@@ -122,5 +122,5 @@ def test_non_finite_or_mislabelled_program_output_is_a_program_error(monkeypatch
         True, {"ok": True, "results": [{"ok": False, "error": "KeyError: 'OutOfTable'"}]}, None, 5, 0))
     r = run(drafts_of("4.1"))
     assert r["program_error"] and not r["out_of_table"]
-    assert S.clean_sources({"mid_p": "foo", "mid_s": "live", "fore_p": "live"}) == \
-        {"mid_p": "entered", "mid_s": "live", "fore_p": "entered"}
+    assert S.clean_sources({"mid_p": "live", "mid_s": "live", "fore_p": "foo"}) == \
+        {"mid_p": "live", "mid_s": "entered", "fore_p": "entered"}

@@ -24,7 +24,7 @@ GATE_HOG_M, GATE_PS_M = 0.15, 0.30
 # trim range the self-test's differential cases covered (selftest.differential_cases: -1.0 .. +2.0 m)
 TRIM_PROVEN_M = (-1.0, 2.0)
 NEMOTO_DD_M = 0.5  # the program's second trim correction reads MTC at d_mm +- this
-LIVE_POSITIONS = ("mid_p", "mid_s")  # one clip films one mark column; the app files it as midships
+LIVE_POSITIONS = ("mid_p",)  # one clip films ONE mark column: the app files it as the port midship mark
 
 
 def clean_sources(src: dict | None) -> dict:
@@ -125,6 +125,9 @@ def ship(inp: dict, prog: dict | None = None) -> dict:
     """inp: {drafts: {pos: m}, sources: {pos: live|clip|entered}, u_live_m, sg, deductibles: {..: t},
     lightship_constant?, initial_net?}. Returns intermediates, disp, net, cargo, u_cargo and gate facts."""
     prog = prog or proven()
+    bad = validate(inp, {})
+    if bad:
+        raise ValueError("; ".join(bad[:5]))
     drafts = {p: float(inp["drafts"][p]) for p in POSITIONS}
     sources = {p: clean_sources(inp.get("sources")).get(p, "entered") for p in POSITIONS}
     sg = float(inp.get("sg", 1.025))
@@ -169,7 +172,11 @@ def ship(inp: dict, prog: dict | None = None) -> dict:
     t_per_mm = {}
     for p, r in zip(POSITIONS, res[1:7]):
         t_per_mm[p] = (r["out"]["disp_final"] - disp) / 1.0 if r["ok"] else None
+        if not r["ok"]:
+            out["perturb_oot"] = True  # a +1 mm case that fails is a sensitivity we cannot print
     u_disp = 0.0
+    if live and not u_live > 0:
+        out["perturb_oot"] = True  # a live reading without its uncertainty never certifies with u = 0
     if len(res) > 7:
         up, dn = res[7], res[8]
         if not (up["ok"] and dn["ok"]) or not all(isfinite(r["out"].get("d_mm")) and lo <= r["out"]["d_mm"] <= hi

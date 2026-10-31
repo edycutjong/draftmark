@@ -688,7 +688,8 @@ function AnchorCrop({ shot, frame, track }: { shot?: string; frame?: { tokens: {
 /* ---------- station 6 ---------- */
 
 /** The clip measures the midship marks; the other four positions are entered by the surveyor. */
-const SOURCES = Object.fromEntries(POSITIONS.map((p) => [p, p.startsWith("mid") ? "live" : "entered"])) as Record<
+// one clip films ONE mark column: it stands for the port midship mark; the server prints every other position entered
+const SOURCES = Object.fromEntries(POSITIONS.map((p) => [p, p === "mid_p" ? "live" : "entered"])) as Record<
   Position,
   "live" | "entered"
 >;

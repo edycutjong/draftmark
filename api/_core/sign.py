@@ -50,12 +50,16 @@ def _ok(kind: str, obj, sig) -> bool:
 
 def seal_geometry(geom: dict) -> dict:
     g = {k: v for k, v in geom.items() if k != "sig"}
+    g.setdefault("iat", int(time.time()))  # the measurement's age bounds every token built on it
     g["sig"] = _mac("geometry", g)
     return g
 
 
 def geometry_ok(geom) -> bool:
-    return isinstance(geom, dict) and _ok("geometry", {k: v for k, v in geom.items() if k != "sig"}, geom.get("sig"))
+    if not (isinstance(geom, dict) and _ok("geometry", {k: v for k, v in geom.items() if k != "sig"}, geom.get("sig"))):
+        return False
+    iat = geom.get("iat")
+    return isinstance(iat, (int, float)) and 0 <= time.time() - iat <= MAX_AGE_S
 
 
 def token(kind: str, payload: dict) -> dict:
