@@ -69,8 +69,8 @@ One Next.js app on Vercel plus one Python FastAPI function that holds every mode
 database; the browser carries each station's HMAC-signed output to the next. Full write-up: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ```
-phone clip --> /measure (SAM 3.1) --> /labels (Spark 1.3 + 5 code checks) --> /draft (least squares, dry marks)
-           --> /survey (proven Wonder program, one sandbox launch) --> certificate (code values only)
+prepared clip --> /measure (SAM 3.1) --> /labels (Spark 1.3 + 5 code checks) --> /draft (least squares, dry marks)
+              --> /survey (proven Wonder program, one sandbox launch) --> certificate (code values only)
 ```
 
 | Layer | Choice |
