@@ -20,7 +20,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from PIL import Image
 
-from api._core import certificate, labels, limits, marks, meta, pipeline, sandbox, selftest, survey
+from api._core import certificate, decision, labels, limits, marks, meta, pipeline, sandbox, selftest, survey
 
 VERSION = "0.2.0-p1b"
 ROOT = Path(__file__).resolve().parents[1]
@@ -127,7 +127,8 @@ async def measure_ep(req: Request):
     geom = pipeline.geometry(texts[0], texts[1], n, info["fps"], system, info.get("crop"))
     return {"ok": True, "run_id": run_id, "clip": {k: info.get(k) for k in ("id", "source", "fps", "frames",
                                                                            "scale", "crop", "file", "label")},
-            "geometry": geom, "response_ids": [r.get("id") for r in resps],
+            "geometry": geom, "row1_hint": decision.HINTS.get(geom["row1"]) if geom["row1"] else None,
+            "response_ids": [r.get("id") for r in resps],
             "timing_ms": {"sam": sam_ms, "decode": int((time.time() - t1) * 1000)},
             "usage": [meta.as_dict(r) for r in cl.rows]}
 
