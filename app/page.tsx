@@ -35,13 +35,16 @@ export default function Home() {
       <main className="page">
         <section className="hero">
           <div className="hero__text">
-            <p className="eyebrow">Recorded runs · real API calls · every number printed by code</p>
+            <p className="eyebrow">Recorded runs · real API calls · every printed number computed or checked by code</p>
             <h1 className="hero__title">Weigh a ship&apos;s cargo from a phone video of its draft marks.</h1>
             <p className="lede">
               SAM 3.1 tracks the painted draft numerals and the water surface in every frame; code averages the
               waterline through the swell into one draft with a stated uncertainty. Muse Spark 1.3 reads the mark
               labels and five code checks confirm them. Muse Wonder 1.0 wrote the survey program from a stability
               booklet, and that program had to reproduce the booklet&apos;s printed conditions before it may compute.
+            </p>
+            <p className="caveat small">
+              Synthetic barge only for weight accuracy; no physical scale check yet. Prototype, not a surveyor&apos;s certificate.
             </p>
             <p>
               <Link href="/survey" className="btn btn--accent">
@@ -68,11 +71,15 @@ export default function Home() {
             </li>
             <li>
               <strong>Real hulls:</strong> the two clips are third-party test footage with no ground truth. They show the
-              measurement and an honest refusal, not a weight.
+              measurement and a refusal (the draft is outside that booklet&apos;s hydrostatic table), not a weight.
             </li>
             <li>
               <strong>Trieste booklet:</strong> a Ro-Ro/passenger ship, not a bulk carrier. It proves that Wonder&apos;s program
               reproduces the booklet&apos;s printed conditions.
+            </li>
+            <li>
+              <strong>Entered by hand:</strong> a live survey measures one draft position from video; the other five
+              positions and the ballast, fuel and fresh-water figures are typed in. No surveyor has used it.
             </li>
             <li>
               <strong>Prototype:</strong> not a surveyor&apos;s certificate.

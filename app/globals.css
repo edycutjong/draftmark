@@ -380,3 +380,8 @@ img { max-width: 100%; }
 .honesty { border-left: 3px solid var(--after); background: var(--plate); padding: 0.75rem 1rem; margin: 1.5rem 0; max-width: 60rem; }
 .honesty .h4 { margin-top: 0; }
 .honesty ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.35rem; }
+.table--nowrap td, .table--nowrap th { white-space: nowrap; }
+.table-scroll--fade { mask-image: linear-gradient(to right, #000 calc(100% - 1.5rem), transparent); }
+.table-scroll--fade:hover, .table-scroll--fade:focus-within { mask-image: none; }
+.caveat { color: var(--muted); margin: 0.75rem 0; max-width: 40rem; }
+@media print { .table-scroll--fade { mask-image: none; } }

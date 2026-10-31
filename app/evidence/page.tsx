@@ -32,8 +32,8 @@ export default function EvidencePage() {
         <HealthProbe />
         <h2 className="h2">Recorded Meta calls</h2>
         <p className="small muted swipe-hint">All rows are RECORDED calls from the runs on this site, not a live feed. Swipe the table sideways on a phone.</p>
-        <div className="table-scroll">
-          <table className="table">
+        <div className="table-scroll table-scroll--fade" tabIndex={0} role="region" aria-label="Recorded Meta calls">
+          <table className="table table--nowrap">
             <caption className="table__caption">
               {rows.length} calls · {[...byModel].map(([m, v]) => `${m} ×${v.n}`).join(" · ")} · est. ${total.toFixed(3)}
             </caption>
@@ -41,9 +41,9 @@ export default function EvidencePage() {
               <tr>
                 <th scope="col">Run</th>
                 <th scope="col">Model</th>
-                <th scope="col">Feature</th>
                 <th scope="col">Latency</th>
                 <th scope="col">Est. cost</th>
+                <th scope="col">Feature</th>
                 <th scope="col">Response id</th>
               </tr>
             </thead>
@@ -52,9 +52,9 @@ export default function EvidencePage() {
                 <tr key={`${r.run}-${i}`}>
                   <th scope="row" className="data">{r.run}</th>
                   <td className="data">{r.model}</td>
-                  <td>{r.feature}</td>
                   <td className="data">{r.latency_ms != null ? `${(r.latency_ms / 1000).toFixed(1)} s` : "—"}</td>
                   <td className="data">${(r.est_usd ?? 0).toFixed(4)}</td>
+                  <td>{r.feature}</td>
                   <td className="data">{r.response_id || "—"}</td>
                 </tr>
               ))}
