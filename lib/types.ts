@@ -86,6 +86,8 @@ export interface Labels {
   reads?: Record<string, Record<string, string>>;
   response_ids?: string[];
   usage?: UsageRow[];
+  /** server signature binding these drafts to the signed geometry (opaque to the client) */
+  labels_token?: { payload: Record<string, unknown>; sig: string };
 }
 
 export interface DraftFrame {
@@ -210,6 +212,8 @@ export interface Certificate {
   hint: string | null;
   warnings: Warning[];
   decision_row: number | null;
+  /** live certificates: "signed" = numbers from this server's station tokens; recorded runs omit it */
+  inputs?: "signed" | "unsigned" | "entered";
   draft: Partial<DraftResult> | null;
   labels: { read_by?: string; degraded?: boolean; anchor_confirmed?: boolean | null; checks?: Checks | null } | null;
   survey: SurveyOut | null;

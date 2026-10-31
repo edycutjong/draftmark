@@ -20,7 +20,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from PIL import Image
 
-from api._core import certificate, decision, labels, limits, marks, meta, pipeline, sandbox, selftest, survey
+from api._core import certificate, decision, labels, limits, marks, meta, pipeline, sandbox, selftest, sign, survey
 
 VERSION = "0.2.0-p1b"
 ROOT = Path(__file__).resolve().parents[1]
@@ -29,6 +29,16 @@ MAX_UPLOAD = 3 * 1024 * 1024
 # frozen nominal systematic terms for the barge strip (k=1, m): scripts/error_model_synthetic.py U_SYS
 BARGE_U_SYS = {"scale": 0.0004, "edge": 0.5 / 6.0 / 1000, "par": 0.0003}
 app = FastAPI(title="DraftMark API", docs_url="/api/py/docs", openapi_url="/api/py/openapi.json")
+SCALES = (1.0, 0.1)  # ship metric marks; the 1:10 barge strip
+MEAS_KEYS = ("d_m", "u_rep_m", "u_abs_m", "n_frames", "n_kept", "refused", "reason", "row1")
+
+
+@app.exception_handler(KeyError)
+@app.exception_handler(TypeError)
+@app.exception_handler(ValueError)
+async def _bad_payload(req: Request, e: Exception):  # a malformed body is the caller's error, not a 500
+    return JSONResponse({"ok": False, "reason": "PAYLOAD", "detail": f"bad request body: {type(e).__name__}"},
+                        status_code=400)
 
 
 @app.get("/api/py/health")
@@ -98,7 +108,11 @@ async def measure_ep(req: Request):
         if raw_len > MAX_UPLOAD:
             return _err(413, "PAYLOAD", f"{raw_len} bytes > 3 MB")
         info = {"id": "upload", "source": "upload", "fps": float(body.get("fps") or 8),
-                "frames": int(body.get("frames") or 0), "scale": float(body.get("scale") or 0.1)}
+                "frames": int(body.get("frames") or 0), "scale": float(body.get("scale") or 1.0)}
+        if info["scale"] not in SCALES:
+            return _err(400, "PAYLOAD", f"scale must be one of {SCALES}")
+        if info["fps"] <= 0:
+            return _err(400, "PAYLOAD", "fps > 0")
         if info["fps"] > 8.01 or info["frames"] > 64:
             return _err(413, "PAYLOAD", "<= 8 s at <= 8 fps")
         if info["frames"] <= 0:
@@ -129,6 +143,9 @@ async def measure_ep(req: Request):
     n = max(int(info["frames"] or 0), observed)  # never trust a client-declared count below what SAM returned
     t1 = time.time()
     geom = pipeline.geometry(texts[0], texts[1], n, info["fps"], system, info.get("crop"))
+    geom["provenance"] = {"run_id": run_id, "source": info["source"], "clip": info["id"], "models": [meta.SAM],
+                          "response_ids": [r.get("id") for r in resps]}
+    geom = sign.seal_geometry(geom)  # /labels and /draft refuse an edited geometry
     return {"ok": True, "run_id": run_id, "clip": {k: info.get(k) for k in ("id", "source", "fps", "frames",
                                                                            "scale", "crop", "file", "label")},
             "geometry": geom, "row1_hint": decision.HINTS.get(geom["row1"]) if geom["row1"] else None,
@@ -167,6 +184,8 @@ async def labels_ep(req: Request):
         [int(k) for k in (body.get("frames") or {})]
     except (KeyError, TypeError, ValueError) as e:
         return _err(400, "PAYLOAD", f"bad labels request: {type(e).__name__}")
+    if not sign.geometry_ok(geom):
+        return _err(400, "UNSIGNED", "this geometry was not produced by /measure on this deployment, or was edited")
     strip = marks.strip_sequence() if system.scale < 1 else None
     typed = body.get("typed")
     lf = geom.get("label_frames")
@@ -177,7 +196,8 @@ async def labels_ep(req: Request):
         if f1 not in toks:
             return _err(400, "LABEL_FRAMES", "frame not in geometry")
         drafts, chk = marks.check_labels(toks[f1], typed, typed, system, strip)
-        return {"ok": True, "typed": True, "drafts": drafts, "checks": chk.as_dict(), "reads": {}, "usage": []}
+        return {"ok": True, "typed": True, "drafts": drafts, "checks": chk.as_dict(), "reads": {}, "usage": [],
+                "labels_token": _labels_token(geom, drafts, chk, True)}
     frames = {int(k): v for k, v in (body.get("frames") or {}).items()}
     if not lf or set(frames) != set(lf):  # exactly the two frames >= 1 s apart chosen by /measure
         return _err(400, "LABEL_FRAMES", f"send exactly the label frames {lf}")
@@ -213,7 +233,15 @@ async def labels_ep(req: Request):
         return _meta_fail(e)
     return {"ok": True, "typed": False, "drafts": drafts, "checks": chk.as_dict(), "attempts": attempt,
             "reads": {str(k): v for k, v in reads.items()}, "response_ids": rids,
-            "usage": [meta.as_dict(r) for r in cl.rows]}
+            "usage": [meta.as_dict(r) for r in cl.rows], "labels_token": _labels_token(geom, drafts, chk, False)}
+
+
+def _labels_token(geom: dict, drafts: dict, chk: marks.CheckResult, typed: bool) -> dict:
+    c = chk.as_dict()
+    return sign.token("labels", {"geometry_sig": geom["sig"], "drafts": drafts, "typed": typed,
+                                 "checks": {k: c.get(k) for k in ("monotone", "pitch", "residual", "cross_frame",
+                                                                  "anchor", "ok")},
+                                 "models": [] if typed else [meta.SPARK]})
 
 
 _CHECK_TEXT = {"monotone": "the marks must increase upward", "pitch": "spacing does not match 20 cm per step",
@@ -237,9 +265,22 @@ async def draft_ep(req: Request):
     """Geometry + confirmed drafts -> per-frame drafts and the clip average with u (pure code, no API)."""
     body = await req.json()
     geom = body["geometry"]
-    u_sys = BARGE_U_SYS if pipeline.system_of(geom).scale < 1 else None
-    frames, res = pipeline.finish(geom, {k: float(v) for k, v in body["drafts"].items()}, u_sys)
-    return {"ok": True, "result": res.as_dict(), "frames": pipeline.frames_json(frames), "row1": geom.get("row1")}
+    system = pipeline.system_of(geom)
+    u_sys = BARGE_U_SYS if system.scale < 1 else None
+    lt = sign.token_ok("labels", body.get("labels_token")) if sign.geometry_ok(geom) else None
+    if lt and lt["geometry_sig"] != geom["sig"]:
+        lt = None
+    drafts = lt["drafts"] if lt else body["drafts"]  # a signed run uses the labels /labels confirmed
+    frames, res = pipeline.finish(geom, {k: float(v) for k, v in drafts.items()}, u_sys)
+    result = res.as_dict()
+    if lt:  # only a fully signed chain gets a measure token; anything else is certified as UNSIGNED
+        prov = geom.get("provenance") or {}
+        result["token"] = sign.token("measure", {
+            **{k: result.get(k) for k in MEAS_KEYS if k != "row1"}, "row1": geom.get("row1"),
+            "scale": system.scale, "run_id": prov.get("run_id"), "source": prov.get("source"),
+            "clip": prov.get("clip"), "typed": lt["typed"], "checks": lt["checks"],
+            "models": sorted(set(prov.get("models") or []) | set(lt["models"]))})
+    return {"ok": True, "result": result, "frames": pipeline.frames_json(frames), "row1": geom.get("row1")}
 
 
 @app.get("/api/py/program")
@@ -279,6 +320,22 @@ async def survey_ep(req: Request):
     lab = body.get("labels")
     if not meas.get("n_frames") and not (mode == "ship" and body.get("survey") and body.get("booklet_info")):
         return _err(400, "NO_EVIDENCE", "a certificate needs a measured clip, or a ship survey on a named booklet")
+    # the measurement, label checks and called models come from the signed token, never from the body
+    tok = sign.token_ok("measure", meas.get("token"))
+    srv_in = dict(body.get("survey") or {}) if body.get("survey") else None
+    claims_live = bool(meas.get("n_frames")) or any(v in ("live", "clip") for v in ((srv_in or {}).get("sources") or {}).values())
+    unsigned = claims_live and tok is None
+    models: list[str] = []
+    if tok:
+        mode = "barge" if tok["scale"] < 1 else "ship"
+        meas = {**meas, **{k: tok.get(k) for k in MEAS_KEYS}}
+        lab = {**(lab or {}), "typed": tok["typed"], "checks": tok["checks"]}
+        lab.pop("synthetic", None)
+        models = list(tok["models"])
+        if srv_in and srv_in.get("drafts") and tok.get("d_m") is not None:
+            src = srv_in.get("sources") or {}
+            srv_in["drafts"] = {p: (tok["d_m"] if src.get(p) in ("live", "clip") else v) for p, v in srv_in["drafts"].items()}
+            srv_in["u_live_m"] = tok.get("u_rep_m")
     if meas.get("n_frames") and meas.get("d_m") is None and not meas.get("refused") and not meas.get("row1"):
         meas = {**meas, "refused": True, "reason": meas.get("reason") or "FRAMES_LOW"}  # no draft = refused
     if mode == "barge":
@@ -291,18 +348,21 @@ async def survey_ep(req: Request):
         st = None
     else:
         p = survey.proven(body.get("booklet", "trieste"))
-        if body.get("survey"):
-            srv = survey.ship(body["survey"], p)
+        if srv_in:
+            srv = survey.ship(srv_in, p)
         else:  # the measurement refused before any draft existed: certify the refusal, run no program
             srv = {"program_author": p["meta"]["program_author"], "response_id": p["meta"].get("response_id"),
                    "regen_count": p["meta"].get("regen_count"), "out_of_table": False}
         st = survey.selftest_summary(p["selftest"])
         st["failed_rows"] = survey.failed_rows(p["selftest"])
         st["fallback"] = None
-    cert = certificate.build(mode, body.get("run_mode", "LIVE"), meas, lab, srv, st,
-                             extra={k: body.get(k) for k in ("bl", "tol_pct") if body.get(k) is not None},
+    extra = {k: body.get(k) for k in ("bl", "tol_pct") if body.get(k) is not None}
+    if unsigned:
+        extra["unsigned"] = True
+    cert = certificate.build(mode, body.get("run_mode", "LIVE"), meas, lab, srv, st, extra=extra,
                              clip=body.get("clip"), booklet=body.get("booklet_info"), run_id=body.get("run_id"),
-                             models=body.get("models"))
+                             models=models)
+    cert["inputs"] = "signed" if tok else ("unsigned" if unsigned else "entered")
     return {"ok": True, "certificate": cert}
 
 

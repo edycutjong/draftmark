@@ -11,6 +11,8 @@ from dataclasses import asdict, dataclass, field
 REFUSE, ISSUE, WARN, PROTEST, NOT_SCORED = "REFUSE", "ISSUE", "ISSUE_WITH_WARNING", "PROTEST", "NOT_SCORED"
 
 HINTS = {
+    # row 0
+    "UNSIGNED": "The measurement was not signed by this server's stations (missing or edited): run the clip again.",
     # row 1
     "NO_MASKS": "SAM found no numerals or no water in the clip: reshoot closer, marks in frame.",
     "OBJECT_CAP": "SAM's 16-object cap was reached in a frame: crop to the lower marks.",
@@ -72,8 +74,10 @@ def decide(f: dict) -> Decision:
     mode ship|barge; row1 (reason or None); n_frames, n_kept, measure_refused; labels_ok, labels_typed, anchor_ok;
     out_of_table, entered_inconsistent; selftest_verdict PASS|FAIL, fallback (reference|None);
     failed_rows [{cond_id, d_mm, trim}], d_mm, trim; cargo, u_cargo, expected_u (barge), perturb_oot;
-    contradiction (Tier 3); bl, tol_pct; n_entered (ship); what_if (barge)."""
+    contradiction (Tier 3); bl, tol_pct; n_entered (ship); what_if (barge); unsigned (row 0)."""
     mode = f["mode"]
+    if f.get("unsigned"):
+        return _refuse("UNSIGNED", 0)
     if f.get("row1"):
         return _refuse(f["row1"], 1)
     n, k = f.get("n_frames") or 0, f.get("n_kept") or 0

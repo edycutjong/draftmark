@@ -278,7 +278,8 @@ export function SurveyFlow() {
     if (!geom) return;
     setFinalLabels(l);
     setDraft({ state: "busy", t0: Date.now() });
-    const r = await api<DraftResp>("draft", { geometry: geom, drafts: l.drafts });
+    // the labels token binds these drafts to the signed geometry; /draft then signs the measurement for /survey
+    const r = await api<DraftResp>("draft", { geometry: geom, drafts: l.drafts, labels_token: l.labels_token });
     if (!r.ok) return setDraft({ state: "error", err: { reason: r.reason, detail: r.detail } });
     setDraft({ state: "done", data: r.data, ms: r.ms });
     if (program.state !== "done") {

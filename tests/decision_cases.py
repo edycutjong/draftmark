@@ -8,6 +8,7 @@ OK_BARGE = {"mode": "barge", "row1": None, "n_frames": 32, "n_kept": 32, "labels
 
 CASES = {
     # reason: (facts, expected decision, expected reason)
+    "UNSIGNED": ({**OK_SHIP, "unsigned": True, "row1": "OBJECT_CAP"}, "REFUSE", "UNSIGNED"),
     "NO_MASKS": ({**OK_BARGE, "row1": "NO_MASKS"}, "REFUSE", "NO_MASKS"),
     "OBJECT_CAP": ({**OK_SHIP, "row1": "OBJECT_CAP"}, "REFUSE", "OBJECT_CAP"),
     "WATER_MISS": ({**OK_BARGE, "row1": "WATER_MISS"}, "REFUSE", "WATER_MISS"),
