@@ -91,6 +91,10 @@ export function LabelChecks({
         pitch {fx(checks.pitch_px, 2)} px · fit residual {fx(checks.resid_rms_px, 2)} px · shared tokens {checks.shared ?? "—"}
         {checks.disagree && checks.disagree.length ? ` · disagree ${checks.disagree.join(", ")}` : ""}
       </p>
+      <p className="small caveat">
+        Known blind spot: a consistent whole-metre misread passes all five checks, so a live run asks you to confirm the
+        anchor crop before the reading is used.
+      </p>
     </div>
   );
 }

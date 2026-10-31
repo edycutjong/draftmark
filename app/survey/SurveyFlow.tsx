@@ -341,7 +341,7 @@ export function SurveyFlow() {
       <Station n={1} title="Clip" open done={measure.state === "done"}>
         <div className="grid2">
           <div>
-            <h3 className="h4">Our fixture clip</h3>
+            <h3 className="h4">{health.state === "done" && fixtures.length === 0 ? "Try it without a code" : "Our fixture clip"}</h3>
             {health.state === "busy" ? <p className="muted">Checking the live API…</p> : null}
             {health.state === "error" ? (
               <div className="error-box" role="alert">
