@@ -37,7 +37,7 @@ export default async function CertificatePage({ params }: Props) {
         <div className="cert__actions no-print">
           <PrintButton />
         </div>
-        <Certificate run={forCertificate(run)} />
+        <Certificate run={forCertificate(run)} recorded />
       </main>
     </>
   );

@@ -25,8 +25,10 @@ const PROOF_TEXT: Record<string, string> = {
 };
 
 /** Printable certificate. Every value comes from the run JSON; nothing here computes a figure. */
-export function Certificate({ run }: { run: Run }) {
+export function Certificate({ run, recorded = false }: { run: Run; recorded?: boolean }) {
   const c = run.certificate;
+  // A stored run made with live API calls is shown as RECORDED: the page replays it, nothing is called now.
+  const mode = recorded && c.mode === "LIVE" ? "RECORDED · real API calls" : c.mode;
   const r = run.draft?.result;
   const d = c.draft;
   const refused = c.decision === "REFUSE";
@@ -39,7 +41,7 @@ export function Certificate({ run }: { run: Run }) {
           <h1 className="cert__title">{run.title}</h1>
         </div>
         <Badges>
-          <Badge tone={c.mode === "LIVE" ? "live" : "recorded"}>{c.mode}</Badge>
+          <Badge tone={mode === "LIVE" ? "live" : "recorded"}>{mode}</Badge>
           {run.kind === "synthetic" ? <Badge tone="synthetic">SYNTHETIC — rendered by code, not filmed · not SAM</Badge> : null}
           {run.kind === "public-clip" ? <Badge tone="caveat">third-party test clip · no ground truth · frames not re-hosted</Badge> : null}
           {c.proof === "booklet" ? <Badge tone="proof">no scale truth</Badge> : null}
@@ -54,7 +56,7 @@ export function Certificate({ run }: { run: Run }) {
           </div>
           <div>
             <dt>Run mode</dt>
-            <dd className="data">{c.mode}</dd>
+            <dd className="data">{mode}</dd>
           </div>
           <div>
             <dt>Created</dt>
@@ -280,7 +282,7 @@ export function Certificate({ run }: { run: Run }) {
 
       <footer className="cert__footer">
         <p className="data small">
-          {c.run_id} · {c.mode} · proof: {c.proof}
+          {c.run_id} · {mode} · proof: {c.proof}
         </p>
         <p className="cert__disclaimer">{c.footer}</p>
       </footer>
