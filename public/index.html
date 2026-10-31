@@ -91,7 +91,6 @@ img,svg{display:block;max-width:100%}
 .hero::after{content:"";position:absolute;inset:0;z-index:-1;opacity:.5;
   background:repeating-linear-gradient(180deg,transparent 0 79px,rgba(58,46,40,.55) 79px 80px)}
 .hero__world{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
-.hero__marks{position:absolute;right:2vw;top:2%;display:flex;flex-direction:column;align-items:flex-end;gap:2.2vw;font:800 clamp(130px,17vw,270px)/.78 var(--font-display);font-stretch:62%;color:rgba(242,238,230,.028)}
 .hero__swell{position:absolute;left:0;bottom:1%;width:200%;height:120px;animation:drift 22s linear infinite}
 .hero__swell path{fill:none;stroke:rgba(111,140,138,.28);stroke-width:2}
 @keyframes drift{to{transform:translateX(-50%)}}
@@ -131,7 +130,7 @@ h1 em{font-style:normal;color:var(--after);text-shadow:0 0 34px rgba(242,179,61,
 .verdict__r{font:500 11.5px/1.2 var(--font-data);color:var(--refuse-text)}
 .verdict__t{flex-basis:100%;font-size:13.5px;line-height:1.5;color:#D6CFC4}
 .vlink{margin:8px 4px 0;font-size:13px;line-height:1.4}
-.vlink a{color:var(--after);text-decoration:underline;text-underline-offset:3px;display:inline-block;min-height:24px}
+.vlink a{color:var(--after);text-decoration:underline;text-underline-offset:3px;display:inline-flex;align-items:center;min-height:44px}
 .cap{font-size:13px;line-height:1.5;color:var(--muted);margin:12px 4px 0;max-width:62ch}
 /* svg parts */
 .sv-num{font:700 64px/1 var(--font-display);font-stretch:62%;fill:var(--ink)}
@@ -149,7 +148,7 @@ h1 em{font-style:normal;color:var(--after);text-shadow:0 0 34px rgba(242,179,61,
 .inst.held .sv-held{filter:drop-shadow(0 0 6px rgba(242,179,61,.75))}
 
 @media (max-width:960px){.hero__grid{grid-template-columns:minmax(0,1fr)}.lede{max-width:none}}
-@media (max-width:600px){.strip .ctx{margin-left:0}.hero__marks{opacity:.6}}
+@media (max-width:600px){.strip .ctx{margin-left:0}}
 /* mobile: the instrument comes up under the headline, so the fold shows the waterline, not only words */
 @media (max-width:960px){.hero__grid{row-gap:0}.hero__grid > div:first-child{display:contents}.hero .where{order:1}.hero h1{order:2}.hero .inst{order:3;margin-top:28px!important}.hero .lede{order:4}.hero .cta{order:5}.hero .strip{order:6}}
 
@@ -355,7 +354,7 @@ h2 em{font-style:normal;color:var(--after)}
 <main id="main">
 <!-- ===================== HERO ===================== -->
 <section class="hero" data-no="">
-  <div class="hero__world" aria-hidden="true"><div class="hero__marks"><span>2</span><span>13M</span><span>8</span></div><svg class="hero__swell" viewBox="0 0 2880 120" preserveAspectRatio="none"><path d="M0 60 C60 30 180 30 240 60 C300 90 420 90 480 60 C540 30 660 30 720 60 C780 90 900 90 960 60 C1020 30 1140 30 1200 60 C1260 90 1380 90 1440 60 C1500 30 1620 30 1680 60 C1740 90 1860 90 1920 60 C1980 30 2100 30 2160 60 C2220 90 2340 90 2400 60 C2460 30 2580 30 2640 60 C2700 90 2820 90 2880 60"/></svg></div>
+  <div class="hero__world" aria-hidden="true"><svg class="hero__swell" viewBox="0 0 2880 120" preserveAspectRatio="none"><path d="M0 60 C60 30 180 30 240 60 C300 90 420 90 480 60 C540 30 660 30 720 60 C780 90 900 90 960 60 C1020 30 1140 30 1200 60 C1260 90 1380 90 1440 60 C1500 30 1620 30 1680 60 C1740 90 1860 90 1920 60 C1980 30 2100 30 2160 60 C2220 90 2340 90 2400 60 C2460 30 2580 30 2640 60 C2700 90 2820 90 2880 60"/></svg></div>
   <div class="wrap hero__grid">
     <div>
       <p class="where stag"><b>DraftMark</b> · reads draft marks from ten seconds of video</p>
@@ -414,7 +413,7 @@ h2 em{font-style:normal;color:var(--after)}
       <div><b><span class="cu" data-to="22">22</span><small>/22</small></b><p>printed booklet conditions reproduced by the program Wonder wrote</p><a href="https://github.com/edycutjong/draftmark/blob/main/evidence/selftest-booklet.md" data-proof="evidence/selftest-booklet.md">evidence/selftest-booklet.md</a></div>
       <div><b><span class="cu" data-to="60">60</span><small>/60</small></b><p>frames kept on real hull clip dB7X, numerals and water in every one</p><a href="https://github.com/edycutjong/draftmark/blob/main/evidence/core-run-dB7X.md" data-proof="evidence/core-run-dB7X.md">evidence/core-run-dB7X.md</a></div>
       <div><b><span class="cu" data-to="-0.0106" data-dec="4">−0.0106</span><small>%</small></b><p>booklet condition 4.1: the program computes 17825.8 t, the booklet prints 17827.7 t</p><a href="https://github.com/edycutjong/draftmark/blob/main/evidence/core-run-trieste.md" data-proof="evidence/core-run-trieste.md">evidence/core-run-trieste.md</a></div>
-      <div><b><span class="cu" data-to="124">124</span><small>tests</small></b><p>pytest, with both sandbox escapes kept as regressions</p><a href="https://github.com/edycutjong/draftmark/tree/main/tests" data-proof="README.md">tests/</a></div>
+      <div><b><span class="cu" data-to="124">124</span><small>tests</small></b><p>pytest, with both escapes kept as regression tests</p><a href="https://github.com/edycutjong/draftmark/tree/main/tests" data-proof="README.md">tests/</a></div>
     </div>
     <p class="rc-note"><span data-proof="evidence/core-run-dB7X.md">$0.0397</span> of Meta calls for the dB7X run (price-list estimate) · est $0.481 for the three Wonder calls that wrote the proven program</p>
     <div class="models">
@@ -651,7 +650,7 @@ h2 em{font-style:normal;color:var(--after)}
       <details><summary><span>Q3</span>Why do both real clips end in REFUSE?</summary><div class="ans">The only booklet we have is the Trieste's, a Ro-Ro/passenger ship whose table covers 0.5–9.3&nbsp;m. Clip dB7X reads 12.761&nbsp;m and UKTRQ 20.830&nbsp;m, so the program raises <span class="data">OutOfTable</span> instead of extrapolating. The measurement stands; the weight is refused.</div></details>
       <details><summary><span>Q4</span>How do you know Wonder's program is right?</summary><div class="ans">It has to reproduce at least 20 of the booklet's 22 printed conditions within 0.1&nbsp;% (it reproduces 22), agree with our reference program over 200 random cases (largest difference 0.00007&nbsp;%), and raise on two out-of-table probes. The printed displacements were never in Wonder's context.</div></details>
       <details><summary><span>Q5</span>How accurate is the weight?</summary><div class="ans">So far it is shown only on a synthetic barge: the draft came out 0.155&nbsp;mm from a truth known by construction, the cargo −0.17&nbsp;%, and over 100 seeds the truth sat inside ±2u in 96. There is no physical scale check and no real-ship accuracy claim.</div></details>
-      <details><summary><span>Q6</span>What does a run cost?</summary><div class="ans">The dB7X measurement used two SAM&nbsp;3.1 video calls and two Spark&nbsp;1.3 reads: $0.0397 at list prices. Writing the program took three Wonder calls, est $0.481, once per booklet (one booklet so far).</div></details>
+      <details><summary><span>Q6</span>What does a run cost?</summary><div class="ans">The dB7X measurement used two SAM&nbsp;3.1 video calls and two Spark&nbsp;1.3 reads: $0.0397 at list prices. Writing the program took three Wonder calls, est $0.481 for the default program (one booklet so far).</div></details>
     </div>
   </div>
 </section>
@@ -776,7 +775,7 @@ document.documentElement.classList.add("js");
   }
   document.addEventListener("visibilitychange", function () { if (document.hidden) { visible = false; } else { visible = true; if (running && !raf) raf = requestAnimationFrame(frame); } });
   raf = requestAnimationFrame(frame);
-  setTimeout(play, 1200); // open on the held reading and its verdict, then replay the measurement in real time underneath them
+  setTimeout(play, 3000); // open on the held reading and its verdict (the sea already moving), then replay the measurement in real time underneath them
   wireRest();
 
   function wireRest() {
