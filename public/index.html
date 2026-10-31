@@ -124,7 +124,13 @@ h1 em{font-style:normal;color:var(--after);text-shadow:0 0 34px rgba(242,179,61,
 .replay:hover{color:var(--ink);border-color:var(--muted)}
 .replay:active{transform:scale(.97)}
 .verdict{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin:12px 4px 0;padding:11px 14px;border:1.5px solid var(--refuse);border-radius:3px;background:rgba(217,84,59,.07);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1)}
-.js .inst:not(.held) .verdict{opacity:0;transform:translateY(8px)}
+.verdict{position:relative}
+.verdict__wait{display:none;position:absolute;left:14px;top:13px;font:500 12px/1.4 var(--font-data);color:var(--muted)}
+.js .inst:not(.held) .verdict{border-color:var(--rule);background:transparent}
+.js .inst:not(.held) .verdict__wait{display:block}
+.js .inst:not(.held) .verdict > :not(.verdict__wait){visibility:hidden}
+.inst.held .verdict{animation:stamp .5s cubic-bezier(.2,.8,.2,1)}
+@keyframes stamp{from{transform:scale(1.035);box-shadow:0 0 0 6px rgba(217,84,59,.18)}to{transform:none;box-shadow:none}}
 .verdict__w{font:800 24px/1 var(--font-display);font-stretch:62%;letter-spacing:.05em;color:var(--refuse-text)}
 .verdict__r{font:500 11.5px/1.2 var(--font-data);color:var(--refuse-text)}
 .verdict__t{flex-basis:100%;font-size:13.5px;line-height:1.5;color:#D6CFC4}
@@ -379,7 +385,7 @@ h2 em{font-style:normal;color:var(--after)}
         <text id="valu" class="sv-u" x="632" text-anchor="end">±0.086 m · k=1</text>
         <text class="sv-ax" x="178" y="512">frame 0</text><text class="sv-ax" x="632" y="512" text-anchor="end">frame 59 · 10 s</text>
       </svg>
-      <div class="verdict" id="verdict"><span class="verdict__w">REFUSE</span><span class="verdict__r">OUT_OF_TABLE · matrix row 4</span><span class="verdict__t">12.761&nbsp;m is past the only booklet's 0.5–9.3&nbsp;m table, so no tonnage is guessed. <a href="#replay">The booklet case issues, with a warning: 17825.8&nbsp;t →</a></span></div>
+      <div class="verdict" id="verdict"><span class="verdict__wait" aria-hidden="true">certificate · waiting for the mean to hold…</span><span class="verdict__w">REFUSE</span><span class="verdict__r">OUT_OF_TABLE · matrix row 4</span><span class="verdict__t">12.761&nbsp;m is past the only booklet's 0.5–9.3&nbsp;m table, so no tonnage is guessed. <a href="#replay">The booklet case issues, with a warning: 17825.8&nbsp;t →</a></span></div>
       <div class="inst__foot"><p class="tick" id="tick" aria-live="off"><b>60/60</b> frames kept · mean <b>12.761 m</b> ± 0.086 m · held</p><button class="replay" id="replayBtn" type="button">↻ Replay 10 s</button></div>
       <figcaption class="cap">Redrawn from 60 waterline heights measured on a real third-party clip, no ground truth. Band illustrative; repeatability ±0.086&nbsp;m; a one-pitch label error would move it 0.20&nbsp;m.</figcaption>
     </figure>
