@@ -10,7 +10,7 @@ export function SelfTestVerdict({ st }: { st: SelftestSummary }) {
         {st.pass_count}/{st.n} printed conditions
       </span>
       <span className="data">
-        probes raised {probes.filter(Boolean).length}/{probes.length}
+        out-of-table probes refused {probes.filter(Boolean).length}/{probes.length}
       </span>
       <span className="data">
         differential {st.differential_n ?? "—"} cases · max error {tiny(st.differential_max_err_pct)} %
