@@ -60,3 +60,7 @@ Price-list estimates from `api/_core/meta.py` PRICES (not an invoice). Appended 
 | 2026-10-31 16:08 | rec-uktrq-20261031 | sam-3.1 | sam video 'water' upload | 0 (0) / 0 · 48 frames | 0.0096 | 7815 | resp_6ae5aff313ac34f042304dee |
 | 2026-10-31 16:08 | rec-uktrq-20261031 | muse-spark-1.3 | spark labels f17 try 1 | 329 (0) / 1558 | 0.0070 | 6568 | resp_6ae5b00343caa8de0c3548cb |
 | 2026-10-31 16:08 | rec-uktrq-20261031 | muse-spark-1.3 | spark labels f29 try 1 | 329 (0) / 11603 | 0.0497 | 39396 | resp_6ae5b02b599a1c9ed28d4118 |
+| 2026-10-31 09:55 | live-probe-p1c | sam-3.1 | sam video 'white number' upload | 0 (0) / 0 · 60 frames | 0.0120 | 6319 | resp_6ae5bafe3dec643fa3c6482c |
+| 2026-10-31 09:55 | live-probe-p1c | sam-3.1 | sam video 'water' upload | 0 (0) / 0 · 60 frames | 0.0120 | 8677 | resp_6ae5baff4742a84a974a41b9 |
+| 2026-10-31 09:58 | live-probe-p1c | muse-spark-1.3 | spark labels f0 try 1 | 462 (0) / 1511 | 0.0070 | 7187 | resp_6ae5bbaf16399a729fff46fc |
+| 2026-10-31 09:58 | live-probe-p1c | muse-spark-1.3 | spark labels f10 try 1 | 462 (0) / 2310 | 0.0104 | 11144 | resp_6ae5bbb4ff1d25a7c7f84de6 |
