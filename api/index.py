@@ -22,7 +22,7 @@ from PIL import Image
 
 from api._core import certificate, decision, labels, limits, marks, meta, pipeline, sandbox, selftest, sign, survey
 
-VERSION = "0.2.0-p1b"
+VERSION = "0.3.0-p1d"
 ROOT = Path(__file__).resolve().parents[1]
 CLIPS = ROOT / "data" / "clips.json"  # registry of OUR committed fixture clips (public/clips/<id>.mp4)
 MAX_UPLOAD = 3 * 1024 * 1024

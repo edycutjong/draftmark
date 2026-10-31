@@ -92,7 +92,7 @@ exclusion. Label correctness is scored against the calm ruler afterwards. That s
   the range (2, 5, 8, 11); the strip is laid out like a ship's marks at 1:10 scale with a wide "NM" anchor; the Sunday
   RSS rule and the pilot rig gate; `MASS_CHANGED` defined at 3 g with photos; ruler read 3 times; the order of
   `eye_mm`; load 7 named as the live-demo clip; a label failure is a scored FAIL.
-- 2026-10-31 18:40 WIB (architecture review, before any held-out scoring; no physical loads will exist, human decision
+- 2026-10-31 18:25 WIB (architecture review, before any held-out scoring; no physical loads will exist, human decision
   16:20): u_rep = max(u_swell, u_rand), not their RSS. The frame-to-frame scatter behind u_swell already contains each
   frame's own fit and edge noise, so adding the propagated per-frame term again double counted it; u_rand stays as a
   floor for few or identical frames. On the recorded runs the change is below 0.001 m (dB7X 0.0864 -> 0.0864 m,
