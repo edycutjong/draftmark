@@ -76,7 +76,7 @@ export function ProgramProof({ program, selftest, live }: { program: Program; se
         </dl>
       </div>
 
-      <h4 className="h4">Self-test on the printed conditions</h4>
+      <h3 className="h4">Self-test on the printed conditions</h3>
       <SelfTestVerdict st={st} />
       <div className="proof__actions">
         <button type="button" className="btn" onClick={onRerun} disabled={rerun.state === "busy"}>
@@ -98,7 +98,7 @@ export function ProgramProof({ program, selftest, live }: { program: Program; se
 
       {attempts.length ? (
         <>
-          <h4 className="h4">How the program was earned</h4>
+          <h3 className="h4">How the program was earned</h3>
           <div className="tabs" role="tablist" aria-label="Generation attempts">
             {attempts.map((a, k) => (
               <button

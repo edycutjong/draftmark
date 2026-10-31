@@ -10,6 +10,7 @@
   --before: #6f8c8a;
   --after: #f2b33d;
   --refuse: #d9543b;
+  --refuse-text: #df5e44; /* design.md §4: --refuse for small text on --plate (4.74:1) */
   --rule: #3a2e28;
   --font-display: var(--ff-display), "Anybody", "Archivo Narrow", "Arial Narrow", sans-serif;
   --font-body: var(--ff-body), "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
@@ -260,7 +261,8 @@ img { max-width: 100%; }
 .stamp--warn { border-color: var(--after); border-style: dashed; }
 .stamp--warn .stamp__word { color: var(--after); }
 .stamp--refuse { border-color: var(--refuse); }
-.stamp--refuse .stamp__word, .stamp--refuse .stamp__reason { color: var(--refuse); }
+.stamp--refuse .stamp__word { color: var(--refuse); }
+.stamp--refuse .stamp__reason { color: var(--refuse-text); }
 .stamp--muted .stamp__word { color: var(--muted); }
 
 /* ---------- program proof ---------- */
@@ -366,7 +368,7 @@ img { max-width: 100%; }
 }
 
 @media print {
-  :root { --bg: #fff; --plate: #fff; --plate-2: #fff; --ink: #111; --muted: #555; --rule: #bbb; --after: #7a5200; --before: #3d5957; --refuse: #a12a14; }
+  :root { --bg: #fff; --plate: #fff; --plate-2: #fff; --ink: #111; --muted: #555; --rule: #bbb; --after: #7a5200; --before: #3d5957; --refuse: #a12a14; --refuse-text: #a12a14; }
   body { background: #fff; color: #111; font-size: 11pt; }
   .no-print, .site-footer, .skip, .strip { display: none !important; }
   .page { padding: 0; max-width: none; }
