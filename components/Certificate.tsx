@@ -21,7 +21,7 @@ function Line({ n, title, children }: { n: string; title: string; children: Reac
 
 const PROOF_TEXT: Record<string, string> = {
   booklet: "booklet — the survey program reproduced the stability booklet's printed conditions (no scale truth)",
-  scale: "scale — measurement proof against a weighed load",
+  measurement: "measurement — analytic box program; truth known only for the code-rendered SYNTHETIC barge (no physical scale check)",
 };
 
 /** Printable certificate. Every value comes from the run JSON; nothing here computes a figure. */
@@ -40,7 +40,7 @@ export function Certificate({ run }: { run: Run }) {
         </div>
         <Badges>
           <Badge tone={c.mode === "LIVE" ? "live" : "recorded"}>{c.mode}</Badge>
-          {run.kind === "synthetic" ? <Badge tone="synthetic">SYNTHETIC geometry — not SAM, not the kitchen scale</Badge> : null}
+          {run.kind === "synthetic" ? <Badge tone="synthetic">SYNTHETIC — rendered by code, not filmed · not SAM</Badge> : null}
           {run.kind === "public-clip" ? <Badge tone="caveat">third-party test clip · no ground truth · frames not re-hosted</Badge> : null}
           {c.proof === "booklet" ? <Badge tone="proof">no scale truth</Badge> : null}
         </Badges>

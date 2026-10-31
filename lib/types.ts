@@ -204,7 +204,7 @@ export interface Certificate {
   run_id: string;
   mode: "LIVE" | "RECORDED" | string;
   vessel_mode: "ship" | "barge" | string;
-  proof: "booklet" | "scale" | string;
+  proof: "booklet" | "measurement" | string;
   decision: Decision;
   reason: string | null;
   hint: string | null;

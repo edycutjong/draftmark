@@ -2,7 +2,7 @@
 
 displacement = rho * A * T with A = L * B (OUTER dimensions at the waterline), T = draft
 from the keel (the strip's zero edge sits at the box's outer bottom edge, offset z0).
-The bucket evaluation proves the MEASUREMENT against a kitchen scale; this code is not
+Its truth is known only on the code-rendered SYNTHETIC barge (no physical scale check); this code is not
 written by a model and is never counted in the Trieste self-test.
 """
 from __future__ import annotations

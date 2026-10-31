@@ -252,7 +252,7 @@ def run_synth(seed: int):
          f"| 1 mm of draft = | {s['consequence']['g_per_mm']:.2f} g |" if s.get("consequence") else "",
          f"| certificate decision | **{cert['decision']}** {cert['reason'] or ''} "
          f"{', '.join(w['code'] for w in cert['warnings'])} |", "",
-         "This is a code-path check on geometry we control, not the bucket result (P1e, pre-registered protocol).",
+         "This is a code-path check on geometry we control, not a physical scale check (the synthetic eval is P1e).",
          f"Recorded run JSON: `public/runs/{path.name}`.", ""]
     (EVIDENCE / "core-run-synth-barge.md").write_text("\n".join(x for x in L if x is not None))
     print(json.dumps({"run": run_id, "d": res["d_m"], "calm": calm, "cargo": cargo, "truth": truth,

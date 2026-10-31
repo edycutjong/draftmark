@@ -84,7 +84,7 @@ def test_survey_ship_out_of_table_refuses_without_cargo():
 def test_survey_barge_issue_and_what_if():
     m = {"d_m": 0.12, "u_abs_m": 0.0005, "n_frames": 32, "n_kept": 32}
     c = api.post("/api/py/survey", json={"mode": "barge", "measure": m}).json()["certificate"]
-    assert c["decision"] == "ISSUE" and c["program_author"] == "analytic" and c["proof"] == "scale"
+    assert c["decision"] == "ISSUE" and c["program_author"] == "analytic" and c["proof"] == "measurement"
     c = api.post("/api/py/survey", json={"mode": "barge", "measure": m, "what_if": {"rho_kg_m3": 1000}}).json()
     assert c["certificate"]["decision"] == "NOT_SCORED"
 

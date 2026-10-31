@@ -30,7 +30,7 @@ export function MeasurementRun({ run }: { run: Run }) {
             ) : null}
           </>
         ) : (
-          <Badge tone="synthetic">SYNTHETIC geometry — not SAM, not the kitchen scale</Badge>
+          <Badge tone="synthetic">SYNTHETIC — rendered by code, not filmed · not SAM</Badge>
         )}
       </Badges>
       <h3 className="h3">{run.title}</h3>

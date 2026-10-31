@@ -310,7 +310,7 @@ export function SurveyFlow() {
             ) : null}
             {health.state === "done" && fixtures.length === 0 ? (
               <p>
-                Our own fixture clip lands with the bucket pilot; until then, <Link href="/">open the recorded runs</Link>.
+                No live fixture clip is registered on this deployment yet; until then, <Link href="/">open the recorded runs</Link>.
               </p>
             ) : null}
             {fixtures.length ? (

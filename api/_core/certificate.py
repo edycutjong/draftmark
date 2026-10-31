@@ -2,7 +2,7 @@
 
 Two proofs, never merged: ship mode certifies with the model-written program proven on the booklet's
 printed conditions (proof: booklet, no scale truth); barge mode certifies with the analytic box
-(proof: scale, the kitchen scale is the truth, scored in the pre-registered evaluation).
+(proof: measurement; its truth is known only for the code-rendered SYNTHETIC barge, never a physical scale check).
 """
 from __future__ import annotations
 
@@ -46,7 +46,7 @@ def build(mode: str, run_mode: str, meas: dict | None, labels: dict | None, srv:
         "run_id": run_id or f"dm-{uuid.uuid4().hex[:10]}",
         "mode": run_mode,  # LIVE | RECORDED
         "vessel_mode": mode,  # ship | barge
-        "proof": "booklet" if mode == "ship" else "scale",
+        "proof": "booklet" if mode == "ship" else "measurement",
         "decision": dec.decision, "reason": dec.reason, "hint": dec.hint, "warnings": dec.warnings,
         "decision_row": dec.row,
         "draft": {k: meas.get(k) for k in ("d_m", "u_rep_m", "u_abs_m", "n_frames", "n_kept", "n_eff", "rho1",
