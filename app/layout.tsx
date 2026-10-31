@@ -12,7 +12,7 @@ const data = Martian_Mono({ subsets: ["latin"], variable: "--ff-data", display: 
 const OG_IMAGE = "/og-image.png?v=5";
 const CARD_TITLE = "DraftMark — read a ship's draft from ten seconds of video";
 const CARD_DESCRIPTION =
-  "SAM 3.1 finds the marks and water; code averages the waterline; Muse Wonder 1.0 writes and proves the survey program.";
+  "SAM 3.1 finds the marks and water; code averages the waterline; Muse Wonder 1.0 writes the survey program, the booklet grades it.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://draftmark.edycu.dev"),

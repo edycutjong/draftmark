@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="DraftMark">
 <meta property="og:url" content="https://draftmark.edycu.dev/">
 <meta property="og:title" content="DraftMark — read a ship's draft from ten seconds of video">
-<meta property="og:description" content="SAM 3.1 finds the marks and water; code averages the waterline; Muse Wonder 1.0 writes and proves the survey program.">
+<meta property="og:description" content="SAM 3.1 finds the marks and water; code averages the waterline; Muse Wonder 1.0 writes the survey program, the booklet grades it.">
 <meta property="og:image" content="https://draftmark.edycu.dev/og-image.png?v=5">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -23,7 +23,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:creator" content="@edycutjong">
 <meta name="twitter:title" content="DraftMark — read a ship's draft from ten seconds of video">
-<meta name="twitter:description" content="SAM 3.1 finds the marks and water; code averages the waterline; Muse Wonder 1.0 writes and proves the survey program.">
+<meta name="twitter:description" content="SAM 3.1 finds the marks and water; code averages the waterline; Muse Wonder 1.0 writes the survey program, the booklet grades it.">
 <meta name="twitter:image" content="https://draftmark.edycu.dev/og-image.png?v=5">
 <link rel="preload" href="fonts/anybody-100-900.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/ibm-plex-sans-400-600.woff2" as="font" type="font/woff2" crossorigin>
@@ -91,7 +91,7 @@ img,svg{display:block;max-width:100%}
 .hero::after{content:"";position:absolute;inset:0;z-index:-1;opacity:.5;
   background:repeating-linear-gradient(180deg,transparent 0 79px,rgba(58,46,40,.55) 79px 80px)}
 .hero__world{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
-.hero__marks{position:absolute;right:-1.5vw;top:2%;display:flex;flex-direction:column;align-items:flex-end;gap:2.2vw;font:800 clamp(130px,17vw,270px)/.78 var(--font-display);font-stretch:62%;color:rgba(242,238,230,.04)}
+.hero__marks{position:absolute;right:2vw;top:2%;display:flex;flex-direction:column;align-items:flex-end;gap:2.2vw;font:800 clamp(130px,17vw,270px)/.78 var(--font-display);font-stretch:62%;color:rgba(242,238,230,.04)}
 .hero__swell{position:absolute;left:0;bottom:7%;width:200%;height:120px;animation:drift 22s linear infinite}
 .hero__swell path{fill:none;stroke:rgba(111,140,138,.28);stroke-width:2}
 @keyframes drift{to{transform:translateX(-50%)}}
@@ -105,7 +105,7 @@ h1 em{font-style:normal;color:var(--after);text-shadow:0 0 34px rgba(242,179,61,
 .lede{font-size:clamp(17px,1.45vw,19px);line-height:1.6;color:#DCD5CB;max-width:58ch;margin:26px 0 30px}
 .lede b{color:var(--ink);font-weight:600}
 .cta{display:flex;flex-wrap:wrap;gap:12px}
-.strip{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 0;margin:26px 0 0;padding:14px 0 0;border-top:1px solid var(--rule);font:400 12px/1.7 var(--font-data);color:var(--muted)}
+.strip{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 0;margin:26px 0 0;padding:14px 0 0;border-top:1px solid var(--rule);font:400 12.5px/1.7 var(--font-data);color:var(--muted)}
 .strip span{white-space:nowrap}
 .strip i{font-style:normal;color:var(--rule);margin:0 6px}
 
@@ -125,10 +125,11 @@ h1 em{font-style:normal;color:var(--after);text-shadow:0 0 34px rgba(242,179,61,
 .replay:active{transform:scale(.97)}
 .verdict{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin:12px 4px 0;padding:11px 14px;border:1.5px solid var(--refuse);border-radius:3px;background:rgba(217,84,59,.07);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1)}
 .verdict{position:relative}
-.verdict__wait{display:none;position:absolute;left:14px;top:13px;font:500 12px/1.4 var(--font-data);color:var(--muted)}
+.verdict__wait{display:none;position:absolute;left:14px;bottom:12px;font:500 12px/1.4 var(--font-data);color:var(--muted)}
 .js .inst:not(.held) .verdict{border-color:var(--rule);background:transparent}
 .js .inst:not(.held) .verdict__wait{display:block}
-.js .inst:not(.held) .verdict > :not(.verdict__wait){visibility:hidden}
+.js .inst:not(.held) .verdict__w,.js .inst:not(.held) .verdict__r{color:var(--muted)}
+.js .inst:not(.held) .verdict__t{visibility:hidden}
 .inst.held .verdict{animation:stamp .5s cubic-bezier(.2,.8,.2,1)}
 @keyframes stamp{from{transform:scale(1.035);box-shadow:0 0 0 6px rgba(217,84,59,.18)}to{transform:none;box-shadow:none}}
 .verdict__w{font:800 24px/1 var(--font-display);font-stretch:62%;letter-spacing:.05em;color:var(--refuse-text)}
@@ -175,7 +176,7 @@ h1 em{font-style:normal;color:var(--after);text-shadow:0 0 34px rgba(242,179,61,
 @media (max-width:860px){.models{grid-template-columns:1fr}.models > div{border-left:0;padding:16px 0;border-top:1px solid var(--rule)}}
 
 /* ---------- story sections (certificate line numbers) ---------- */
-.sec{position:relative;padding:clamp(64px,9vw,120px) 0}
+.sec{position:relative;padding:clamp(52px,7vw,92px) 0}
 .line-no{font:500 12px/1 var(--font-data);color:var(--after);letter-spacing:.08em;display:inline-flex;align-items:center;gap:10px;margin:0 0 18px}
 .line-no::before{content:"";width:28px;height:2px;background:currentColor}
 h2{font:800 clamp(34px,4.6vw,62px)/.95 var(--font-display);font-stretch:66%;text-transform:uppercase;letter-spacing:-.003em;margin:0 0 20px;text-wrap:balance;max-width:20ch}
@@ -276,9 +277,9 @@ h2 em{font-style:normal;color:var(--after)}
 .cell h3{margin:0 0 10px;font:700 24px/1.05 var(--font-display);font-stretch:72%;text-transform:uppercase;max-width:18ch}
 .cell p{margin:0 0 14px;color:var(--muted);font-size:15px;line-height:1.55}
 .cell--a{grid-column:span 4;grid-row:span 2}.cell--b{grid-column:span 2}.cell--c{grid-column:span 2}.cell--d{grid-column:span 3}.cell--e{grid-column:span 3}
-.cell--a .glyph{position:static;width:100%;height:auto;max-width:520px;margin:4px 0 18px}
+
 .cell .glyph{position:absolute;right:18px;top:18px;width:54px;height:54px;opacity:.9}
-.cell--a .glyph{width:120px;height:72px}
+.bento .cell--a .glyph{position:static;width:100%;height:auto;max-width:560px;margin:6px 0 20px}
 @media (max-width:900px){.bento{grid-template-columns:1fr 1fr}.cell--a{grid-column:span 2;grid-row:auto}.cell--b,.cell--c,.cell--d,.cell--e{grid-column:span 1}}
 @media (max-width:600px){.bento{grid-template-columns:1fr}.cell--a,.cell--b,.cell--c,.cell--d,.cell--e{grid-column:span 1}}
 
@@ -346,15 +347,15 @@ h2 em{font-style:normal;color:var(--after)}
   <div class="hero__world" aria-hidden="true"><div class="hero__marks"><span>2</span><span>13M</span><span>8</span></div><svg class="hero__swell" viewBox="0 0 2880 120" preserveAspectRatio="none"><path d="M0 60 C60 30 180 30 240 60 C300 90 420 90 480 60 C540 30 660 30 720 60 C780 90 900 90 960 60 C1020 30 1140 30 1200 60 C1260 90 1380 90 1440 60 C1500 30 1620 30 1680 60 C1740 90 1860 90 1920 60 C1980 30 2100 30 2160 60 C2220 90 2340 90 2400 60 C2460 30 2580 30 2640 60 C2700 90 2820 90 2880 60"/></svg></div>
   <div class="wrap hero__grid">
     <div>
-      <p class="where stag">Meta AI Developer Hackathon · <b>Push the Frontier</b> · Indie</p>
+      <p class="where stag"><b>DraftMark</b> · reads a ship's draft marks from ten seconds of video</p>
       <h1 class="stag"><span class="l">The sea keeps</span> <span class="l">moving. The reading</span> <em class="l">finally holds still.</em></h1>
-      <p class="lede stag">Before dawn, a surveyor on a launch must turn a waterline the swell keeps moving into the one number that decides the cargo. SAM&nbsp;3.1 finds the marks and the water in <b data-proof="evidence/core-run-dB7X.md">60 of 60 frames</b>; Muse Wonder&nbsp;1.0 writes the ship's survey program and must match <b data-proof="evidence/selftest-booklet.md">22 of 22</b> printed booklet conditions before it computes.</p>
+      <p class="lede stag">Before dawn, a surveyor must turn a moving waterline into one number that decides the cargo. SAM&nbsp;3.1 finds the marks in <b data-proof="evidence/core-run-dB7X.md">60 of 60 frames</b>; the program Muse Wonder&nbsp;1.0 wrote reproduces <b data-proof="evidence/selftest-booklet.md">22 of 22</b> booklet conditions before it computes.</p>
       <div class="cta stag">
         <a class="btn" href="https://github.com/edycutjong/draftmark"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.22 1.88.87 2.34.66.07-.52.28-.87.5-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.22 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.66 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0Z"/></svg>GitHub</a>
         <a class="btn" href="/deck">Pitch deck</a>
         <a class="btn btn--on" href="/survey">Run it live →</a>
       </div>
-      <p class="strip stag"><span>SAM 3.1</span><i>/</i><span>Muse Spark 1.3</span><i>/</i><span>Muse Wonder 1.0</span><i>/</i><span>code prints every number</span><i>/</i><span>refuses outside the table</span><i>/</i><span data-proof="evidence/core-run-dB7X.md">$0.0397 of Meta calls for the dB7X run (estimate)</span></p>
+      <p class="strip stag"><span>Meta AI Developer Hackathon · Push the Frontier · Indie</span><i>/</i><span>SAM 3.1</span><i>/</i><span>Muse Spark 1.3</span><i>/</i><span>Muse Wonder 1.0</span><i>/</i><span>code prints every number</span><i>/</i><span>refuses outside the table</span><i>/</i><span data-proof="evidence/core-run-dB7X.md">$0.0397 of Meta calls for the dB7X run (estimate)</span></p>
     </div>
 
     <figure class="inst" id="inst" style="margin:0">
@@ -385,7 +386,7 @@ h2 em{font-style:normal;color:var(--after)}
         <text id="valu" class="sv-u" x="632" text-anchor="end">±0.086 m · k=1</text>
         <text class="sv-ax" x="178" y="512">frame 0</text><text class="sv-ax" x="632" y="512" text-anchor="end">frame 59 · 10 s</text>
       </svg>
-      <div class="verdict" id="verdict"><span class="verdict__wait" aria-hidden="true">certificate · waiting for the mean to hold…</span><span class="verdict__w">REFUSE</span><span class="verdict__r">OUT_OF_TABLE · matrix row 4</span><span class="verdict__t">12.761&nbsp;m is past the only booklet's 0.5–9.3&nbsp;m table, so no tonnage is guessed. <a href="#replay">The booklet case issues, with a warning: 17825.8&nbsp;t →</a></span></div>
+      <div class="verdict" id="verdict"><span class="verdict__wait" aria-hidden="true">certificate · waiting for the mean to hold…</span><span class="verdict__w">REFUSE</span><span class="verdict__r">OUT_OF_TABLE · matrix row 4</span><span class="verdict__t">12.761&nbsp;m is past the only booklet's 0.5–9.3&nbsp;m table, so no tonnage is guessed. <a href="#replay">The booklet case issues, with a warning: displacement 17825.8&nbsp;t →</a></span></div>
       <div class="inst__foot"><p class="tick" id="tick" aria-live="off"><b>60/60</b> frames kept · mean <b>12.761 m</b> ± 0.086 m · held</p><button class="replay" id="replayBtn" type="button">↻ Replay 10 s</button></div>
       <figcaption class="cap">Redrawn from 60 waterline heights measured on a real third-party clip, no ground truth. Band illustrative; repeatability ±0.086&nbsp;m; a one-pitch label error would move it 0.20&nbsp;m.</figcaption>
     </figure>
@@ -400,7 +401,7 @@ h2 em{font-style:normal;color:var(--after)}
       <div><b><span class="cu" data-to="22">22</span><small>/22</small></b><p>printed booklet conditions reproduced by the program Wonder wrote</p><a href="https://github.com/edycutjong/draftmark/blob/main/evidence/selftest-booklet.md" data-proof="evidence/selftest-booklet.md">evidence/selftest-booklet.md</a></div>
       <div><b><span class="cu" data-to="60">60</span><small>/60</small></b><p>frames kept on real hull clip dB7X, numerals and water in every one</p><a href="https://github.com/edycutjong/draftmark/blob/main/evidence/core-run-dB7X.md" data-proof="evidence/core-run-dB7X.md">evidence/core-run-dB7X.md</a></div>
       <div><b><span class="cu" data-to="17825.8" data-dec="1">17825.8</span><small>t</small></b><p>computed for booklet condition 4.1, printed 17827.7 t (−0.0106 %)</p><a href="https://github.com/edycutjong/draftmark/blob/main/evidence/core-run-trieste.md" data-proof="evidence/core-run-trieste.md">evidence/core-run-trieste.md</a></div>
-      <div><b><span class="cu" data-to="124">124</span><small>tests</small></b><p>pytest, with both sandbox escapes we found kept as regressions</p><a href="https://github.com/edycutjong/draftmark/tree/main/tests" data-proof="README.md">tests/</a></div>
+      <div><b><span class="cu" data-to="124">124</span><small>tests</small></b><p>pytest, with both sandbox escapes kept as regressions</p><a href="https://github.com/edycutjong/draftmark/tree/main/tests" data-proof="README.md">tests/</a></div>
     </div>
     <div class="models">
       <div><span class="chip">sam-3.1 · video</span><h3>Sees the marks</h3><p>Two video calls per clip: “white number” and “water”.</p></div>
@@ -584,9 +585,9 @@ h2 em{font-style:normal;color:var(--after)}
     <h2 class="rv">What stops it <em>from lying</em></h2>
     <div class="bento">
       <article class="cell cell--a rv">
-        <svg class="glyph" viewBox="0 0 520 170" role="img" aria-label="The generated program passes a static gate, then runs in a sandbox subprocess with no network; JSON goes in and comes out."><rect x="1" y="1" width="518" height="168" rx="6" fill="none" stroke="#3A2E28" stroke-width="2"/><text x="16" y="24" font-family="Martian Mono,monospace" font-size="12" fill="#9A8F86">server process</text><rect x="196" y="44" width="300" height="104" rx="5" fill="rgba(242,179,61,.05)" stroke="#F2B33D" stroke-width="2"/><text x="212" y="68" font-family="Martian Mono,monospace" font-size="12" fill="#F2B33D">sandbox subprocess · no network</text><text x="212" y="98" font-family="Martian Mono,monospace" font-size="13" fill="#F2EEE6">program.py  (sha 4b3aa8cd…)</text><text x="212" y="126" font-family="Martian Mono,monospace" font-size="12" fill="#9A8F86">JSON in → JSON out</text><text x="16" y="92" font-family="Martian Mono,monospace" font-size="12" fill="#F2EEE6">static gate</text><text x="16" y="112" font-family="Martian Mono,monospace" font-size="11" fill="#DF5E44">globals, dunders,</text><text x="16" y="128" font-family="Martian Mono,monospace" font-size="11" fill="#DF5E44">str.format: refused</text><path d="M150 98 H190" stroke="#F2B33D" stroke-width="2"/><path d="M184 92 l8 6 -8 6" fill="none" stroke="#F2B33D" stroke-width="2"/><path d="M496 30 L510 16 M510 30 L496 16" stroke="#D9543B" stroke-width="2"/><text x="440" y="27" font-family="Martian Mono,monospace" font-size="11" fill="#9A8F86">net</text></svg>
+        <svg class="glyph" viewBox="0 0 520 170" role="img" aria-label="The generated program passes a static gate, then runs in a sandbox subprocess with no network; JSON goes in and comes out."><rect x="1" y="1" width="518" height="168" rx="6" fill="none" stroke="#3A2E28" stroke-width="2"/><text x="16" y="24" font-family="Martian Mono,monospace" font-size="12" fill="#9A8F86">server (parent) spawns →</text><rect x="196" y="44" width="300" height="104" rx="5" fill="rgba(242,179,61,.05)" stroke="#F2B33D" stroke-width="2"/><text x="212" y="68" font-family="Martian Mono,monospace" font-size="12" fill="#F2B33D">child subprocess · no network</text><text x="212" y="98" font-family="Martian Mono,monospace" font-size="13" fill="#F2EEE6">program.py  (sha 4b3aa8cd…)</text><text x="212" y="126" font-family="Martian Mono,monospace" font-size="12" fill="#9A8F86">JSON in → JSON out</text><text x="16" y="92" font-family="Martian Mono,monospace" font-size="12" fill="#F2EEE6">static gate</text><text x="16" y="112" font-family="Martian Mono,monospace" font-size="11" fill="#DF5E44">globals, dunders,</text><text x="16" y="128" font-family="Martian Mono,monospace" font-size="11" fill="#DF5E44">str.format: refused</text><path d="M150 98 H190" stroke="#F2B33D" stroke-width="2"/><path d="M184 92 l8 6 -8 6" fill="none" stroke="#F2B33D" stroke-width="2"/><path d="M496 30 L510 16 M510 30 L496 16" stroke="#D9543B" stroke-width="2"/><text x="440" y="27" font-family="Martian Mono,monospace" font-size="11" fill="#9A8F86">net</text></svg>
         <h3>Generated code never runs in the server process</h3>
-        <p>A static gate, then a no-network sandbox subprocess, JSON in and out. Two escapes we found ourselves, <span class="data">re.enum.sys</span> and a format-string walk, are regression tests now.</p>
+        <p>A static gate, then a no-network sandbox subprocess, JSON in and out. Two escapes, <span class="data">re.enum.sys</span> from our own testing and a format-string walk from architecture review, are regression tests now.</p>
         <span class="chip">api/_core/sandbox.py</span><span class="chip">tests/test_sandbox.py</span>
       </article>
       <article class="cell cell--b rv">
@@ -610,7 +611,7 @@ h2 em{font-style:normal;color:var(--after)}
       <article class="cell cell--e rv">
         <svg class="glyph" viewBox="0 0 54 54" aria-hidden="true"><circle cx="27" cy="27" r="19" fill="none" stroke="#3A2E28" stroke-width="2"/><path d="M27 27 L27 12" stroke="#F2B33D" stroke-width="2.4"/><path d="M27 27 L38 33" stroke="#9A8F86" stroke-width="2"/></svg>
         <h3>Every call on the ledger</h3>
-        <p>Each Meta call is logged with a price-list cost estimate and, where the API returned one, its response id. Uploads need a judge code.</p>
+        <p>Meta calls are logged with a price-list cost estimate and, where the API returned one, a response id; one ~$0.01 probe call is the known gap. Uploads need a judge code.</p>
         <span class="chip">evidence/api-usage.md</span>
       </article>
     </div>

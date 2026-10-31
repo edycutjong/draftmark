@@ -48,7 +48,7 @@ p.say b{color:var(--ink)}
 .chip{display:inline-block;font:500 22px/1 var(--font-data);color:var(--before);border:1.5px solid rgba(111,140,138,.5);border-radius:3px;padding:10px 14px;margin:0 12px 12px 0}
 .chip--a{color:var(--after);border-color:rgba(242,179,61,.5)}
 .cols{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;height:100%}
-.cols--wide{grid-template-columns:.7fr 1.3fr}
+.cols--wide{grid-template-columns:.55fr 1.45fr}
 .cols--demo{grid-template-columns:.62fr 1.38fr;gap:60px}
 .frame{border:1.5px solid var(--rule);border-radius:10px;overflow:hidden;background:#120e0c;box-shadow:0 50px 90px -50px #000}
 .frame img{display:block;width:100%;height:auto}
@@ -97,7 +97,7 @@ p.say b{color:var(--ink)}
 .pin:nth-child(1){transform:rotate(-1deg)}.pin:nth-child(2){transform:rotate(.8deg)}
 .pin img{display:block;width:100%;height:auto}
 .pin figcaption{font:400 21px/1.4 var(--font-data);color:#B8AEA3;padding:12px 4px 0}
-.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:70px;border-top:1.5px solid var(--rule)}
+.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:48px;border-top:1.5px solid var(--rule)}
 .nums > div{padding:44px 40px 0 0}
 .nums b{display:block;font:800 120px/1 var(--font-display);font-stretch:62%}
 .nums p{font-size:29px;line-height:1.45;color:var(--muted);margin:16px 0 0;max-width:22ch}
@@ -107,18 +107,18 @@ p.say b{color:var(--ink)}
 .rc > div:last-child{border-right:0}
 .rc b{display:block;font:800 132px/1 var(--font-display);font-stretch:62%}
 .rc b small{font-size:.42em;color:var(--muted);margin-left:6px}
-.rc p{font-size:27px;line-height:1.4;color:#D2CABF;margin:16px 0 10px}
+.rc p{font-size:30px;line-height:1.4;color:#D2CABF;margin:16px 0 10px}
 .rc span{font:400 17px/1.3 var(--font-data);color:var(--muted)}
 .stack{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:70px}
 .stack > div{background:var(--plate);border:1.5px solid var(--rule);border-radius:10px;padding:40px 36px}
 .stack h3{font:800 46px/1 var(--font-display);font-stretch:70%;text-transform:uppercase;margin:6px 0 18px}
-.stack p{font-size:27px;line-height:1.5;color:var(--muted);margin:0}
+.stack p{font-size:30px;line-height:1.5;color:var(--muted);margin:0}
 .vs{display:grid;grid-template-columns:1fr 1fr;gap:60px;margin-top:70px}
 .vs > div{border-top:3px solid var(--rule);padding-top:30px}
 .vs > div.new{border-color:var(--after)}
 .vs h3{font:500 20px/1 var(--font-data);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 24px}
 .vs .new h3{color:var(--after)}
-.vs p{font-size:34px;line-height:1.45;margin:0;color:#D9D2C7}
+.vs p{font-size:40px;line-height:1.45;margin:0;color:#D9D2C7}
 .ledger{list-style:none;margin:60px 0 0;padding:0}
 .ledger li{display:grid;grid-template-columns:120px 1fr;gap:30px;padding:28px 0;border-top:1.5px solid var(--rule);font-size:30px;line-height:1.45}
 .ledger li:last-child{border-bottom:1.5px solid var(--rule)}
@@ -172,9 +172,9 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
     <div>
       <p class="eyebrow">Before dawn, on a launch</p>
       <h2>One number, read off a <em>moving sea.</em></h2>
-      <p class="say">The swell slaps the water up and down six painted marks. The surveyor eyeballs a mean: <b>a judgment, not a record</b>, then runs a per-ship spreadsheet that is hard to check against the booklet.</p>
+      <p class="say">The swell slaps the water up and down the painted marks. The surveyor eyeballs a mean: <b>a judgment, not a record</b>, then runs a per-ship spreadsheet that is hard to check against the booklet.</p>
     </div>
-    <div><svg id="s2" viewBox="0 0 700 420" role="img" aria-label="The 60 measured waterline heights of clip dB7X, before any averaging"><g id="s2grid" stroke="#3A2E28"></g><path id="s2trace" fill="none" stroke="#6F8C8A" stroke-width="4" stroke-linejoin="round"/><text x="690" y="40" text-anchor="end" font-family="Martian Mono,monospace" font-size="30" fill="#9A8F86">mean = ?</text></svg><p class="cap">The same 60 heights from clip dB7X, before any averaging.</p></div>
+    <div><svg id="s2" viewBox="0 0 700 420" role="img" aria-label="The 60 measured waterline heights of clip dB7X, before any averaging"><g id="s2grid" stroke="#3A2E28"></g><path id="s2trace" fill="none" stroke="#6F8C8A" stroke-width="4" stroke-linejoin="round"/><g id="s2marks" font-family="Anybody,sans-serif" font-stretch="62%" font-weight="700" font-size="34" fill="#F2EEE6"></g><text x="690" y="44" text-anchor="end" font-family="Martian Mono,monospace" font-size="44" fill="#F2B33D">mean = ?</text></svg><p class="cap">The same 60 heights from clip dB7X, before any averaging.</p></div>
   </div>
   <aside class="notes">Draft surveys weigh bulk cargo. The weak steps are human: the eyeballed mean, and per-ship arithmetic that is hard to check against the booklet.</aside>
 </section>
@@ -309,10 +309,10 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
   <p class="eyebrow">Honest limits · README</p>
   <h2>What it does <em>not</em> prove yet.</h2>
   <ul class="ledger">
-    <li><span>1</span>The weight check is on a rendered synthetic barge.</li>
-    <li><span>2</span>Real-ship clips: third-party footage, no ground truth.</li>
-    <li><span>3</span>The test booklet is a Ro-Ro/passenger ship, not a bulk carrier.</li>
-    <li><span>6</span>The clip fills the midship draft; the other positions are typed in. A prototype.</li>
+    <li><span>§1</span>The weight check is on a rendered synthetic barge.</li>
+    <li><span>§2</span>Real-ship clips: third-party footage, no ground truth.</li>
+    <li><span>§3</span>The test booklet is a Ro-Ro/passenger ship, not a bulk carrier.</li>
+    <li><span>§6</span>A clip reads only the port midship mark; the other positions are typed in. A prototype.</li>
   </ul>
   <aside class="notes">Condensed from README Honest limits 1, 2, 3 and 6.</aside>
 </section>
@@ -385,10 +385,10 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
   function fin(now) { $("trace").setAttribute("d", pathTo(DS, N - 1)); $("mean").setAttribute("d", pathTo(mean, N - 1)); $("band").setAttribute("d", bandTo(N - 1)); sea(DS[N - 1], now || 0); $("pen").setAttribute("cx", x(N - 1)); $("pen").setAttribute("cy", y(DS[N - 1])); $("tie").setAttribute("x2", x(N - 1)); held(D, true); }
   $("ghost").setAttribute("d", pathTo(DS, N - 1)); fin(0);
   (function () { // slide 2 (no averaging) and the cover (trace + held mean), same real heights
-    var sx = function (i) { return 10 + i / (N - 1) * 680; }, sy = function (v) { return 400 - (v - 12.45) / 0.85 * 340; }, d = "";
+    var sx = function (i) { return 80 + i / (N - 1) * 610; }, sy = function (v) { return 400 - (v - 12.45) / 0.85 * 340; }, d = "";
     for (var i = 0; i < N; i++) d += (i ? "L" : "M") + sx(i).toFixed(1) + "," + sy(DS[i]).toFixed(1);
     $("s2trace").setAttribute("d", d);
-    for (var g = 0; g < 4; g++) el("line", { x1: 0, x2: 700, y1: 60 + g * 100, y2: 60 + g * 100 }, $("s2grid"));
+    MARKS.forEach(function (m) { var yy = sy(m[0]); el("line", { x1: 70, x2: 700, y1: yy.toFixed(1), y2: yy.toFixed(1) }, $("s2grid")); el("text", { x: 0, y: (yy + 12).toFixed(1) }, $("s2marks")).textContent = m[1]; }); // the marks this clip shows
     var cx = function (i) { return 20 + i / (N - 1) * 520; }, c = "", m = "";
     for (var j = 0; j < N; j++) c += (j ? "L" : "M") + cx(j).toFixed(1) + "," + y(DS[j]).toFixed(1);
     $("ctTrace").setAttribute("d", c); $("ctMean").setAttribute("d", "M20," + y(D).toFixed(1) + "L560," + y(D).toFixed(1)); $("ctVal").setAttribute("y", (y(D) - 14).toFixed(1));
