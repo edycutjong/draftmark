@@ -108,8 +108,10 @@ is logged with an estimated cost in `evidence/api-usage.md`.
 - The absolute metre value rests on Spark's read, a second read >= 1 s later agreeing on >= 3 tokens, the wide-glyph
   anchor check and the user's confirmation of the anchor crop: a consistent whole-metre misread passes the geometry
   checks by construction, so the anchor confirmation is required on every live run.
-- The synthetic barge run exercises the code path from geometry to certificate (SAM does not detect rendered
-  water); its labels come from the renderer's truth. It validates the arithmetic and error model, not the models.
+- The synthetic barge eval (`evidence/eval-synthetic.md`) runs 12 rendered loads through SAM numerals + Spark labels +
+  the code checks; SAM does not detect rendered water (0 masks on 12 clips), so the water mask there is a colour
+  threshold on our own pixels. It checks the chain, not real water. The one-off `core-run-synth-barge.md` run uses
+  geometry with labels from the renderer's truth.
 - Real-ship clips are third-party footage without ground truth: they show repeatability and refusal only. Weight
   accuracy is shown on a rendered synthetic barge; the test booklet is a Ro-Ro/passenger ship, not a bulk carrier.
 - Rate counters are per instance, so a cold start resets them; the budget flag and kill switch are the hard stops.

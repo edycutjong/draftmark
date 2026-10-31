@@ -417,7 +417,7 @@ h2 em{font-style:normal;color:var(--after)}
       <div><b><span class="cu" data-to="22">22</span><small>/22</small></b><p>printed booklet conditions reproduced by the program Wonder wrote, after two repairs on the same rows (nothing held out)</p><a href="https://github.com/edycutjong/draftmark/blob/main/evidence/selftest-booklet.md" data-proof="evidence/selftest-booklet.md">evidence/selftest-booklet.md</a></div>
       <div><b><span class="cu" data-to="60">60</span><small>/60</small></b><p>frames kept on real hull clip dB7X; clip UKTRQ kept 46/48, clip eeLL was refused by the label checks</p><a href="https://github.com/edycutjong/draftmark/blob/main/evidence/core-run-dB7X.md" data-proof="evidence/core-run-dB7X.md">evidence/core-run-dB7X.md</a></div>
       <div><b><span class="cu" data-to="-0.0106" data-dec="4">−0.0106</span><small>%</small></b><p>booklet condition 4.1: the program computes 17825.8 t, the booklet prints 17827.7 t (one of the 22 acceptance rows, not held out)</p><a href="https://github.com/edycutjong/draftmark/blob/main/evidence/core-run-trieste.md" data-proof="evidence/core-run-trieste.md">evidence/core-run-trieste.md</a></div>
-      <div><b><span class="cu" data-to="124">124</span><small>tests</small></b><p>pytest, with both escapes kept as regression tests</p><a href="https://github.com/edycutjong/draftmark/tree/main/tests" data-proof="README.md">tests/</a></div>
+      <div><b><span class="cu" data-to="127">127</span><small>tests</small></b><p>pytest, with both escapes kept as regression tests</p><a href="https://github.com/edycutjong/draftmark/tree/main/tests" data-proof="README.md">tests/</a></div>
     </div>
     <p class="rc-note"><span data-proof="evidence/core-run-dB7X.md">$0.0397</span> of Meta calls for the dB7X run (price-list estimate) · est $0.481 for the three Wonder calls that wrote the proven program</p>
     <div class="models">
@@ -535,12 +535,12 @@ h2 em{font-style:normal;color:var(--after)}
       <p class="line-no">Line 005 · Check</p>
       <span class="tag">SYNTHETIC</span>
       <h2>Weighed against a known truth. <em>A rendered one, for now.</em></h2>
-      <p class="intro">The real clips end in refusal, so where is the weight checked? On a barge generated as geometry in code, its truth known by construction, with swell, edge jitter and dropped frames added on purpose. SAM is not run on it (it does not detect rendered water), so this checks the arithmetic and the error model, not perception. There is no physical scale check yet.</p>
+      <p class="intro">The real clips end in refusal, so where is the weight checked? On twelve loads of a barge drawn in code, the waterline set by physics and the swell by us. SAM reads the rendered numerals and Muse Spark their labels, live, but SAM finds no rendered water (0 masks on 12 clips), so the water edge is a colour threshold on our own pixels. This checks the chain, not real water. There is no physical scale check yet.</p>
     </div>
     <div class="synth rv">
-      <div><b data-proof="evidence/core-run-synth-barge.md">−0.155 mm</b><p>draft vs the synthetic calm truth, 58 of 60 frames kept</p></div>
-      <div><b data-proof="evidence/core-run-synth-barge.md">−0.17 %</b><p>cargo vs the synthetic truth; it warns that 2u is wider than a ±2 % pass</p></div>
-      <div><b data-proof="evidence/error-model-synthetic.md">96 / 100</b><p>synthetic seeds with the truth inside ±2u (RMSE 0.519 mm)</p></div>
+      <div><b data-proof="evidence/eval-synthetic.md">12 / 12</b><p>rendered loads within ±2 % of the synthetic truth (p90 0.42 %, worst 0.75 %)</p></div>
+      <div><b data-proof="evidence/eval-synthetic.md">0.12 %</b><p>median cargo error vs the synthetic truth; the draft reads slightly low on 10 of 12 loads</p></div>
+      <div><b data-proof="evidence/eval-synthetic.md">0 / 12</b><p>clips where SAM found the rendered water; the water mask is a stand-in</p></div>
     </div>
   </div>
 </section>
@@ -638,7 +638,7 @@ h2 em{font-style:normal;color:var(--after)}
   <div class="wrap">
     <h2 class="rv">What this does <em>not</em> prove yet</h2>
     <ul class="ledger">
-      <li class="rv"><span class="n">1/6</span><blockquote>“The weight check is on a rendered synthetic barge; it validates arithmetic and the error model, not the models. SAM does not detect rendered water.”<cite>README · Honest limits, 1</cite></blockquote></li>
+      <li class="rv"><span class="n">1/6</span><blockquote>“The weight check is on 12 loads of a rendered synthetic barge, not a physical scale: it checks the chain, not real water. SAM finds the rendered numerals but no rendered water, so the water edge there is a colour threshold on our own pixels.”<cite>README · Honest limits, 1</cite></blockquote></li>
       <li class="rv"><span class="n">2/6</span><blockquote>“The real-ship clips are third-party test footage with no ground truth (repeatability and refusal only, no accuracy claim); no real-ship draft accuracy is claimed.”<cite>README · Honest limits, 2</cite></blockquote></li>
       <li class="rv"><span class="n">3/6</span><blockquote>“The test booklet is a Ro-Ro/passenger ship, not a bulk carrier; a draft outside its 0.5-9.3 m table is refused, so the two real clips certify as REFUSE OUT_OF_TABLE.”<cite>README · Honest limits, 3</cite></blockquote></li>
       <li class="rv"><span class="n">4/6</span><blockquote>“Ship uncertainty is wave-averaging repeatability only; real ships have no absolute calibration.”<cite>README · Honest limits, 4</cite></blockquote></li>
@@ -657,7 +657,7 @@ h2 em{font-style:normal;color:var(--after)}
       <details><summary><span>Q2</span>What is live and what is recorded?</summary><div class="ans">This page replays recorded runs, each labelled with its run id: dB7X from real SAM and Spark calls, Trieste from Wonder's saved program re-run in the sandbox. In the live app the self-test re-runs; uploading a clip needs a judge code, because each upload spends Meta credit.</div></details>
       <details><summary><span>Q3</span>Why do both real clips end in REFUSE?</summary><div class="ans">The only booklet we have is the Trieste's, a Ro-Ro/passenger ship whose table covers 0.5–9.3&nbsp;m. Clip dB7X reads 12.761&nbsp;m and UKTRQ 20.830&nbsp;m, so the program raises <span class="data">OutOfTable</span> instead of extrapolating. The measurement stands; the weight is refused.</div></details>
       <details><summary><span>Q4</span>How do you know Wonder's program is right?</summary><div class="ans">It has to reproduce at least 20 of the booklet's 22 printed conditions within 0.1&nbsp;% (it reproduces 22), agree with our reference program over 200 random cases (largest difference 0.00007&nbsp;%), and raise on two out-of-table probes. The printed displacements were never in Wonder's context. Condition 4.1 is one of those 22, and the 200 cases check Wonder's program against our own reference program.</div></details>
-      <details><summary><span>Q5</span>How accurate is the weight?</summary><div class="ans">There is no physical scale check and no real-ship accuracy claim. On the filmed hull the stated figure is repeatability (±0.086&nbsp;m on dB7X), and a one-pitch label miss would move the draft 0.20&nbsp;m. On a barge generated in code, with SAM not run, the draft came out 0.155&nbsp;mm from its constructed truth, the cargo −0.17&nbsp;%, and the truth sat inside ±2u in 96 of 100 seeds.</div></details>
+      <details><summary><span>Q5</span>How accurate is the weight?</summary><div class="ans">There is no physical scale check and no real-ship accuracy claim. On the filmed hull the stated figure is repeatability (±0.086&nbsp;m on dB7X), and a one-pitch label miss would move the draft 0.20&nbsp;m. On twelve loads of a barge drawn in code, all twelve cargo figures landed within ±2&nbsp;% of the constructed truth (median 0.12&nbsp;%, worst 0.75&nbsp;%), with SAM reading the numerals live but not finding the rendered water, so that edge is a colour-threshold stand-in.</div></details>
       <details><summary><span>Q6</span>What does a run cost?</summary><div class="ans">The dB7X measurement used two SAM&nbsp;3.1 video calls and two Spark&nbsp;1.3 reads: $0.0397 at list prices. Writing the program took three Wonder calls, est $0.481 for the default program (one booklet so far).</div></details>
     </div>
   </div>

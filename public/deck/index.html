@@ -341,14 +341,14 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
 <section class="slide" data-line="007" aria-label="Accuracy, honestly">
   <span class="tag">SYNTHETIC</span>
   <h2 style="max-width:none">Weighed against a known truth.<br><em>A rendered one, for now.</em></h2>
-  <p class="say" style="max-width:56ch">The real clips end in refusal, so the weight is checked on a barge generated in code, with swell, edge jitter and dropped frames added on purpose.</p>
+  <p class="say" style="max-width:56ch">The real clips end in refusal, so the weight is checked on twelve loads of a barge drawn in code: waterline from physics, swell and camera noise added on purpose.</p>
   <div class="nums">
-    <div><b>−0.155 mm</b><p>synthetic draft vs its calm truth</p></div>
-    <div><b>−0.17 %</b><p>synthetic cargo vs truth; issued with a warning</p></div>
-    <div><b>96 / 100</b><p>synthetic seeds with the truth inside ±2u</p></div>
+    <div><b>12 / 12</b><p>rendered loads within ±2 % of the truth (worst 0.75 %)</p></div>
+    <div><b>0.12 %</b><p>median cargo error vs the synthetic truth</p></div>
+    <div><b>0 / 12</b><p>clips where SAM found the rendered water (a colour threshold stands in)</p></div>
   </div>
   <p class="foot">No physical scale check yet · no real-ship accuracy claim</p>
-  <aside class="notes">A barge generated as geometry in code, with swell, edge jitter and dropped frames, truth known by construction. It validates the arithmetic and the error model, not the models.</aside>
+  <aside class="notes">Twelve loads of a barge drawn in code, truth by physics. SAM reads the rendered numerals and Spark their labels, live; SAM finds no rendered water, so the water edge is a colour threshold. It checks the chain, not real water.</aside>
 </section>
 
 <!-- 8 · three Meta models, one job each, each with its receipt -->
@@ -359,7 +359,7 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
     <div><span class="chip">sam-3.1 · video</span><h3>Sees</h3><p>Two video calls per clip: “white number” and “water”.</p><div class="r"><b>60<small>/60</small></b><span>frames kept, clip dB7X</span></div></div>
     <div><span class="chip">muse-spark-1.3</span><h3>Reads</h3><p>Two strict-schema label reads; code must agree.</p><div class="r"><b>5<small>/5</small></b><span>label checks pass</span></div></div>
     <div><span class="chip chip--a">muse-wonder-1.0</span><h3>Writes</h3><p>The ship's survey program, from booklet pages only.</p><div class="r"><b>22<small>/22</small></b><span>conditions, 3 calls, est $0.481</span></div></div>
-    <div class="code"><span class="chip">code · no model</span><h3>Prints + signs</h3><p>Averages the swell, signs each station, issues or refuses.</p><div class="r"><b>124<small>tests</small></b><span>both escapes kept as regression tests</span></div></div>
+    <div class="code"><span class="chip">code · no model</span><h3>Prints + signs</h3><p>Averages the swell, signs each station, issues or refuses.</p><div class="r"><b>127<small>tests</small></b><span>both escapes kept as regression tests</span></div></div>
   </div>
   <p class="foot">Condition 4.1: 17825.8 t vs printed 17827.7 t · $0.0397 of Meta calls per dB7X run (estimate)</p>
   <aside class="notes">Each model owns one stage: without SAM there is nothing to measure; without Spark the labels must be typed in (marked degraded); without Wonder there is no model-written program for a new booklet.</aside>
@@ -383,7 +383,7 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
   <p class="eyebrow">Honest limits · README</p>
   <h2>What it does <em>not</em> prove yet.</h2>
   <ul class="ledger">
-    <li><span>§1</span>The weight check is on a rendered synthetic barge.</li>
+    <li><span>§1</span>The weight check is on 12 rendered synthetic loads, not a physical scale.</li>
     <li><span>§2</span>Real-ship clips: third-party, no ground truth; the ± is repeatability only.</li>
     <li><span>§3</span>The test booklet is a Ro-Ro/passenger ship, not a bulk carrier.</li>
     <li><span>§5</span>A consistent whole-metre misread passes the checks; the user confirms the anchor.</li>

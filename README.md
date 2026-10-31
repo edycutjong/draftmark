@@ -106,13 +106,14 @@ Friction we met and what we did about it: [docs/DX-REPORT.md](docs/DX-REPORT.md)
 
 | Measure | Result | Evidence |
 |---|---|---|
-| Tests | 124 pytest passing | `tests/` |
+| Tests | 127 pytest passing | `tests/` |
 | Wonder program self-test | 22/22 printed booklet conditions, 2 regenerations (reference 22/22, verbatim copy 14/22, generic 0/22) | [selftest-booklet.md](evidence/selftest-booklet.md) |
 | Survey on Trieste condition 4.1 | 17825.8 t vs printed 17827.7 t (-0.0106 %; one of the 22 acceptance rows, not held out) | [core-run-trieste.md](evidence/core-run-trieste.md) |
 | Real clip dB7X | 60/60 frames, draft 12.761 m, u_rep 0.086 m (repeatability only) | [core-run-dB7X.md](evidence/core-run-dB7X.md) |
 | Real clip UKTRQ | 46/48 frames, draft 20.830 m, u_rep 0.055 m | [core-run-UKTRQ.md](evidence/core-run-UKTRQ.md) |
 | Synthetic error model (100 seeds) | truth inside ±2u in 96 %, RMSE 0.519 mm | [error-model-synthetic.md](evidence/error-model-synthetic.md) |
-| Synthetic barge run | draft -0.155 mm vs synthetic truth | [core-run-synth-barge.md](evidence/core-run-synth-barge.md) |
+| Synthetic barge, 12 rendered loads (SAM numerals + Spark labels live, water mask a stand-in) | 12 of 12 loads within ±2 % of the synthetic truth; median error 0.12 %, p90 0.42 %, worst 0.75 % | [eval-synthetic.md](evidence/eval-synthetic.md) |
+| Synthetic barge, one run | draft -0.155 mm vs synthetic truth | [core-run-synth-barge.md](evidence/core-run-synth-barge.md) |
 
 ### Attacks defeated
 
@@ -125,7 +126,7 @@ Friction we met and what we did about it: [docs/DX-REPORT.md](docs/DX-REPORT.md)
 
 ### Honest limits (6)
 
-1. The weight check is on a rendered **synthetic** barge; it validates arithmetic and the error model, not the models. SAM does not detect rendered water.
+1. The weight check is on 12 loads of a rendered **synthetic** barge (code-drawn pixels, truth by physics), not a physical scale: it checks the chain's arithmetic, label checks and wave-averaging, not real water, glare or a real print. SAM finds the rendered numerals but returned 0 water masks on all 12 clips, so the water edge there is a colour threshold on our own pixels. The eval also ran on the same loads that exposed three code fixes (in-sample for those). No real-ship photo set was verifiably open, so none was run ([eval-dataset.md](evidence/eval-dataset.md)).
 2. The real-ship clips are third-party test footage with no ground truth (repeatability and refusal only, no accuracy claim); no real-ship draft accuracy is claimed.
 3. The test booklet is a Ro-Ro/passenger ship, not a bulk carrier; a draft outside its 0.5-9.3 m table is refused, so the two real clips certify as `REFUSE OUT_OF_TABLE`.
 4. Ship uncertainty is wave-averaging repeatability only; real ships have no absolute calibration.
@@ -151,7 +152,7 @@ npm run dev                # Next.js on :3000, FastAPI on :8000
 ## 🧪 Testing & CI
 
 ```bash
-python3 -m pytest -q       # 124 tests
+python3 -m pytest -q       # 127 tests
 ruff check . && npm run typecheck && npm run build
 ```
 
