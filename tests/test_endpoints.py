@@ -306,3 +306,10 @@ def test_stale_tokens_and_non_dict_bodies(monkeypatch):
     monkeypatch.undo()
     assert api.post("/api/py/survey", json={"mode": "barge", "measure": "x"}).status_code == 400
     assert api.post("/api/py/labels", json={"geometry": "x"}).json()["reason"] == "UNSIGNED"
+
+
+def test_implausible_survey_inputs_are_400():
+    s = {"drafts": {p: 6.5 for p in ("fore_p", "fore_s", "mid_p", "mid_s", "aft_p", "aft_s")}, "sg": 1.025,
+         "deductibles": {"ballast": -9000}}
+    r = api.post("/api/py/survey", json={"mode": "ship", "survey": s, "booklet_info": {"id": "trieste"}})
+    assert r.status_code == 400 and "deductible" in r.json()["detail"]

@@ -24,6 +24,41 @@ GATE_HOG_M, GATE_PS_M = 0.15, 0.30
 # trim range the self-test's differential cases covered (selftest.differential_cases: -1.0 .. +2.0 m)
 TRIM_PROVEN_M = (-1.0, 2.0)
 NEMOTO_DD_M = 0.5  # the program's second trim correction reads MTC at d_mm +- this
+LIVE_POSITIONS = ("mid_p", "mid_s")  # one clip films one mark column; the app files it as midships
+
+
+def clean_sources(src: dict | None) -> dict:
+    """A clip reading may stand only for the midship marks; any other position claiming it is entered."""
+    return {p: (v if v not in ("live", "clip") or p in LIVE_POSITIONS else "entered") for p, v in (src or {}).items()}
+
+
+def validate(inp: dict, top: dict) -> list[str]:
+    """Plausibility of every number a person types into a ship survey (400 PAYLOAD, never a certificate)."""
+    bad = []
+
+    def num(v, name, lo, hi, lo_open=False):
+        try:
+            x = float(v)
+        except (TypeError, ValueError):
+            bad.append(f"{name} is not a number")
+            return
+        if not isfinite(x) or x < lo or x > hi or (lo_open and x == lo):
+            bad.append(f"{name} = {v} outside {'(' if lo_open else '['}{lo}, {hi}]")
+    drafts = inp.get("drafts") or {}
+    for p in POSITIONS:
+        num(drafts.get(p), f"draft {p}", 0.0, 30.0, lo_open=True)
+    num(inp.get("sg", 1.025), "sg", 0.990, 1.040)
+    for k, v in (inp.get("deductibles") or {}).items():
+        if v not in (None, ""):
+            num(v, f"deductible {k}", 0.0, 1e6)
+    for k in ("lightship_constant", "initial_net"):
+        if inp.get(k) not in (None, ""):
+            num(inp[k], k, 0.0, 1e6)
+    if top.get("bl") is not None:
+        num(top["bl"], "bl", 0.0, 1e6, lo_open=True)
+    if top.get("tol_pct") is not None:
+        num(top["tol_pct"], "tol_pct", 0.0, 10.0, lo_open=True)
+    return bad
 MM = 0.001
 
 
@@ -91,7 +126,7 @@ def ship(inp: dict, prog: dict | None = None) -> dict:
     lightship_constant?, initial_net?}. Returns intermediates, disp, net, cargo, u_cargo and gate facts."""
     prog = prog or proven()
     drafts = {p: float(inp["drafts"][p]) for p in POSITIONS}
-    sources = {p: (inp.get("sources") or {}).get(p, "entered") for p in POSITIONS}
+    sources = {p: clean_sources(inp.get("sources")).get(p, "entered") for p in POSITIONS}
     sg = float(inp.get("sg", 1.025))
     live = [p for p in POSITIONS if sources[p] in ("live", "clip")]
     u_live = float(inp.get("u_live_m") or 0.0)
@@ -109,10 +144,12 @@ def ship(inp: dict, prog: dict | None = None) -> dict:
                  "n_cases": len(cases), "out_of_table": False, "perturb_oot": False, "error": None}
     if not rr.ok:
         out["error"] = rr.error
+        out["program_error"] = True  # never an ISSUE without a displacement
         return out
     res = rr.data["results"]
     if not res[0]["ok"]:
         out["out_of_table"] = "OutOfTable" in (res[0]["error"] or "")
+        out["program_error"] = not out["out_of_table"]
         out["error"] = res[0]["error"]
         out["gate_fail"] = gate(drafts, None)
         return out
@@ -150,7 +187,8 @@ def ship(inp: dict, prog: dict | None = None) -> dict:
                                              "corr_trim2", "corr_density", "disp_final")},
                disp=disp, t_per_mm=t_per_mm, u_disp=u_disp, deductibles=ded, deductions=deductions, net=net,
                cargo=cargo, cargo_kind=kind, u_cargo=u_disp if cargo is not None else None,
-               u_label="draft + geometry uncertainty only — excludes entered drafts and deductibles",
+               u_label=("repeatability of the live draft only (wave averaging; real ships have no absolute calibration) "
+                        "— excludes a label shift, entered drafts and deductibles"),
                n_entered=sum(sources[p] == "entered" for p in POSITIONS), d_mm=d_mm, trim=o["d_ap"] - o["d_fp"],
                consequence={"tpc_t_per_cm": tpc, "d_mm": d_mm} if tpc else None,
                gate_fail=gate(drafts, o))

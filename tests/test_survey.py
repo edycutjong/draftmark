@@ -88,3 +88,22 @@ def test_proven_refuses_a_stale_selftest(tmp_path, monkeypatch):
     monkeypatch.setattr(S, "DATA", tmp_path)
     with pytest.raises(RuntimeError):
         S.proven("trieste")
+
+
+def test_a_clip_reading_stands_only_for_midships():
+    r = run(drafts_of("4.1"), live=S.POSITIONS)
+    assert [p for p in S.POSITIONS if r["sources"][p] == "live"] == ["mid_p", "mid_s"] and r["n_entered"] == 4
+
+
+def test_a_program_failure_is_not_an_issue(monkeypatch):
+    monkeypatch.setattr(S.sandbox, "run", lambda code, req: S.sandbox.RunResult(False, {}, "exit 1: boom", 5, 1))
+    r = run(drafts_of("4.1"))
+    assert r["program_error"] and not r["out_of_table"] and "cargo" not in r
+
+
+def test_survey_inputs_are_validated():
+    ok = {"drafts": drafts_of("4.1"), "sg": 1.025, "deductibles": {"fuel": 120}}
+    assert S.validate(ok, {}) == []
+    bad = {**ok, "sg": 2.0, "deductibles": {"fuel": -500}, "lightship_constant": float("nan")}
+    msgs = S.validate(bad, {"tol_pct": 1e9})
+    assert len(msgs) == 4 and any("sg" in m for m in msgs) and any("tol_pct" in m for m in msgs)

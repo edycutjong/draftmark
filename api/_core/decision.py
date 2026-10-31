@@ -26,6 +26,7 @@ HINTS = {
     "OUT_OF_TABLE": "The draft is outside the vessel's hydrostatic table: the program refuses to extrapolate.",
     "ENTERED_INCONSISTENT": "An entered draft is implausible against the others (hog/sag, port/starboard or trim gate).",
     # row 5
+    "PROGRAM_ERROR": "The survey program failed on these inputs (not an out-of-table refusal): no displacement.",
     "SELFTEST_FAIL": "The survey program did not pass the booklet self-test and no proven fallback exists.",
     # row 6
     "U_TOO_WIDE": "The uncertainty is too wide to certify (or a +-u case walks off the table).",
@@ -92,6 +93,8 @@ def decide(f: dict) -> Decision:
         return _refuse("OUT_OF_TABLE", 4)
     if f.get("entered_inconsistent"):
         return _refuse("ENTERED_INCONSISTENT", 4)
+    if f.get("program_error"):
+        return _refuse("PROGRAM_ERROR", 5)
     fallback = f.get("fallback")
     if f.get("selftest_verdict") == "FAIL" and not fallback:
         return _refuse("SELFTEST_FAIL", 5)

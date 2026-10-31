@@ -72,7 +72,7 @@ certified `REFUSE UNSIGNED` (decision row 0). Drafts typed by hand stay possible
 ## Decision (`api/_core/decision.py`)
 
 Rows in fixed order: 0 unsigned measurement, 1 masks / object cap / water, 2 frames kept, 3 labels + anchor, 4 out
-of table / entered drafts inconsistent, 5 self-test, 6 uncertainty, 7 deductibles contradiction, 8 B/L difference,
+of table / entered drafts inconsistent, 5 program error on these inputs / self-test, 6 uncertainty, 7 deductibles contradiction, 8 B/L difference,
 9 warnings (partial frames, typed labels, reference fallback, entered positions, failed self-test row near today's
 draft, 2u above the pass band, what-if). Every reason is an enum with a hint and a named test. Row 7 has no input in
 the live app yet (it needs the cross-check agent, not built); it fires only in its unit test.
@@ -98,7 +98,12 @@ is logged with an estimated cost in `evidence/api-usage.md`.
 ## Known limits (stated, not hidden)
 
 - Entered drafts (typed by hand) can be certified; the certificate prints each draft's source and a
-  POSITIONS_ENTERED warning. It is a prototype, not a surveyor's document.
+  POSITIONS_ENTERED warning. A clip reading stands only for the midship pair (one clip films one mark column);
+  any other position claiming it is printed as entered. Typed numbers are range-checked (drafts 0-30 m, sg
+  0.990-1.040, deductibles and constants >= 0, tolerance 0-10 %) or answered 400. It is a prototype, not a
+  surveyor's document.
+- Ship u is the repeatability of the live draft (wave averaging) only: real ships have no absolute calibration. A
+  live barge upload gets no u_abs either; the systematic terms exist only for the synthetic renderer.
 - The absolute metre value rests on Spark's read, a second read >= 1 s later agreeing on >= 3 tokens, the wide-glyph
   anchor check and the user's confirmation of the anchor crop: a consistent whole-metre misread passes the geometry
   checks by construction, so the anchor confirmation is required on every live run.

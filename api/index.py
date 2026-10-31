@@ -26,8 +26,6 @@ VERSION = "0.3.0-p1d"
 ROOT = Path(__file__).resolve().parents[1]
 CLIPS = ROOT / "data" / "clips.json"  # registry of OUR committed fixture clips (public/clips/<id>.mp4)
 MAX_UPLOAD = 3 * 1024 * 1024
-# frozen nominal systematic terms for the barge strip (k=1, m): scripts/error_model_synthetic.py U_SYS
-BARGE_U_SYS = {"scale": 0.0004, "edge": 0.5 / 6.0 / 1000, "par": 0.0003}
 app = FastAPI(title="DraftMark API", docs_url="/api/py/docs", openapi_url="/api/py/openapi.json")
 SCALES = (1.0, 0.1)  # ship metric marks; the 1:10 barge strip
 MEAS_KEYS = ("d_m", "u_rep_m", "u_abs_m", "n_frames", "n_kept", "refused", "reason", "row1")
@@ -270,7 +268,7 @@ async def draft_ep(req: Request):
     body = await req.json()
     geom = body["geometry"]
     system = pipeline.system_of(geom)
-    u_sys = BARGE_U_SYS if system.scale < 1 else None
+    u_sys = None  # live uploads: no calibrated strip exists, so no u_abs (the synthetic renderer's U_SYS is not a calibration)
     lt = sign.token_ok("labels", body.get("labels_token")) if sign.geometry_ok(geom) else None
     if lt and lt["geometry_sig"] != geom["sig"]:
         lt = None
@@ -327,6 +325,11 @@ async def survey_ep(req: Request):
     # the measurement, label checks and called models come from the signed token, never from the body
     tok = sign.token_ok("measure", meas.get("token"))
     srv_in = dict(body.get("survey") or {}) if body.get("survey") else None
+    if srv_in is not None:
+        srv_in["sources"] = survey.clean_sources(srv_in.get("sources"))
+        bad = survey.validate(srv_in, body) if mode == "ship" else []
+        if bad:
+            return _err(400, "PAYLOAD", "; ".join(bad[:5]))
     claims_live = bool(meas.get("n_frames")) or any(v in ("live", "clip") for v in ((srv_in or {}).get("sources") or {}).values())
     unsigned = claims_live and tok is None
     live_src = any(v in ("live", "clip") for v in ((srv_in or {}).get("sources") or {}).values())
@@ -350,8 +353,7 @@ async def survey_ep(req: Request):
         if meas.get("d_m") is None:
             srv = {"program_author": "analytic", "out_of_table": False}
         else:
-            srv = survey.barge({"d_m": meas["d_m"], "u_m": u, "what_if": body.get("what_if"),
-                                "expected_u_kg": body.get("expected_u_kg")})
+            srv = survey.barge({"d_m": meas["d_m"], "u_m": u, "what_if": body.get("what_if")})  # no client expected u
         st = None
     else:
         p = survey.proven(body.get("booklet", "trieste"))
@@ -373,7 +375,8 @@ async def survey_ep(req: Request):
         extra_bk = {k: v for k, v in (body.get("booklet_info") or {}).items() if k not in bk}
         booklet = {**extra_bk, **bk}
     cert = certificate.build(mode, body.get("run_mode", "LIVE"), meas, lab, srv, st, extra=extra,
-                             clip=clip, booklet=booklet, run_id=body.get("run_id"), models=models)
+                             clip=clip, booklet=booklet, run_id=tok.get("run_id") if tok else body.get("run_id"),
+                             models=models)
     cert["inputs"] = "signed" if tok and not entered_only else ("unsigned" if unsigned else "entered")
     return {"ok": True, "certificate": cert}
 

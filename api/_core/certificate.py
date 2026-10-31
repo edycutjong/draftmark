@@ -40,7 +40,7 @@ def facts(mode: str, meas: dict | None, labels: dict | None, srv: dict, selftest
          "labels_ok": labels_ok, "anchor_ok": anchor_ok,
          "labels_typed": typed and bool(chk.get("ok")),  # typed labels escape rows 3 only if they pass the checks
          "out_of_table": srv.get("out_of_table"), "entered_inconsistent": srv.get("entered_inconsistent"),
-         "perturb_oot": srv.get("perturb_oot"), "cargo": srv.get("cargo"), "u_cargo": srv.get("u_cargo"),
+         "perturb_oot": srv.get("perturb_oot"), "program_error": srv.get("program_error"), "cargo": srv.get("cargo"), "u_cargo": srv.get("u_cargo"),
          "expected_u": srv.get("expected_u"), "n_entered": srv.get("n_entered"), "what_if": srv.get("what_if"),
          "d_mm": srv.get("d_mm"), "trim": srv.get("trim")}
     if selftest:

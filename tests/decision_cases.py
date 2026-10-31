@@ -17,6 +17,7 @@ CASES = {
     "NO_ANCHOR": ({**OK_SHIP, "anchor_ok": False}, "REFUSE", "NO_ANCHOR"),
     "OUT_OF_TABLE": ({**OK_SHIP, "out_of_table": True}, "REFUSE", "OUT_OF_TABLE"),
     "ENTERED_INCONSISTENT": ({**OK_SHIP, "entered_inconsistent": True}, "REFUSE", "ENTERED_INCONSISTENT"),
+    "PROGRAM_ERROR": ({**OK_SHIP, "program_error": True}, "REFUSE", "PROGRAM_ERROR"),
     "SELFTEST_FAIL": ({**OK_SHIP, "selftest_verdict": "FAIL"}, "REFUSE", "SELFTEST_FAIL"),
     "U_TOO_WIDE_SHIP": ({**OK_SHIP, "u_cargo": 51.0}, "REFUSE", "U_TOO_WIDE"),
     "U_TOO_WIDE_BARGE": ({**OK_BARGE, "u_cargo": 0.0121}, "REFUSE", "U_TOO_WIDE"),
