@@ -139,6 +139,8 @@ python3 -m pytest -q       # 124 tests
 ruff check . && npm run typecheck && npm run build
 ```
 
+GitHub Actions (`.github/workflows/`): `ci.yml` (ruff, pytest, typecheck, build, pip-audit, npm audit, gitleaks over full history), `codeql.yml` (Python + TypeScript), and `deploy.yml` (production deploy to Vercel only after CI succeeds on `main`). Dependabot covers npm, pip and Actions.
+
 ## 📁 Project Structure
 
 ```
