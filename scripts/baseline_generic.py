@@ -2,7 +2,7 @@
 booklet's conventions, run through the same sandbox self-test as Wonder's program.
 
 Textbook assumptions it makes (each one wrong for this booklet): LCF is measured from
-midships; the table's MTC column is per cm; the "140" in the mark formulas is Lpp.
+midships; the table's MTC column is per cm; Lpp = 140 (the "140" in the mark formulas).
 It reads OUR extracted table (passed as `ship`), so only the conventions differ.
 
   python scripts/baseline_generic.py

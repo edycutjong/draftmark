@@ -10,6 +10,13 @@ from api._core import selftest
 P = ROOT / "data" / "programs" / "trieste"
 
 
+def _count(xs):
+    out = {}
+    for x in xs:
+        out[x] = out.get(x, 0) + 1
+    return out
+
+
 def ref_row_table(conds):
     out = ["| cond | page | printed disp (t) | reference (t) | err % | booklet-verbatim (t) | err % |", "|---|---|---|---|---|---|---|"]
     for c in conds:
@@ -73,7 +80,9 @@ def main():
          f"- Our reference program (`api/_core/reference_survey.py`, written before Wonder was called): {ref_pass} of {n}.",
          f"- The booklet's §3.1 procedure applied verbatim (no second trim correction): {verb_pass} of {n}.",
          f"- A generic textbook template that does not read this booklet's conventions (`scripts/baseline_generic.py`): "
-         f"{base['pass_count']} of {base['n']}; first diverging intermediate `d_fp` on every row.", "",
+         f"{base['pass_count']} of {base['n']}; first diverging intermediate per row: "
+         + ", ".join(f"`{k}` {v}" for k, v in sorted(_count(r['first_diverging'] for r in base['rows']).items(),
+                                                      key=lambda kv: -kv[1])) + ".", "",
          "## What the booklet hides (and Wonder found)",
          "- Lpp = 150 m, but the mark formulas divide by 140 (the distance between the draft marks).",
          "- LCF is measured from the AP; the table's MTcm column is per DEGREE (heading) though the legend says per cm.",

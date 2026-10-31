@@ -15,7 +15,7 @@ with our reference program within 0.05 %. Every program runs in the sandbox (`ap
 - **Default proven program:** `data/programs/trieste/run-booklet-only/program.py` by muse-wonder-1.0, sha256 `4b3aa8cd94879978…`, response `resp_6ae5a63a238297fff10f457e`, regenerations 2: **22 of 22 printed conditions**, probes raised [True, True], differential 200 cases max 0.00007 %, verdict **PASS**.
 - Our reference program (`api/_core/reference_survey.py`, written before Wonder was called): 22 of 22.
 - The booklet's §3.1 procedure applied verbatim (no second trim correction): 14 of 22.
-- A generic textbook template that does not read this booklet's conventions (`scripts/baseline_generic.py`): 0 of 22; first diverging intermediate `d_fp` on every row.
+- A generic textbook template that does not read this booklet's conventions (`scripts/baseline_generic.py`): 0 of 22; first diverging intermediate per row: `d_ap` 15, `d_fp` 6, `corr_trim1` 1.
 
 ## What the booklet hides (and Wonder found)
 - Lpp = 150 m, but the mark formulas divide by 140 (the distance between the draft marks).
