@@ -1,12 +1,21 @@
+# secrets
 .env
-.env.*
+.env*
+!.env.example
+*.pem
+# kitchen / third-party material never enters the repo
+fixtures/
+*.pdf
+.cache/
+# build output
 node_modules/
-__pycache__/
 .next/
+out/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+.vercel
+.DS_Store
 dist/
 coverage/
-.DS_Store
-.vercel/
-*.pdf
-fixtures/
-.venv/
