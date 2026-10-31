@@ -642,6 +642,7 @@ export function SurveyFlow() {
             labels={finalLabels}
             clip={measure.state === "done" ? measure.data.clip : { id: fixture ?? "upload" }}
             usage={usage}
+            anchorConfirmed={anchor === "confirmed" ? true : anchor === "rejected" ? false : null}
           />
         ) : null}
       </Station>
@@ -694,7 +695,9 @@ function SurveyStation({
   labels,
   clip,
   usage,
+  anchorConfirmed,
 }: {
+  anchorConfirmed: boolean | null;
   mode: "ship" | "barge";
   runId: string;
   geom: Geometry;
@@ -722,10 +725,19 @@ function SurveyStation({
 
   const body = useMemo(() => {
     const measure = { ...draft.result, row1: geom.row1 };
-    const common = { run_mode: "LIVE", run_id: runId, measure, labels, clip: { id: clip.id, source: clip.source ?? "upload" } };
+    const models = Array.from(new Set(usage.map((u) => u.model)));
+    const common = {
+      run_mode: "LIVE",
+      run_id: runId,
+      measure,
+      labels: { ...labels, anchor_confirmed: labels.typed ? null : anchorConfirmed },
+      models,
+      clip: { id: clip.id, source: clip.source ?? "upload" },
+    };
     if (mode === "barge") {
       return { ...common, mode, what_if: whatIfOn && whatIf != null ? { rho_kg_m3: whatIf * 1000 } : null };
     }
+    if (!isNum(d)) return { ...common, mode, survey: null }; // measurement refused: the certificate says why
     const dd = Object.fromEntries(POSITIONS.map((p) => [p, num(drafts[p])]));
     if (Object.values(dd).some((v) => v === undefined)) return null;
     const deductibles = Object.fromEntries(Object.entries(ded).filter(([, v]) => num(v) !== undefined).map(([k, v]) => [k, num(v)]));
@@ -744,7 +756,7 @@ function SurveyStation({
       ...(num(bl) !== undefined ? { bl: num(bl) } : {}),
       ...(num(tol) !== undefined ? { tol_pct: num(tol) } : {}),
     };
-  }, [mode, runId, draft, geom.row1, labels, clip, drafts, sg, ded, lightship, initialNet, bl, tol, whatIfOn, whatIf]);
+  }, [mode, runId, draft, d, geom.row1, labels, anchorConfirmed, usage, clip, drafts, sg, ded, lightship, initialNet, bl, tol, whatIfOn, whatIf]);
 
   // debounced re-POST: every input (density included) moves every number
   useEffect(() => {

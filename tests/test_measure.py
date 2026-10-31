@@ -45,3 +45,16 @@ def test_refuses_when_frames_low():
     toks, water, lab = _clip([13.3] * 10)
     _, res = measure.measure_clip(toks, water, lab, marks.SHIP)
     assert res.refused and res.reason == "FRAMES_LOW"
+
+
+def test_track_swap_drops_the_frame():
+    from api._core import marks
+    objs, water = ship_frame()
+    toks = marks.group_glyphs(objs, marks.SHIP)
+    labs = ["12M", "2", "4", "6", "8", "13M", "2", "4"]
+    drafts = dict(zip([t.track for t in toks], marks.labels_to_drafts(labs)))
+    ok = measure.frame_draft(0, toks, drafts, [water], marks.SHIP)
+    a, b = toks[-1].track, toks[-2].track  # SAM swapped two dry ids: their stored drafts no longer follow height
+    drafts[a], drafts[b] = drafts[b], drafts[a]
+    bad = measure.frame_draft(0, toks, drafts, [water], marks.SHIP)
+    assert ok.kept and (bad.kept, bad.drop_reason) == (False, "TRACK_UNSTABLE")

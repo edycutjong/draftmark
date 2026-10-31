@@ -252,7 +252,10 @@ export function Certificate({ run }: { run: Run }) {
       </Line>
 
       <Line n="060" title="Models">
-        <p className="data">{c.models.join(" · ")}</p>
+        <p className="data">
+          {c.models.length ? `Called in this run: ${c.models.join(" · ")}` : "No model was called in this run."}
+          {c.program_author ? ` Survey program author: ${c.program_author}.` : ""}
+        </p>
         {run.usage && run.usage.length ? <ModelStrip rows={run.usage} label="Calls in this run" /> : null}
       </Line>
 

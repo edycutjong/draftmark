@@ -81,6 +81,11 @@ def frame_draft(i: int, tokens: list[Token], drafts: dict[str, float], water: li
     if len(dry) < 3:
         fg.drop_reason = "DRY_MARKS_LOW"
         return fg
+    # track ids must keep the label order: higher on screen (smaller y) = deeper draft mark
+    by_y = sorted(dry, key=lambda t: -t.mask_bottom())
+    if any(drafts[b.track] <= drafts[a.track] for a, b in zip(by_y, by_y[1:])):
+        fg.drop_reason = "TRACK_UNSTABLE"
+        return fg
     z = np.array([drafts[t.track] for t in dry], dtype=float)
     y = np.array([t.mask_bottom() for t in dry], dtype=float)
     X = np.column_stack([np.ones_like(z), z])

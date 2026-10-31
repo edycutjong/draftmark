@@ -21,9 +21,15 @@ def facts(mode: str, meas: dict | None, labels: dict | None, srv: dict, selftest
     meas = meas or {}
     chk = (labels or {}).get("checks") or {}
     typed = bool((labels or {}).get("typed"))
+    measured = bool(meas.get("n_frames"))  # a clip was measured: its labels must exist and pass (fail closed)
+    if chk:
+        labels_ok = all(chk.get(k) for k in ("monotone", "pitch", "residual", "cross_frame"))
+        anchor_ok = bool(chk.get("anchor")) and (labels or {}).get("anchor_confirmed") is not False
+    else:
+        labels_ok = anchor_ok = not measured
     f = {"mode": mode, "row1": meas.get("row1"), "n_frames": meas.get("n_frames"), "n_kept": meas.get("n_kept"),
-         "labels_ok": (all(chk.get(k) for k in ("monotone", "pitch", "residual", "cross_frame")) if chk else True),
-         "anchor_ok": chk.get("anchor", True) if chk else True, "labels_typed": typed,
+         "measure_refused": meas.get("reason") if meas.get("refused") else None,
+         "labels_ok": labels_ok, "anchor_ok": anchor_ok, "labels_typed": typed,
          "out_of_table": srv.get("out_of_table"), "entered_inconsistent": srv.get("entered_inconsistent"),
          "perturb_oot": srv.get("perturb_oot"), "cargo": srv.get("cargo"), "u_cargo": srv.get("u_cargo"),
          "expected_u": srv.get("expected_u"), "n_entered": srv.get("n_entered"), "what_if": srv.get("what_if"),
@@ -51,15 +57,17 @@ def build(mode: str, run_mode: str, meas: dict | None, labels: dict | None, srv:
         "decision_row": dec.row,
         "draft": {k: meas.get(k) for k in ("d_m", "u_rep_m", "u_abs_m", "n_frames", "n_kept", "n_eff", "rho1",
                                              "swell_p5_p95", "label_shift_sensitivity_m", "drops")},
-        "labels": {"read_by": "typed" if (labels or {}).get("typed") else meta.SPARK,
-                   "degraded": bool((labels or {}).get("typed")),
-                   "checks": (labels or {}).get("checks")} if labels is not None else None,
+        "labels": {"read_by": ("typed" if labels.get("typed") else "synthetic truth (no image, no model)"
+                               if labels.get("synthetic") else meta.SPARK),
+                   "degraded": bool(labels.get("typed")),
+                   "anchor_confirmed": labels.get("anchor_confirmed"),
+                   "checks": labels.get("checks")} if labels is not None else None,
         "survey": srv,
         "selftest": selftest,
         "program_author": srv.get("program_author"),
         "response_id": srv.get("response_id"),
         "regen_count": srv.get("regen_count"),
-        "models": models or [meta.SAM, meta.SPARK] + ([meta.WONDER] if mode == "ship" else []),
+        "models": sorted({m for m in (models or []) if m in meta.ALLOWED_MODELS}),  # models CALLED in this run
         "clip": clip, "booklet": booklet,
         "facts": f,
         "footer": FOOTER,
@@ -67,5 +75,7 @@ def build(mode: str, run_mode: str, meas: dict | None, labels: dict | None, srv:
     }
     if dec.decision == D.REFUSE:
         # a refusal prints no cargo figure, only the evidence for the refusal
-        cert["survey"] = {k: v for k, v in srv.items() if k not in ("cargo", "net", "disp", "u_cargo", "u_disp")}
+        hide = ("cargo", "net", "disp", "u_cargo", "u_disp")
+        cert["survey"] = {k: v for k, v in srv.items() if k not in hide}
+        cert["facts"] = {k: v for k, v in f.items() if k not in hide}
     return cert

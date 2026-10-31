@@ -122,7 +122,8 @@ async def measure_ep(req: Request):
     sam_ms = int((time.time() - t0) * 1000)
     texts = [meta.output_text(r) for r in resps]
     system = marks.MarkSystem(scale=float(info.get("scale", 1.0)))
-    n = int(info["frames"] or 0) or 1 + max((int(m) for m in re.findall(r"<(\d+)f>", texts[0])), default=0)
+    observed = 1 + max((int(m) for t in texts for m in re.findall(r"<(\d+)f>", t)), default=0)
+    n = max(int(info["frames"] or 0), observed)  # never trust a client-declared count below what SAM returned
     t1 = time.time()
     geom = pipeline.geometry(texts[0], texts[1], n, info["fps"], system, info.get("crop"))
     return {"ok": True, "run_id": run_id, "clip": {k: info.get(k) for k in ("id", "source", "fps", "frames",
@@ -147,22 +148,31 @@ async def labels_ep(req: Request):
     toks, _ = pipeline.rebuild(geom)
     strip = marks.strip_sequence() if system.scale < 1 else None
     typed = body.get("typed")
+    lf = geom.get("label_frames")
     if typed:  # {track: label}; the user typed the values: same checks, run marked degraded
-        f1 = int(body.get("frame") or geom["label_frames"][0])
+        if body.get("frame") is None and not lf:
+            return _err(400, "LABEL_FRAMES", "no label frame in this geometry")
+        f1 = int(body.get("frame") if body.get("frame") is not None else lf[0])
+        if f1 not in toks:
+            return _err(400, "LABEL_FRAMES", "frame not in geometry")
         drafts, chk = marks.check_labels(toks[f1], typed, typed, system, strip)
         return {"ok": True, "typed": True, "drafts": drafts, "checks": chk.as_dict(), "reads": {}, "usage": []}
     blocked = _gate(req, False, None)
     if blocked:
         return blocked
-    frames = {int(k): v for k, v in body["frames"].items()}
+    frames = {int(k): v for k, v in (body.get("frames") or {}).items()}
+    if not lf or set(frames) != set(lf):  # exactly the two frames >= 1 s apart chosen by /measure
+        return _err(400, "LABEL_FRAMES", f"send exactly the label frames {lf}")
     cl = _client(body.get("run_id") or f"live-{int(time.time())}")
     reads, rids = {}, []
     try:
+        hint = None
         for attempt in (1, 2):
-            def one(item, attempt=attempt):
+            def one(item, attempt=attempt, hint=hint):
                 f, url = item
                 img, numbering = labels.annotate(_img(url), toks[f])
-                return f, *labels.read(cl, img, numbering, system, feature=f"spark labels f{f} try {attempt}")
+                return f, *labels.read(cl, img, numbering, system, feature=f"spark labels f{f} try {attempt}",
+                                       hint=hint)
 
             with ThreadPoolExecutor(2) as ex:  # the two reads are independent: run them concurrently
                 got = list(ex.map(one, frames.items()))
@@ -171,11 +181,24 @@ async def labels_ep(req: Request):
             drafts, chk = pipeline.check(geom, reads, strip)
             if chk.ok:
                 break
+            hint = _retry_hint(chk)
     except Exception as e:  # noqa: BLE001
         return _meta_fail(e)
     return {"ok": True, "typed": False, "drafts": drafts, "checks": chk.as_dict(), "attempts": attempt,
             "reads": {str(k): v for k, v in reads.items()}, "response_ids": rids,
             "usage": [meta.as_dict(r) for r in cl.rows]}
+
+
+def _retry_hint(chk: marks.CheckResult) -> str:
+    """The re-read prompt carries what failed (never the expected answer)."""
+    d = chk.as_dict()
+    failed = [k for k in ("monotone", "pitch", "residual", "cross_frame", "anchor") if not d.get(k)]
+    parts = [f"failed: {', '.join(failed)}"]
+    if d.get("disagree"):
+        parts.append(f"the two frames disagree on tracks {d['disagree']}")
+    if d.get("gaps_in_pitches"):
+        parts.append(f"gaps between boxes, in mark pitches: {d['gaps_in_pitches']}")
+    return "; ".join(parts) + ". Read each box again exactly as painted; answer '?' if unsure."
 
 
 @app.post("/api/py/draft")
@@ -221,13 +244,18 @@ async def survey_ep(req: Request):
         st = None
     else:
         p = survey.proven(body.get("booklet", "trieste"))
-        srv = survey.ship(body["survey"], p)
+        if body.get("survey"):
+            srv = survey.ship(body["survey"], p)
+        else:  # the measurement refused before any draft existed: certify the refusal, run no program
+            srv = {"program_author": p["meta"]["program_author"], "response_id": p["meta"].get("response_id"),
+                   "regen_count": p["meta"].get("regen_count"), "out_of_table": False}
         st = survey.selftest_summary(p["selftest"])
         st["failed_rows"] = survey.failed_rows(p["selftest"])
         st["fallback"] = None
     cert = certificate.build(mode, body.get("run_mode", "LIVE"), meas, lab, srv, st,
                              extra={k: body.get(k) for k in ("bl", "tol_pct") if body.get(k) is not None},
-                             clip=body.get("clip"), booklet=body.get("booklet_info"), run_id=body.get("run_id"))
+                             clip=body.get("clip"), booklet=body.get("booklet_info"), run_id=body.get("run_id"),
+                             models=body.get("models"))
     return {"ok": True, "certificate": cert}
 
 

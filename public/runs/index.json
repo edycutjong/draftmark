@@ -1,14 +1,6 @@
 {
  "runs": [
   {
-   "run_id": "rec-trieste-20261031",
-   "kind": "booklet-proof",
-   "title": "Wonder's survey program proves itself on the Trieste booklet (no scale truth)",
-   "date": "2026-10-31 16:06 +0700",
-   "decision": "ISSUE_WITH_WARNING",
-   "reason": null
-  },
-  {
    "run_id": "rec-db7x-20261031",
    "kind": "public-clip",
    "title": "Real hull test clip dB7X_t45 (no ground truth)",
@@ -25,10 +17,18 @@
    "reason": "OUT_OF_TABLE"
   },
   {
+   "run_id": "rec-trieste-20261031",
+   "kind": "booklet-proof",
+   "title": "Wonder's survey program proves itself on the Trieste booklet (no scale truth)",
+   "date": "2026-10-31 16:38 +0700",
+   "decision": "ISSUE_WITH_WARNING",
+   "reason": null
+  },
+  {
    "run_id": "synth-barge-s3",
    "kind": "synthetic",
    "title": "Mini-barge, SYNTHETIC geometry (seed 3; not SAM, not the scale)",
-   "date": "2026-10-31 16:30 +0700",
+   "date": "2026-10-31 16:38 +0700",
    "decision": "ISSUE_WITH_WARNING",
    "reason": null
   }

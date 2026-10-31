@@ -139,7 +139,7 @@ export function WaveChart({
       </svg>
       <figcaption className="wave__legend">
         <span className="key key--before">per-frame draft</span>
-        <span className="key key--after">running mean ± band</span>
+        <span className="key key--after">running mean (band: illustrative, narrows to ± u)</span>
         <span className="key key--swell">swell p5–p95</span>
         {dropped.length ? <span className="key key--drop">dropped frame</span> : null}
       </figcaption>

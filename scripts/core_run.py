@@ -78,21 +78,31 @@ def fmt(x, nd=3):
     return "-" if x is None else (f"{x:.{nd}f}" if isinstance(x, float) else str(x))
 
 
-def run_clip(name: str):
+def run_clip(name: str, reuse: bool = False):
     spent = meta.ledger_total()
     if spent >= meta.DEV_CAP_USD:  # the server client has no ledger; the local cap is enforced here
         raise SystemExit(f"dev cap ${meta.DEV_CAP_USD} reached (${spent:.2f})")
     clip = CACHE / "clips" / f"{name}.mp4"
     info = json.loads(clip.with_suffix(".json").read_text())
     run_id = f"rec-{name.split('_')[0].lower()}-{time.strftime('%Y%m%d')}"
-    upload = "data:video/mp4;base64," + base64.b64encode(clip.read_bytes()).decode()
-    m, ms_m = post("/api/py/measure", {"upload": upload, "judge_code": os.environ["JUDGE_CODE"], "fps": info["fps"],
-                                       "frames": info["frames"], "scale": 1.0, "run_id": run_id})
-    g = m["geometry"]
-    usage = list(m["usage"])
-    steps = [("measure", "SAM 3.1 video x2 concepts", ms_m, ", ".join(m["response_ids"]))]
-    lab = None
-    if g["row1"] is None and g["label_frames"]:
+    old = next((json.loads(p.read_text()) for p in RUNS.glob(f"rec-{name.split('_')[0].lower()}-*.json")), None)
+    if reuse and old:  # re-certify from the stored SAM geometry + Spark reads (no Meta call)
+        run_id, g, lab, usage = old["run_id"], old["geometry"], old["labels"], old["usage"]
+        sam_ids = [u["response_id"] for u in usage if u["model"] == meta.SAM]
+        spark_ids = [u["response_id"] for u in usage if u["model"] == meta.SPARK]
+        steps = [("measure", "SAM 3.1 video x2 concepts (stored)", old["timing_ms"]["measure"], ", ".join(sam_ids)),
+                 ("labels", f"Spark 1.3 x{len(spark_ids)} + 5 code checks (stored)", old["timing_ms"]["labels"],
+                  ", ".join(spark_ids))]
+    else:
+        upload = "data:video/mp4;base64," + base64.b64encode(clip.read_bytes()).decode()
+        m, ms_m = post("/api/py/measure", {"upload": upload, "judge_code": os.environ["JUDGE_CODE"],
+                                           "fps": info["fps"], "frames": info["frames"], "scale": 1.0,
+                                           "run_id": run_id})
+        g = m["geometry"]
+        usage = list(m["usage"])
+        steps = [("measure", "SAM 3.1 video x2 concepts", ms_m, ", ".join(m["response_ids"]))]
+        lab = None
+    if not (reuse and old) and g["row1"] is None and g["label_frames"]:
         lab, ms_l = post("/api/py/labels", {"geometry": g, "frames": jpeg_frames(clip, g["label_frames"]),
                                             "run_id": run_id})
         usage += lab["usage"]
@@ -115,16 +125,18 @@ def run_clip(name: str):
     if srv_in:
         c, ms_s = post("/api/py/survey", {"mode": "ship", "run_mode": "RECORDED", "measure": measure_facts,
                                           "labels": {"checks": lab["checks"]} if lab else None,
+                                          "models": sorted({u["model"] for u in usage}),
                                           "survey": srv_in, "run_id": run_id,
                                           "clip": {"id": name, "source": CLIP_SRC.get(name),
                                                    "note": "third-party test clip, no ground truth, not re-hosted"}})
         cert = c["certificate"]
         steps.append(("survey + certificate", "proven program, one sandbox launch", ms_s, ""))
-    ledger(usage)
+    if not (reuse and old):
+        ledger(usage)
     run = {"run_id": run_id, "kind": "public-clip", "title": f"Real hull test clip {name} (no ground truth)",
-           "date": time.strftime("%Y-%m-%d %H:%M %z"), "clip": {"id": name, "source": CLIP_SRC.get(name), **info},
+           "date": old["date"] if (reuse and old) else time.strftime("%Y-%m-%d %H:%M %z"), "clip": {"id": name, "source": CLIP_SRC.get(name), **info},
            "geometry": g, "labels": lab, "draft": d, "certificate": cert or {"decision": "REFUSE",
-                                                                              "reason": g["row1"] or "LABEL_FAIL"},
+                                                                              "reason": g["row1"] or res.get("reason") or "LABEL_FAIL"},
            "usage": usage, "timing_ms": {s[0]: s[2] for s in steps}}
     path = save_run(run)
     usd = sum(u["est_usd"] for u in usage)
@@ -223,7 +235,7 @@ def run_synth(seed: int):
     run_id = f"synth-barge-s{seed}"
     c, ms_s = post("/api/py/survey", {"mode": "barge", "run_mode": "RECORDED", "run_id": run_id,
                                       "measure": {**res, "row1": g["row1"]},
-                                      "labels": {"checks": chk.as_dict()},
+                                      "labels": {"checks": chk.as_dict(), "synthetic": True}, "models": [],
                                       "clip": {"id": run_id, "source": "synthetic (scripts/error_model_synthetic.py)"}})
     cert = c["certificate"]
     bk = survey.barge_booklet()
@@ -265,10 +277,11 @@ def main():
     ap.add_argument("name", nargs="?")
     ap.add_argument("--cond", default="4.1")
     ap.add_argument("--seed", type=int, default=3)
+    ap.add_argument("--reuse", action="store_true", help="clip: re-certify from the stored run (no Meta call)")
     a = ap.parse_args()
     meta.load_local_env()
     if a.what == "clip":
-        run_clip(a.name)
+        run_clip(a.name, a.reuse)
     elif a.what == "trieste":
         run_trieste(a.cond)
     else:

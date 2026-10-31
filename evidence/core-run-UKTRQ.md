@@ -4,10 +4,10 @@ Run `rec-uktrq-20261031` on 2026-10-31 16:08 +0700 by `scripts/core_run.py clip 
 
 | station | what ran | ms | Meta response ids |
 |---|---|---|---|
-| measure | SAM 3.1 video x2 concepts | 14697 | resp_6ae5aff3a1dd4facbd3f4669, resp_6ae5aff313ac34f042304dee |
-| labels | Spark 1.3 x2 + 5 code checks | 46011 | resp_6ae5b00343caa8de0c3548cb, resp_6ae5b02b599a1c9ed28d4118 |
-| draft | pure code | 46 |  |
-| survey + certificate | proven program, one sandbox launch | 44 |  |
+| measure | SAM 3.1 video x2 concepts (stored) | 14697 | resp_6ae5aff3a1dd4facbd3f4669, resp_6ae5aff313ac34f042304dee |
+| labels | Spark 1.3 x2 + 5 code checks (stored) | 46011 | resp_6ae5b00343caa8de0c3548cb, resp_6ae5b02b599a1c9ed28d4118 |
+| draft | pure code | 108 |  |
+| survey + certificate | proven program, one sandbox launch | 45 |  |
 
 | measure | value |
 |---|---|

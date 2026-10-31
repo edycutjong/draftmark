@@ -73,9 +73,13 @@ def test_typed_labels_then_draft():
     assert d["result"]["n_kept"] == 12 and 12.6 < d["result"]["d_m"] < 12.8
 
 
+OK_LABELS = {"checks": {k: True for k in ("monotone", "pitch", "residual", "cross_frame", "anchor")}}
+
+
 def test_survey_ship_out_of_table_refuses_without_cargo():
     s = {"drafts": {p: 12.73 for p in ("fore_p", "fore_s", "mid_p", "mid_s", "aft_p", "aft_s")}, "sg": 1.025}
-    c = api.post("/api/py/survey", json={"mode": "ship", "survey": s, "measure": {"n_frames": 12, "n_kept": 12}})
+    c = api.post("/api/py/survey", json={"mode": "ship", "survey": s, "measure": {"n_frames": 12, "n_kept": 12},
+                                          "labels": OK_LABELS})
     cert = c.json()["certificate"]
     assert (cert["decision"], cert["reason"]) == ("REFUSE", "OUT_OF_TABLE") and "cargo" not in cert["survey"]
     assert cert["footer"].startswith("Prototype")
@@ -83,9 +87,11 @@ def test_survey_ship_out_of_table_refuses_without_cargo():
 
 def test_survey_barge_issue_and_what_if():
     m = {"d_m": 0.12, "u_abs_m": 0.0005, "n_frames": 32, "n_kept": 32}
-    c = api.post("/api/py/survey", json={"mode": "barge", "measure": m}).json()["certificate"]
+    c = api.post("/api/py/survey", json={"mode": "barge", "measure": m, "labels": OK_LABELS}).json()["certificate"]
     assert c["decision"] == "ISSUE" and c["program_author"] == "analytic" and c["proof"] == "measurement"
-    c = api.post("/api/py/survey", json={"mode": "barge", "measure": m, "what_if": {"rho_kg_m3": 1000}}).json()
+    assert c["models"] == []  # no model was called in this request
+    c = api.post("/api/py/survey", json={"mode": "barge", "measure": m, "labels": OK_LABELS,
+                                         "what_if": {"rho_kg_m3": 1000}}).json()
     assert c["certificate"]["decision"] == "NOT_SCORED"
 
 
@@ -94,3 +100,30 @@ def test_selftest_rerun_and_program():
     assert st["verdict"] == "PASS" and st["pass_count"] == 22
     p = api.get("/api/py/program").json()
     assert p["meta"]["program_author"] == "muse-wonder-1.0" and "def survey" in p["code"]
+
+
+def test_measured_clip_without_labels_fails_closed():
+    m = {"d_m": 0.12, "u_abs_m": 0.0005, "n_frames": 32, "n_kept": 32}
+    c = api.post("/api/py/survey", json={"mode": "barge", "measure": m}).json()["certificate"]
+    assert (c["decision"], c["reason"]) == ("REFUSE", "LABEL_FAIL")
+
+
+def test_rejected_anchor_refuses():
+    m = {"d_m": 0.12, "u_abs_m": 0.0005, "n_frames": 32, "n_kept": 32}
+    lab = {**OK_LABELS, "anchor_confirmed": False}
+    c = api.post("/api/py/survey", json={"mode": "barge", "measure": m, "labels": lab}).json()["certificate"]
+    assert (c["decision"], c["reason"]) == ("REFUSE", "NO_ANCHOR") and c["labels"]["anchor_confirmed"] is False
+
+
+def test_ship_measurement_refusal_is_certified_without_a_survey():
+    m = {"d_m": None, "refused": True, "reason": "FRAMES_LOW", "n_frames": 60, "n_kept": 20}
+    c = api.post("/api/py/survey", json={"mode": "ship", "measure": m, "labels": OK_LABELS,
+                                         "survey": None, "models": ["sam-3.1", "not-a-model"]}).json()["certificate"]
+    assert (c["decision"], c["reason"]) == ("REFUSE", "FRAMES_LOW") and c["models"] == ["sam-3.1"]
+    assert "cargo" not in c["facts"]
+
+
+def test_labels_require_the_measure_label_frames():
+    g = _geom()
+    r = api.post("/api/py/labels", json={"geometry": g, "frames": {"0": "data:image/jpeg;base64,AA"}})
+    assert r.status_code == 400 and r.json()["reason"] == "LABEL_FRAMES"

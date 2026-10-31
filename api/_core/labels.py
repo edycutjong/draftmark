@@ -55,14 +55,14 @@ def schema(numbers: list[str], system: MarkSystem) -> dict:
 
 
 def read(client: meta.Client, img: Image.Image, numbering: dict[str, str], system: MarkSystem,
-         feature: str = "spark label read") -> tuple[dict[str, str], dict]:
+         feature: str = "spark label read", hint: str | None = None) -> tuple[dict[str, str], dict]:
     buf = io.BytesIO()
     img.save(buf, "JPEG", quality=90)
     url = meta.bytes_data_url(buf.getvalue(), "image/jpeg")
     body = {
         "model": meta.SPARK,
         "input": [{"type": "message", "role": "user", "content": [
-            {"type": "input_text", "text": PROMPT},
+            {"type": "input_text", "text": PROMPT + (f" A previous reading failed these code checks: {hint}" if hint else "")},
             {"type": "input_image", "image_url": url}]}],
         "text": {"format": {"type": "json_schema", "name": "draft_mark_labels", "strict": True,
                             "schema": schema(list(numbering), system)}},

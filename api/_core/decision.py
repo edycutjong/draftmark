@@ -69,7 +69,7 @@ def _w(code: str, detail: str | None = None) -> dict:
 
 def decide(f: dict) -> Decision:
     """f: facts gathered by the pipeline (all optional except mode). Keys:
-    mode ship|barge; row1 (reason or None); n_frames, n_kept; labels_ok, labels_typed, anchor_ok;
+    mode ship|barge; row1 (reason or None); n_frames, n_kept, measure_refused; labels_ok, labels_typed, anchor_ok;
     out_of_table, entered_inconsistent; selftest_verdict PASS|FAIL, fallback (reference|None);
     failed_rows [{cond_id, d_mm, trim}], d_mm, trim; cargo, u_cargo, expected_u (barge), perturb_oot;
     contradiction (Tier 3); bl, tol_pct; n_entered (ship); what_if (barge)."""
@@ -78,7 +78,7 @@ def decide(f: dict) -> Decision:
         return _refuse(f["row1"], 1)
     n, k = f.get("n_frames") or 0, f.get("n_kept") or 0
     frac = k / n if n else 0.0
-    if n and frac < KEPT_REFUSE:
+    if (n and frac < KEPT_REFUSE) or f.get("measure_refused") == "FRAMES_LOW":
         return _refuse("FRAMES_LOW", 2)
     if not f.get("labels_ok", True) and not f.get("labels_typed"):
         return _refuse("LABEL_FAIL", 3)

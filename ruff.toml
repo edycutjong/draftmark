@@ -1,0 +1,2 @@
+line-length = 120
+extend-exclude = ["data/programs"]  # model-written programs: judged by the sandbox self-test, not by our linter
