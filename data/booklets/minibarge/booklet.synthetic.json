@@ -1,0 +1,330 @@
+{
+ "id": "minibarge-synthetic",
+ "note": "SYNTHETIC placeholder until the human's barge.md (outer L, B, light weight, zero offset) exists; analytic oracle, never counted in the Trieste X of N",
+ "barge": {
+  "L_m": 0.1,
+  "B_m": 0.1,
+  "light_kg": 0.18,
+  "zero_offset_m": 0.0,
+  "rho_kg_m3": 997.0
+ },
+ "table": [
+  {
+   "draft_m": 0.01,
+   "disp_kg": 0.0997,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.015,
+   "disp_kg": 0.1496,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.02,
+   "disp_kg": 0.1994,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.025,
+   "disp_kg": 0.2493,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.03,
+   "disp_kg": 0.2991,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.035,
+   "disp_kg": 0.349,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.04,
+   "disp_kg": 0.3988,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.045,
+   "disp_kg": 0.4487,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.05,
+   "disp_kg": 0.4985,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.055,
+   "disp_kg": 0.5484,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.06,
+   "disp_kg": 0.5982,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.065,
+   "disp_kg": 0.6481,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.07,
+   "disp_kg": 0.6979,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.075,
+   "disp_kg": 0.7478,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.08,
+   "disp_kg": 0.7976,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.085,
+   "disp_kg": 0.8475,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.09,
+   "disp_kg": 0.8973,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.095,
+   "disp_kg": 0.9472,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.1,
+   "disp_kg": 0.997,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.105,
+   "disp_kg": 1.0469,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.11,
+   "disp_kg": 1.0967,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.115,
+   "disp_kg": 1.1466,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.12,
+   "disp_kg": 1.1964,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.125,
+   "disp_kg": 1.2463,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.13,
+   "disp_kg": 1.2961,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.135,
+   "disp_kg": 1.346,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.14,
+   "disp_kg": 1.3958,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.145,
+   "disp_kg": 1.4457,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.15,
+   "disp_kg": 1.4955,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.155,
+   "disp_kg": 1.5454,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.16,
+   "disp_kg": 1.5952,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.165,
+   "disp_kg": 1.6451,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.17,
+   "disp_kg": 1.6949,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.175,
+   "disp_kg": 1.7448,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.18,
+   "disp_kg": 1.7946,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.185,
+   "disp_kg": 1.8445,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.19,
+   "disp_kg": 1.8943,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.195,
+   "disp_kg": 1.9442,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.2,
+   "disp_kg": 1.994,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.205,
+   "disp_kg": 2.0439,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.21,
+   "disp_kg": 2.0937,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.215,
+   "disp_kg": 2.1436,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.22,
+   "disp_kg": 2.1934,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.225,
+   "disp_kg": 2.2433,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.23,
+   "disp_kg": 2.2931,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.235,
+   "disp_kg": 2.343,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.24,
+   "disp_kg": 2.3928,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.245,
+   "disp_kg": 2.4427,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.25,
+   "disp_kg": 2.4925,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.255,
+   "disp_kg": 2.5424,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.26,
+   "disp_kg": 2.5922,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.265,
+   "disp_kg": 2.6421,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.27,
+   "disp_kg": 2.6919,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.275,
+   "disp_kg": 2.7418,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.28,
+   "disp_kg": 2.7916,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.285,
+   "disp_kg": 2.8415,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.29,
+   "disp_kg": 2.8913,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.295,
+   "disp_kg": 2.9412,
+   "kg_per_mm": 0.00997
+  },
+  {
+   "draft_m": 0.3,
+   "disp_kg": 2.991,
+   "kg_per_mm": 0.00997
+  }
+ ],
+ "worked": [
+  {
+   "cargo_kg": 0.6,
+   "expected_strip_draft_m": 0.07823
+  },
+  {
+   "cargo_kg": 0.8,
+   "expected_strip_draft_m": 0.09829
+  },
+  {
+   "cargo_kg": 1.0,
+   "expected_strip_draft_m": 0.11836
+  },
+  {
+   "cargo_kg": 1.2,
+   "expected_strip_draft_m": 0.13842
+  },
+  {
+   "cargo_kg": 1.5,
+   "expected_strip_draft_m": 0.16851
+  }
+ ]
+}
