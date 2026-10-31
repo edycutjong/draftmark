@@ -1,0 +1,7 @@
+.cache
+tests
+evidence
+*.mp4
+!public/clips/*.mp4
+*.webm
+*.pdf

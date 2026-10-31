@@ -1,0 +1,19 @@
+/* Tokens from the design direction: warm hull paint, chalk-white marks, sea teal. */
+:root {
+  --hull: #17120f;
+  --hull-2: #221a16;
+  --mark: #f2ece4;
+  --muted: #a89c90;
+  --sea: #2f8f8a;
+  --signal: #e2583e;
+  --font-display: "Anybody", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, sans-serif;
+  --font-data: "Martian Mono", ui-monospace, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--hull); color: var(--mark); font: 16px/1.55 var(--font-body); }
+a { color: var(--sea); }
+main { max-width: 60rem; margin: 0 auto; padding: 4rem 1.5rem; }
+h1 { font: 700 clamp(2rem, 6vw, 3.5rem)/1.05 var(--font-display); margin: 0 0 1rem; }
+.data { font-family: var(--font-data); }
+.muted { color: var(--muted); }
