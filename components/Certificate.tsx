@@ -263,9 +263,17 @@ export function Certificate({ run }: { run: Run }) {
 
       <Line n="060" title="Models">
         <p className="data">
-          {c.models.length ? `Called in this run: ${c.models.join(" · ")}` : "No model was called in this run."}
+          {c.models.length
+            ? `Called in this run: ${c.models.join(" · ")}`
+            : c.program_author
+              ? "No model was called while printing this certificate."
+              : "No model was called in this run."}
           {c.inputs === "signed" ? " Measurement signed by this server's stations." : null}
-          {c.program_author ? ` Survey program author: ${c.program_author}.` : ""}
+          {c.program_author
+            ? c.models.length
+              ? ` Survey program author: ${c.program_author}.`
+              : ` The survey program it ran was written earlier by ${c.program_author} (response id in 050).`
+            : ""}
         </p>
         {run.usage && run.usage.length ? <ModelStrip rows={run.usage} label="Calls in this run" /> : null}
       </Line>
