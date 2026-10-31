@@ -91,7 +91,9 @@ export function Certificate({ run }: { run: Run }) {
             <div>
               <dt>Booklet</dt>
               <dd className="data">
-                {c.booklet.id} · condition {c.booklet.condition} · p. {c.booklet.page}
+                {c.booklet.id}
+                {c.booklet.condition ? ` · condition ${c.booklet.condition}` : ""}
+                {c.booklet.page ? ` · p. ${c.booklet.page}` : ""}
               </dd>
             </div>
           ) : null}
