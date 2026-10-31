@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/assets/readme-hero-animated.svg" alt="DraftMark — time-averages the waterline from a phone video of a ship's draft marks: The sea keeps moving across the 12M mark; one thin line stops, holds, and is written down." width="100%">
+</p>
+
 # DraftMark
 
 Weigh a ship's cargo from a phone video of its draft marks.
