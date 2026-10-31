@@ -8,6 +8,7 @@
 
   [![Live Demo](https://img.shields.io/badge/🚀_Live-Demo-06b6d4?style=for-the-badge)](https://draftmark.edycu.dev)
   [![Evidence](https://img.shields.io/badge/🧾_Live-Evidence-f59e0b?style=for-the-badge)](https://draftmark.edycu.dev/evidence)
+  [![Pitch Deck](https://img.shields.io/badge/🎞️_Pitch-Deck-8E2B22?style=for-the-badge)](https://draftmark.edycu.dev/deck)
   [![Built for Meta](https://img.shields.io/badge/Cerebral_Valley-Meta_AI_Developer_Hackathon-8b5cf6?style=for-the-badge)](https://cerebralvalley.ai/e/meta-ai-developer-hackathon)
 
   <br/>
@@ -28,8 +29,9 @@
   <img src="docs/assets/devpost-gallery.png" alt="DraftMark gallery card: the draft marks, the measured waterline and the certificate." width="100%">
 </p>
 
-Try it at **https://draftmark.edycu.dev**: the committed example runs replay real SAM 3.1 and Spark 1.3 output
-(labelled as recorded runs), the Wonder self-test re-runs live, and an upload needs a judge code.
+Try it at **https://draftmark.edycu.dev** (the landing replays the real dB7X waterline): the committed example runs at
+[/runs](https://draftmark.edycu.dev/runs) replay real SAM 3.1 and Spark 1.3 output (labelled as recorded runs), the
+Wonder self-test re-runs live at [/survey](https://draftmark.edycu.dev/survey), and an upload needs a judge code.
 
 ## 💡 The Problem & Solution
 
