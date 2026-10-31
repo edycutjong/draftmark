@@ -16,14 +16,14 @@ export function BrandMark() {
 export function SiteHeader({ live }: { live?: boolean }) {
   return (
     <header className="site-header">
-      <Link href="/" className="brand" aria-label="DraftMark, recorded runs">
+      <a href="/" className="brand" aria-label="DraftMark home">
         <BrandMark />
         <span className="brand__word">DRAFTMARK</span>
-      </Link>
+      </a>
       <nav aria-label="Main">
         <ul className="nav">
           <li>
-            <Link href="/">Recorded runs</Link>
+            <Link href="/runs">Recorded runs</Link>
           </li>
           <li>
             <Link href="/evidence">Evidence</Link>

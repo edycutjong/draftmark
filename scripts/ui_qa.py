@@ -13,7 +13,7 @@ from playwright.sync_api import sync_playwright
 BASE = (sys.argv[1] if len(sys.argv) > 1 else "https://draftmark.edycu.dev").rstrip("/")
 OUT = Path(sys.argv[2] if len(sys.argv) > 2 else ".cache/ui")
 OUT.mkdir(parents=True, exist_ok=True)
-PAGES = ["/", "/survey", "/evidence", "/certificate/rec-trieste-20261031", "/certificate/rec-db7x-20261031",
+PAGES = ["/", "/runs", "/survey", "/evidence", "/certificate/rec-trieste-20261031", "/certificate/rec-db7x-20261031",
          "/certificate/synth-barge-s3", "/portal/"]
 VIEWS = {"375": (375, 800), "768": (768, 900), "1280": (1280, 900)}
 fails: list[str] = []
@@ -74,11 +74,11 @@ with sync_playwright() as p:
     # hover / focus byte-diff, one per element class
     ctx = b.new_context(viewport={"width": 1280, "height": 900})
     pg = ctx.new_page()
-    pg.goto(BASE + "/", wait_until="networkidle")
+    pg.goto(BASE + "/runs", wait_until="networkidle")
     for name, sel in [("nav link", ".nav a:not(.btn)"), ("accent button", ".btn--accent"), ("brand", ".brand"), ("tab", ".tab[aria-selected=false]"), ("badge link", ".badge--link")]:
         el = pg.locator(sel).first
         if not el.count():
-            print(f"SKIP hover {name}: {sel} not on /")
+            print(f"SKIP hover {name}: {sel} not on /runs")
             continue
         el.scroll_into_view_if_needed()
         pg.mouse.move(0, 0)

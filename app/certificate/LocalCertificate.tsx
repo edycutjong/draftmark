@@ -33,7 +33,7 @@ export function LocalCertificate() {
         <h1 className="h2">No live run in this browser</h1>
         <p>
           Live certificates are kept only in this browser. Finish a run on the <Link href="/survey">live survey</Link>, or
-          open a <Link href="/">recorded run</Link>.
+          open a <Link href="/runs">recorded run</Link>.
         </p>
       </div>
     );

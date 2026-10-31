@@ -87,7 +87,7 @@ function ErrorBox({ err }: { err: Err }) {
         <span className="data error-box__code">{err.reason}</span> {detail}
       </p>
       <p className="small">
-        {REASON_NEXT[err.reason]} <Link href="/">Open the recorded runs →</Link>
+        {REASON_NEXT[err.reason]} <Link href="/runs">Open the recorded runs →</Link>
       </p>
     </div>
   );
@@ -310,13 +310,13 @@ export function SurveyFlow() {
                   <span className="data error-box__code">{health.err.reason}</span> the live API did not answer ({health.err.detail}).
                 </p>
                 <p className="small">
-                  Live stations need it; the recorded runs do not. <Link href="/">Open the recorded runs →</Link>
+                  Live stations need it; the recorded runs do not. <Link href="/runs">Open the recorded runs →</Link>
                 </p>
               </div>
             ) : null}
             {health.state === "done" && fixtures.length === 0 ? (
               <p>
-                No live fixture clip is registered on this deployment yet; until then, <Link href="/">open the recorded runs</Link>.
+                No live fixture clip is registered on this deployment yet; until then, <Link href="/runs">open the recorded runs</Link>.
               </p>
             ) : null}
             {fixtures.length ? (
