@@ -133,7 +133,7 @@ export default function Home() {
               </Badges>
               <p className="small muted">
                 Agent loop: Wonder writes the program → the sandbox grades it on the booklet → failing ids and its own
-                intermediates go back → it rewrites (2 repairs).
+                intermediates (or the gate error) go back → it rewrites (2 repairs).
               </p>
               <p className="muted">{programRun.title}</p>
             </div>
