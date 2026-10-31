@@ -7,7 +7,7 @@ carries the intermediate JSON from one stateless endpoint to the next.
 ## The flow (four stations)
 
 ```
- phone clip (prepared MP4, cropped to the mark column, <= 8 s, <= 8 fps)
+ phone clip (prepared MP4, cropped to the mark column, <= 64 frames at <= 8 fps, <= 10.5 s; dB7X = 60 frames, 10 s at 6 fps)
    |
    | POST /api/py/measure        SAM 3.1 video x2 concepts in parallel: "white number", "water"
    v
