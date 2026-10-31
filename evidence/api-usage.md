@@ -251,3 +251,23 @@ Price-list estimates from `api/_core/meta.py` PRICES (not an invoice). Appended 
 | 2026-11-01 01:36 | eval-synth-12 | sam-3.1 | sam video 'water' synth load 12 | 0 (0) / 0 · 60 frames | 0.0120 | 3261 | resp_6ae63535e266ea66dca04bab |
 | 2026-11-01 01:37 | eval-synth-12 | muse-spark-1.3 | spark labels f4 try 1 | 396 (19) / 3609 | 0.0158 | 20585 | resp_6ae6354efdb8a2ee54be4256 |
 | 2026-11-01 01:37 | eval-synth-12 | muse-spark-1.3 | spark labels f14 try 1 | 396 (19) / 5013 | 0.0218 | 29873 | resp_6ae6355790ac9c5c01b14651 |
+| 2026-11-01 06:04 | live-mvx0dfza | sam-3.1 | sam video 'water' upload (P6c demo take 'take1', judge upload path, live site) | 0 (0) / 0 · 60 frames | 0.0120 | 7111 | resp_6ae6740c287f0396633c4ac6 |
+| 2026-11-01 06:04 | live-mvx0dfza | sam-3.1 | sam video 'white number' upload (P6c demo take 'take1', judge upload path, live site) | 0 (0) / 0 · 60 frames | 0.0120 | 10102 | resp_6ae6740ed8a60aab3fb7447e |
+| 2026-11-01 06:05 | live-mvx0dfza | muse-spark-1.3 | spark labels f0 try 1 (P6c demo take 'take1', judge upload path, live site) | 462 (0) / 1169 | 0.0055 | 4665 | resp_6ae67449b6615692a70640ff |
+| 2026-11-01 06:05 | live-mvx0dfza | muse-spark-1.3 | spark labels f10 try 1 (P6c demo take 'take1', judge upload path, live site) | 462 (0) / 2198 | 0.0099 | 8416 | resp_6ae6744c4e8ae94a2464491d |
+| 2026-11-01 06:16 | live-mvx0ss6d | sam-3.1 | sam video 'water' upload (P6c demo take 'take2', judge upload path, live site) | 0 (0) / 0 · 60 frames | 0.0120 | 5983 | resp_6ae676d9af55366832aa4028 |
+| 2026-11-01 06:16 | live-mvx0ss6d | sam-3.1 | sam video 'white number' upload (P6c demo take 'take2', judge upload path, live site) | 0 (0) / 0 · 60 frames | 0.0120 | 6410 | resp_6ae676da29b4db285e4d44a0 |
+| 2026-11-01 06:17 | live-mvx0ss6d | muse-spark-1.3 | spark labels f0 try 1 (P6c demo take 'take2', judge upload path, live site) | 462 (0) / 994 | 0.0048 | 5028 | resp_6ae677126a439f10d7314093 |
+| 2026-11-01 06:17 | live-mvx0ss6d | muse-spark-1.3 | spark labels f10 try 1 (P6c demo take 'take2', judge upload path, live site) | 462 (0) / 2113 | 0.0096 | 9441 | resp_6ae67717de873e7b58e148d4 |
+| 2026-11-01 06:34 | live-mvx1g5z2 | sam-3.1 | sam video 'water' upload (P6c demo take 'take3', judge upload path, live site) | 0 (0) / 0 · 60 frames | 0.0120 | 5488 | resp_6ae67b1bdfdc1709ec624636 |
+| 2026-11-01 06:34 | live-mvx1g5z2 | sam-3.1 | sam video 'white number' upload (P6c demo take 'take3', judge upload path, live site) | 0 (0) / 0 · 60 frames | 0.0120 | 8524 | resp_6ae67b1dbc7c0a3e66ca47c8 |
+| 2026-11-01 06:35 | live-mvx1g5z2 | muse-spark-1.3 | spark labels f0 try 1 (P6c demo take 'take3', judge upload path, live site) | 462 (0) / 1931 | 0.0088 | 8341 | resp_6ae67b5ae1f0437ff6e44569 |
+| 2026-11-01 06:35 | live-mvx1g5z2 | muse-spark-1.3 | spark labels f10 try 1 (P6c demo take 'take3', judge upload path, live site) | 462 (0) / 2488 | 0.0112 | 11895 | resp_6ae67b5edd0cd5d55eaa4bbb |
+| 2026-11-01 06:40 | live-mvx1muta | sam-3.1 | sam video 'white number' upload (P6c demo take 'take4', judge upload path, live site) | 0 (0) / 0 · 60 frames | 0.0120 | 5873 | resp_6ae67c54e79c0cc2f33f4fc1 |
+| 2026-11-01 06:40 | live-mvx1muta | sam-3.1 | sam video 'water' upload (P6c demo take 'take4', judge upload path, live site) | 0 (0) / 0 · 60 frames | 0.0120 | 6133 | resp_6ae67c54e2baa17d21414096 |
+| 2026-11-01 06:41 | live-mvx1muta | muse-spark-1.3 | spark labels f0 try 1 (P6c demo take 'take4', judge upload path, live site) | 462 (0) / 1603 | 0.0074 | 7958 | resp_6ae67c90d6c272cf70c2436f |
+| 2026-11-01 06:41 | live-mvx1muta | muse-spark-1.3 | spark labels f10 try 1 (P6c demo take 'take4', judge upload path, live site) | 462 (0) / 2127 | 0.0096 | 10419 | resp_6ae67c9265c51a8107d74fa4 |
+| 2026-11-01 06:48 | live-mvx1wyzw | sam-3.1 | sam video 'white number' upload (P6c demo take 'take5', judge upload path, live site) | 0 (0) / 0 · 60 frames | 0.0120 | 7856 | resp_6ae67e2e6e6a44bdce3742f0 |
+| 2026-11-01 06:48 | live-mvx1wyzw | sam-3.1 | sam video 'water' upload (P6c demo take 'take5', judge upload path, live site) | 0 (0) / 0 · 60 frames | 0.0120 | 8283 | resp_6ae67e2e0fd6f39b30444378 |
+| 2026-11-01 06:48 | live-mvx1wyzw | muse-spark-1.3 | spark labels f0 try 1 (P6c demo take 'take5', judge upload path, live site) | 462 (0) / 1543 | 0.0071 | 6440 | resp_6ae67e6a3b240589c1234d71 |
+| 2026-11-01 06:49 | live-mvx1wyzw | muse-spark-1.3 | spark labels f10 try 1 (P6c demo take 'take5', judge upload path, live site) | 462 (0) / 3071 | 0.0136 | 11200 | resp_6ae67e6f9287b9086b964fc8 |
