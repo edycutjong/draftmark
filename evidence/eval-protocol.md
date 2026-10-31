@@ -97,3 +97,5 @@ exclusion. Label correctness is scored against the calm ruler afterwards. That s
   frame's own fit and edge noise, so adding the propagated per-frame term again double counted it; u_rand stays as a
   floor for few or identical frames. On the recorded runs the change is below 0.001 m (dB7X 0.0864 -> 0.0864 m,
   UKTRQ 0.0550 -> 0.0547 m, synthetic barge 1.856 -> 1.856 mm). Label check (d) now needs >= 3 shared tokens.
+  u_rep also has a floor of half a pixel (0.5 / pitch_px x pitch) so a run can never claim u = 0; the water edge
+  per column is the top of the water run reaching the crop bottom, bridging holes <= 3 px (2x crop).

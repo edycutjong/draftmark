@@ -9,6 +9,7 @@ cropped to its box: its origin is the box origin.
 from __future__ import annotations
 
 import re
+import sys
 from dataclasses import dataclass
 
 import numpy as np
@@ -105,6 +106,8 @@ def parse_msp(text: str, video: bool = True) -> list[SamObject]:
         res = p.finish(msp.CompletedOutcome()).result
     finally:
         _msp_seg.decode_mask_to_raster = orig
+        if sys.exc_info()[0] is not None:
+            _RASTER.clear()
     boxes: dict[tuple[int, str], SamObject] = {}
     order: list[tuple[int, str]] = []
     for r in res.records:

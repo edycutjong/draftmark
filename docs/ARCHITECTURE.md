@@ -23,9 +23,9 @@ carries the intermediate JSON from one stateless endpoint to the next.
  per-frame draft -> clip draft    measure.frame_draft: least squares y = a + b z on DRY marks only (mask bottom above
    |                              the water edge by a MAD margin), d = (w - a) / b, delta-method variance;
    |                              drop reasons per frame. measure.summarize: MAD outlier rejection, mean, lag-1
-   |                              N_eff, u_rep = max(scatter / sqrt(N_eff), propagated per-frame floor), u_abs
+   |                              N_eff, u_rep = max(scatter / sqrt(N_eff), per-frame floor, half a pixel), u_abs
    |                              only when systematic parts are known (barge). Water edge per column = top of the
-   |                              water run that reaches the crop bottom (detached spray/reflections ignored)
+   |                              water run that reaches the crop bottom (holes <= 3 px bridged; detached spray ignored)
    | POST /api/py/survey
    v
  survey + decision + certificate  survey.ship: ONE sandbox launch of the proven Wonder-written program:
@@ -40,7 +40,8 @@ The endpoints are stateless (no database on Vercel Hobby), so the browser carrie
 next. Every station signs what it produced: `/measure` seals the geometry (HMAC-SHA256, key derived from the
 deployment's secret, never sent), `/labels` refuses an edited geometry before any Spark call and issues a labels
 token, `/draft` issues a measure token only for a fully signed chain, and `/survey` takes the draft, u, label checks,
-mark system and called models from that token, never from the request body. A measurement without a valid token is
+mark system, clip identity and called models from that token, never from the request body; tokens expire
+after 24 h, and the vessel printed on a certificate comes from our booklet data. A measurement without a valid token is
 certified `REFUSE UNSIGNED` (decision row 0). Drafts typed by hand stay possible and are printed as entered.
 
 ## Where each Meta model is load-bearing

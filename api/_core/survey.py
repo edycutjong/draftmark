@@ -32,6 +32,12 @@ def booklets() -> set[str]:
     return {p.parent.name for p in (DATA / "programs").glob("*/proven.json")}
 
 
+def booklet_meta(booklet: str = "trieste") -> dict:
+    """What the certificate prints about the vessel: from our booklet data only."""
+    b = json.loads((DATA / "booklets" / booklet / "booklet.json").read_text())
+    return {"id": b.get("id", booklet), "vessel": b.get("vessel"), "source_url": b.get("source_url")}
+
+
 def proven(booklet: str = "trieste") -> dict:
     """The default proven program for a booklet: code, ship JSON, self-test summary, attempts."""
     if booklet not in booklets():

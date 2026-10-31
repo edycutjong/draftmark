@@ -121,7 +121,8 @@ def run(code: str, booklet: dict | None = None, ship: dict | None = None, n_diff
         rows.append(Row(c["cond_id"], c["page"], c["expected"], got, err, ok,
                         None if ok else first_diverging(o, ref),
                         trace={k: o.get(k) for k in TRACE + ("trim",)}))
-    probes = [not r["ok"] for r in res[len(conds):len(conds) + len(PROBES)]]
+    probes = [not r["ok"] and "OutOfTable" in (r.get("error") or "")  # a KeyError is not a refusal
+              for r in res[len(conds):len(conds) + len(PROBES)]]
     errs, fails = [], 0
     for case, r in zip(diff, res[len(conds) + len(PROBES):]):
         try:

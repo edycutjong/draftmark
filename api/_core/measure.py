@@ -35,6 +35,9 @@ class FrameGeom:
     tracks: list[str] = field(default_factory=list)
 
 
+WATER_GAP_PX = 3  # 2x crops: about 1.5 source pixels; real masks: holes in 5 of 7680 dB7X columns at this tolerance
+
+
 def column_top(water: list[SamObject], c: int) -> float | None:
     """Top of the water in image column c: the contiguous run of water pixels (all masks united) that holds the
     lowest water pixel, so a detached spray or reflection blob above the surface never becomes the edge."""
@@ -47,9 +50,12 @@ def column_top(water: list[SamObject], c: int) -> float | None:
             ys.update(float(o.box[1] + y) for y in np.flatnonzero(o.mask[:, lc]))
     if not ys:
         return None
-    top = max(ys)
-    while top - 1 in ys:
-        top -= 1
+    srt = sorted(ys)
+    top = srt[-1]
+    for y in reversed(srt[:-1]):  # bridge holes up to WATER_GAP_PX (foam/glare); a wider gap = detached blob
+        if top - y > WATER_GAP_PX + 1:
+            break
+        top = y
     return top
 
 
@@ -212,8 +218,10 @@ def summarize(frames: list[FrameGeom], system: MarkSystem, u_sys_parts: dict | N
     u_rand = math.sqrt(float(vr.mean()) / n_eff)
     # the frame-to-frame scatter already contains each frame's own fit/edge noise, so the propagated per-frame
     # term is a floor (few or identical frames), not a second component to add in quadrature
-    u_rep = max(u_swell, u_rand)
-    parts = {"swell": u_swell, "rand": u_rand}
+    pitch_med = float(np.median([f.pitch_px for f in kept]))
+    u_quant = 0.5 / pitch_med * system.pitch_m if pitch_med > 0 else 0.0  # half a pixel: never claim u = 0
+    u_rep = max(u_swell, u_rand, u_quant)
+    parts = {"swell": u_swell, "rand": u_rand, "quant": u_quant}
     u_abs = None
     if u_sys_parts is not None:
         u_sys = math.sqrt(sum(v ** 2 for v in u_sys_parts.values()))
@@ -221,7 +229,7 @@ def summarize(frames: list[FrameGeom], system: MarkSystem, u_sys_parts: dict | N
         u_abs = math.sqrt(u_rep ** 2 + u_sys ** 2)
     base.update(u_parts=parts, n_outliers=n_out, n_eff=round(n_eff, 2), rho1=round(rho, 3), median_m=med,
                 huber_m=huber(dk), sd_m=sd, swell_p5_p95=(float(np.percentile(dk, 5)), float(np.percentile(dk, 95))),
-                pitch_px_median=float(np.median([f.pitch_px for f in kept])))
+                pitch_px_median=pitch_med)
     return DraftResult(mean, u_rep, u_abs, refused=False, **base)
 
 

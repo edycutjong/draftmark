@@ -33,6 +33,7 @@ SCALES = (1.0, 0.1)  # ship metric marks; the 1:10 barge strip
 MEAS_KEYS = ("d_m", "u_rep_m", "u_abs_m", "n_frames", "n_kept", "refused", "reason", "row1")
 
 
+@app.exception_handler(AttributeError)
 @app.exception_handler(KeyError)
 @app.exception_handler(TypeError)
 @app.exception_handler(ValueError)
@@ -177,19 +178,22 @@ async def labels_ep(req: Request):
     """Two frames >= 1 s apart (JPEG data URLs, cropped like the clip) + geometry -> Spark 1.3 reads both
     (strict json_schema) -> five code checks. One re-read on failure; typed labels skip Spark (degraded)."""
     body = await req.json()
+    if not sign.geometry_ok(body.get("geometry")):  # before any rebuild: a forged geometry costs nothing
+        return _err(400, "UNSIGNED", "this geometry was not produced by /measure on this deployment, or was edited")
     try:
         geom = body["geometry"]
         system = pipeline.system_of(geom)
         toks, _ = pipeline.rebuild(geom)
         [int(k) for k in (body.get("frames") or {})]
-    except (KeyError, TypeError, ValueError) as e:
+    except (AttributeError, KeyError, TypeError, ValueError) as e:
         return _err(400, "PAYLOAD", f"bad labels request: {type(e).__name__}")
-    if not sign.geometry_ok(geom):
-        return _err(400, "UNSIGNED", "this geometry was not produced by /measure on this deployment, or was edited")
     strip = marks.strip_sequence() if system.scale < 1 else None
     typed = body.get("typed")
     lf = geom.get("label_frames")
     if typed:  # {track: label}; the user typed the values: same checks, run marked degraded
+        ok, why = limits.take_free(_ip(req))
+        if not ok:
+            return _err(429, "RATE", why or "")
         if body.get("frame") is None and not lf:
             return _err(400, "LABEL_FRAMES", "no label frame in this geometry")
         f1 = int(body.get("frame") if body.get("frame") is not None else lf[0])
@@ -325,13 +329,15 @@ async def survey_ep(req: Request):
     srv_in = dict(body.get("survey") or {}) if body.get("survey") else None
     claims_live = bool(meas.get("n_frames")) or any(v in ("live", "clip") for v in ((srv_in or {}).get("sources") or {}).values())
     unsigned = claims_live and tok is None
+    live_src = any(v in ("live", "clip") for v in ((srv_in or {}).get("sources") or {}).values())
+    entered_only = bool(tok and mode != "barge" and tok["scale"] >= 1 and srv_in and not live_src)
     models: list[str] = []
     if tok:
         mode = "barge" if tok["scale"] < 1 else "ship"
         meas = {**meas, **{k: tok.get(k) for k in MEAS_KEYS}}
         lab = {**(lab or {}), "typed": tok["typed"], "checks": tok["checks"]}
         lab.pop("synthetic", None)
-        models = list(tok["models"])
+        models = [] if entered_only else list(tok["models"])  # a clip no position uses decorates nothing
         body = {**body, "run_mode": "LIVE"}  # a signed measurement was made live: the anchor needs the user
         if srv_in and srv_in.get("drafts") and tok.get("d_m") is not None:
             src = srv_in.get("sources") or {}
@@ -360,10 +366,15 @@ async def survey_ep(req: Request):
     extra = {k: body.get(k) for k in ("bl", "tol_pct") if body.get(k) is not None}
     if unsigned:
         extra["unsigned"] = True
+    clip = {"id": tok.get("clip"), "source": tok.get("source")} if tok else body.get("clip")
+    booklet = None
+    if mode == "ship":  # vessel identity from our own booklet data, never from the body
+        bk = survey.booklet_meta(body.get("booklet", "trieste"))
+        extra_bk = {k: v for k, v in (body.get("booklet_info") or {}).items() if k not in bk}
+        booklet = {**extra_bk, **bk}
     cert = certificate.build(mode, body.get("run_mode", "LIVE"), meas, lab, srv, st, extra=extra,
-                             clip=body.get("clip"), booklet=body.get("booklet_info"), run_id=body.get("run_id"),
-                             models=models)
-    cert["inputs"] = "signed" if tok else ("unsigned" if unsigned else "entered")
+                             clip=clip, booklet=booklet, run_id=body.get("run_id"), models=models)
+    cert["inputs"] = "signed" if tok and not entered_only else ("unsigned" if unsigned else "entered")
     return {"ok": True, "certificate": cert}
 
 

@@ -194,7 +194,7 @@ def check_labels(tokens: list[Token], read1: dict[str, str], read2: dict[str, st
     pitch_ok = False
     resid_ok = False
     if mono:
-        bottoms = np.array([t.box[3] for t in toks], dtype=float)
+        bottoms = np.array([t.mask_bottom() for t in toks], dtype=float)  # the edge measure.frame_draft fits
         z = np.array(drafts, dtype=float)
         b, a = np.polyfit(z, bottoms, 1)
         pitch_px = abs(b) * system.pitch_m

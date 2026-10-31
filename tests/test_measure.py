@@ -80,3 +80,11 @@ def test_cross_frame_needs_three_shared_tokens():
     assert not marks.check_labels(toks, read, one)[1].cross_frame
     three = {t.track: read[t.track] for t in toks[:3]}
     assert marks.check_labels(toks, read, three)[1].cross_frame
+
+
+def test_water_edge_bridges_a_small_hole_below_the_surface():
+    from api._core.sam import SamObject
+    m = np.ones((40, 10), dtype=bool)
+    m[5:7, :] = False  # a 2-px glare hole just under the surface at y=100
+    w, _, _ = measure.water_edge([SamObject(0, 1, (0.0, 100.0, 10.0, 140.0), m)], 0, 10)
+    assert w == 100.0

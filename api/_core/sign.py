@@ -13,6 +13,9 @@ import hashlib
 import hmac
 import json
 import os
+import time
+
+MAX_AGE_S = 24 * 3600  # a token is a same-day receipt, not a permanent credential
 
 
 def _key() -> bytes:
@@ -56,11 +59,14 @@ def geometry_ok(geom) -> bool:
 
 
 def token(kind: str, payload: dict) -> dict:
+    payload = {**payload, "iat": int(time.time())}
     return {"payload": payload, "sig": _mac(kind, payload)}
 
 
 def token_ok(kind: str, tok) -> dict | None:
     """The payload if the token was issued by this deployment for `kind`, else None."""
     if isinstance(tok, dict) and isinstance(tok.get("payload"), dict) and _ok(kind, tok["payload"], tok.get("sig")):
-        return tok["payload"]
+        iat = tok["payload"].get("iat")
+        if isinstance(iat, (int, float)) and 0 <= time.time() - iat <= MAX_AGE_S:
+            return tok["payload"]
     return None

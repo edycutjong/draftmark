@@ -288,3 +288,21 @@ def test_edited_geometry_is_refused_before_any_model_call():
 def test_malformed_bodies_are_400_not_500():
     assert api.post("/api/py/draft", json={}).status_code == 400
     assert api.post("/api/py/survey", json={"mode": "ship", "survey": {"drafts": {}}, "booklet_info": {}}).status_code == 400
+
+
+def test_a_token_no_position_uses_decorates_nothing():
+    m = seal({"d_m": 12.73, "u_rep_m": 0.01, "n_frames": 12, "n_kept": 12}, OK_LABELS, ["sam-3.1"], 1.0)
+    s = {"drafts": {p: 6.5 for p in ("fore_p", "fore_s", "mid_p", "mid_s", "aft_p", "aft_s")}, "sg": 1.025}
+    c = api.post("/api/py/survey", json={"mode": "ship", "survey": s, "measure": m, "labels": OK_LABELS,
+                                         "booklet_info": {"id": "trieste", "vessel": "MV Forged"}}).json()["certificate"]
+    assert c["inputs"] == "entered" and c["models"] == [] and c["booklet"]["vessel"] != "MV Forged"
+
+
+def test_stale_tokens_and_non_dict_bodies(monkeypatch):
+    tok = seal({"d_m": 0.12, "u_abs_m": 0.0005, "n_frames": 32, "n_kept": 32}, OK_LABELS)["token"]
+    assert sign.token_ok("measure", tok)
+    monkeypatch.setattr(sign.time, "time", lambda: tok["payload"]["iat"] + sign.MAX_AGE_S + 1)
+    assert sign.token_ok("measure", tok) is None
+    monkeypatch.undo()
+    assert api.post("/api/py/survey", json={"mode": "barge", "measure": "x"}).status_code == 400
+    assert api.post("/api/py/labels", json={"geometry": "x"}).json()["reason"] == "UNSIGNED"

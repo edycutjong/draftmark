@@ -25,7 +25,8 @@ from dataclasses import dataclass, field
 ALLOWED_IMPORTS = {"math", "bisect", "json", "statistics", "re"}  # re: the program parses raw page text
 BANNED_NAMES = {"eval", "exec", "open", "compile", "__import__", "getattr", "setattr", "delattr", "vars", "locals",
                 "globals", "__builtins__", "breakpoint", "input", "memoryview", "help", "exit", "quit"}
-BANNED_ATTRS = BANNED_NAMES - {"compile"}  # x.open / x.eval / x.getattr on any object; re.compile stays legal
+# x.open / x.eval / x.getattr on any object; re.compile stays legal; str.format can walk attributes from a runtime string
+BANNED_ATTRS = (BANNED_NAMES - {"compile"}) | {"format", "format_map"}
 MAX_BYTES = 64 * 1024
 # The only module attributes generated code may touch (gate) and the only ones the child's proxy modules hold
 # (runtime). Real modules leak their own imports as attributes (re.enum.sys -> sys.modules -> builtins.open).
@@ -121,6 +122,7 @@ def _hook(event, args):
         path = args[0]
         if not (isinstance(path, int) or (isinstance(path, str) and _inside(path))):
             raise RuntimeError("blocked open: " + str(path))
+CODE = open(WORKDIR + "/program.py").read()  # read before the hook: the child never needs open() after this
 sys.addaudithook(_hook)
 class OutOfTable(ValueError):
     pass
@@ -133,7 +135,7 @@ SAFE["OutOfTable"] = OutOfTable
 SAFE["__import__"] = _safe_import
 SAFE["__build_class__"] = __builtins__.__dict__["__build_class__"] if hasattr(__builtins__, "__dict__") else __builtins__["__build_class__"]
 req = json.loads(sys.stdin.read())
-code = open(WORKDIR + "/program.py").read()
+code = CODE
 g = {"__builtins__": SAFE, "__name__": "program", "OutOfTable": OutOfTable}
 exec(compile(code, "program.py", "exec"), g)
 out = {"ok": True}

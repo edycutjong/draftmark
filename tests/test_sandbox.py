@@ -77,3 +77,8 @@ def test_audit_hook_normalises_paths(tmp_path):
     p = subprocess.run([sys.executable, "-I", "-S", str(tmp_path / "runner.py"), str(tmp_path)], input="{}",
                        capture_output=True, text=True, env={}, timeout=10)
     assert "blocked open" in p.stderr
+
+
+def test_gate_rejects_format_attribute_walks():
+    src = "f = '{0.' + '_' + '_' + 'class' + '_' + '_' + '}'\ny = f.format(1)\n"
+    assert not sandbox.static_gate(src + OK).ok
