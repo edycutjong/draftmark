@@ -385,3 +385,8 @@ img { max-width: 100%; }
 .table-scroll--fade:hover, .table-scroll--fade:focus-within { mask-image: none; }
 .caveat { color: var(--muted); margin: 0.75rem 0; max-width: 40rem; }
 @media print { .table-scroll--fade { mask-image: none; } }
+.nav a, .nav .nav__current { white-space: nowrap; }
+@media (max-width: 499px) {
+  .nav { gap: 0.6rem; font-size: 0.92rem; }
+  .nav .btn { padding: 0.5rem 0.7rem; }
+}
