@@ -245,14 +245,21 @@ async def draft_ep(req: Request):
 @app.get("/api/py/program")
 def program_ep(booklet: str = "trieste"):
     """The cached proven program: code, sha, author, response id, attempts and the recorded self-test."""
+    if booklet not in survey.booklets():
+        return _err(404, "NO_BOOKLET", "unknown booklet")
     p = survey.proven(booklet)
     return {"ok": True, "meta": p["meta"], "code": p["code"], "selftest": p["selftest"], "attempts": p["attempts"],
             "run": p["run"]}
 
 
 @app.post("/api/py/selftest/rerun")
-def selftest_rerun(booklet: str = "trieste"):
+def selftest_rerun(req: Request, booklet: str = "trieste"):
     """Re-run the cached program on the booklet's printed rows + probes + differential in the sandbox (no API)."""
+    if booklet not in survey.booklets():
+        return _err(404, "NO_BOOKLET", "unknown booklet")
+    ok, why = limits.take_free(_ip(req))
+    if not ok:
+        return _err(429, "RATE", why or "")
     p = survey.proven(booklet)
     st = selftest.run(p["code"], ship=p["ship"])
     return {"ok": True, "selftest": st.as_dict() if hasattr(st, "as_dict") else st.__dict__}
@@ -263,6 +270,11 @@ async def survey_ep(req: Request):
     """Measurement + labels + survey inputs -> survey (one sandbox launch) -> code-only decision -> certificate."""
     body = await req.json()
     mode = body.get("mode", "ship")
+    if mode == "ship" and body.get("booklet", "trieste") not in survey.booklets():
+        return _err(404, "NO_BOOKLET", "unknown booklet")
+    ok, why = limits.take_free(_ip(req))
+    if not ok:
+        return _err(429, "RATE", why or "")
     meas = body.get("measure") or {}
     lab = body.get("labels")
     if not meas.get("n_frames") and not (mode == "ship" and body.get("survey") and body.get("booklet_info")):
@@ -307,8 +319,10 @@ _PROBE_OPEN = ("import json\ndef parse_booklet(b):\n    return {}\n"
 
 
 @app.get("/api/py/probe/sandbox")
-def probe_sandbox():
+def probe_sandbox(code: str | None = None):
     """Deployed-runtime probe (no API cost): subprocess launch, each rlimit, audit hook, temp dir."""
+    if not limits.probes_open(code):
+        return _err(403, "JUDGE_CODE", "probes need the judge code on production")
     out: dict = {"python": sys.version.split()[0], "platform": platform.platform(), "tmp": tempfile.gettempdir()}
     t0 = time.time()
     r = sandbox.run(_PROBE_OK, {"booklet": {}, "cases": [{"x": 9}]})
@@ -341,8 +355,10 @@ def probe_sandbox():
 
 
 @app.get("/api/py/probe/sleep")
-def probe_sleep(s: float = 1.0):
+def probe_sleep(s: float = 1.0, code: str | None = None):
     """maxDuration probe: sleeps s seconds (capped at 300)."""
+    if not limits.probes_open(code):
+        return _err(403, "JUDGE_CODE", "probes need the judge code on production")
     s = max(0.0, min(300.0, s))
     t0 = time.time()
     time.sleep(s)

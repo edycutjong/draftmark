@@ -26,8 +26,15 @@ TRIM_PROVEN_M = (-1.0, 2.0)
 MM = 0.001
 
 
+def booklets() -> set[str]:
+    """Booklets with a proven program on disk; anything else (incl. "../x") is refused before a path is built."""
+    return {p.parent.name for p in (DATA / "programs").glob("*/proven.json")}
+
+
 def proven(booklet: str = "trieste") -> dict:
     """The default proven program for a booklet: code, ship JSON, self-test summary, attempts."""
+    if booklet not in booklets():
+        raise KeyError(booklet)
     root = DATA / "programs" / booklet
     meta = json.loads((root / "proven.json").read_text())
     run_dir = (root / meta["default_program"]).parent

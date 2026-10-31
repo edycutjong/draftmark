@@ -14,6 +14,7 @@ import time
 
 PER_IP_H = int(os.environ.get("LIVE_PER_IP_H", "5"))
 PER_INSTANCE_H = int(os.environ.get("LIVE_PER_INSTANCE_H", "15"))
+FREE_PER_IP_H = int(os.environ.get("FREE_PER_IP_H", "60"))  # no-API endpoints that still burn function CPU (sandbox)
 _lock = threading.Lock()
 _hits: dict[str, list[float]] = {}
 _budget_tripped: dict[str, str] = {}
@@ -60,6 +61,23 @@ def take(ip: str, now: float | None = None, run_id: str | None = None, ride: boo
         if run_id and not ride:
             _runs[run_id] = [now, 1]
     return True, None
+
+
+def take_free(ip: str, now: float | None = None) -> tuple[bool, str | None]:
+    """Count one call to a no-API endpoint that launches the sandbox (/survey, /selftest/rerun)."""
+    now = now or time.time()
+    k = f"free:{ip}"
+    with _lock:
+        _hits[k] = [t for t in _hits.get(k, []) if now - t < 3600]
+        if len(_hits[k]) >= FREE_PER_IP_H:
+            return False, f"{FREE_PER_IP_H} sandbox runs per IP per hour"
+        _hits[k].append(now)
+    return True, None
+
+
+def probes_open(code: str | None) -> bool:
+    """Deployed-runtime probes hold a function (sleep up to 300 s): judge code only on production."""
+    return os.environ.get("VERCEL_ENV") != "production" or judge_ok(code)
 
 
 def reset() -> None:  # tests

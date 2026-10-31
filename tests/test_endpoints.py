@@ -216,3 +216,29 @@ def test_typed_labels_must_pass_the_checks():
 
 def test_bad_labels_request_is_a_400():
     assert api.post("/api/py/labels", json={"frames": {}}).status_code == 400
+
+
+def test_booklet_param_is_an_allowlist_not_a_path():
+    for path in ("/api/py/program?booklet=../../api", "/api/py/program?booklet=nope"):
+        r = api.get(path)
+        assert r.status_code == 404 and r.json()["reason"] == "NO_BOOKLET"
+    r = api.post("/api/py/selftest/rerun?booklet=..%2F..")
+    assert r.status_code == 404
+    r = api.post("/api/py/survey", json={"mode": "ship", "booklet": "../x", "survey": {}, "booklet_info": {}})
+    assert r.status_code == 404 and r.json()["reason"] == "NO_BOOKLET"
+
+
+def test_sandbox_endpoints_are_rate_limited(monkeypatch):
+    monkeypatch.setattr(limits, "FREE_PER_IP_H", 1)
+    assert limits.take_free("1.2.3.4") == (True, None)
+    r = api.post("/api/py/selftest/rerun")  # testclient ip: first call allowed
+    assert r.status_code == 200 and r.json()["selftest"]["verdict"] == "PASS"
+    r = api.post("/api/py/selftest/rerun")
+    assert r.status_code == 429 and r.json()["reason"] == "RATE"
+
+
+def test_probes_need_the_judge_code_on_production(monkeypatch):
+    monkeypatch.setenv("VERCEL_ENV", "production")
+    assert api.get("/api/py/probe/sleep?s=0").status_code == 403
+    assert api.get("/api/py/probe/sandbox").status_code == 403
+    assert api.get("/api/py/probe/sleep?s=0&code=" + "j" * 32).status_code == 200
