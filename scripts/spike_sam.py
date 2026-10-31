@@ -11,7 +11,7 @@ from pathlib import Path
 
 from _common import CACHE, meta
 
-from api.core import marks, sam
+from api._core import marks, sam
 
 
 def run(clip: Path, concepts: list[str], run_id: str, frames: int) -> dict[str, str]:

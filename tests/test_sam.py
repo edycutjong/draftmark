@@ -1,6 +1,6 @@
 from conftest import DATA
 
-from api.core import sam
+from api._core import sam
 
 
 def test_parsers_agree_on_real_output():

@@ -1,6 +1,6 @@
 import pytest
 
-from api.core import meta
+from api._core import meta
 
 
 def test_estimate_usd():

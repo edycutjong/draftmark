@@ -12,7 +12,7 @@ import json
 
 from _common import CACHE, ROOT
 
-from api.core import selftest
+from api._core import selftest
 
 TEMPLATE = '''import bisect, math
 

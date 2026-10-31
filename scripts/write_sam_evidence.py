@@ -13,7 +13,7 @@ def main():
          "Pipeline: `scripts/prep_clip.py` (cut, crop the mark column, 2x; handheld clips use a column-tracking crop",
          "by normalised cross-correlation) -> `scripts/spike_sam.py` (SAM 3.1 video, concepts \"white number\" and",
          "\"water\", run concurrently; glyph -> token grouping) -> `scripts/spike_labels.py` (Spark 1.3 strict-JSON",
-         "label reads on two frames >= 1 s apart, 5 code checks, then `api/core/measure.py`).", "",
+         "label reads on two frames >= 1 s apart, 5 code checks, then `api/_core/measure.py`).", "",
          "| clip (source) | segment | frames | numerals found | water found | tokens/frame (median) | raw glyphs max | "
          "labels (code checks) | frames kept | draft d (m) | u_rep (m, k=1) | sd (m) | median / Huber (m) | "
          "p5-p95 swell (m) | rho1 · N_eff | drops |",

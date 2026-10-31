@@ -12,7 +12,7 @@ import cv2
 from PIL import Image
 from _common import CACHE, meta
 
-from api.core import labels, marks, measure, sam
+from api._core import labels, marks, measure, sam
 
 
 def frame_image(clip: Path, i: int) -> Image.Image:

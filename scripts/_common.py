@@ -8,6 +8,6 @@ if str(ROOT) not in sys.path:
 CACHE = ROOT / ".cache"
 EVIDENCE = ROOT / "evidence"
 
-from api.core import meta  # noqa: E402
+from api._core import meta  # noqa: E402
 
 meta.load_local_env()

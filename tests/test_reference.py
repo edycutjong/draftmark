@@ -1,7 +1,7 @@
 import pytest
 
-from api.core import reference_survey as R
-from api.core import selftest
+from api._core import reference_survey as R
+from api._core import selftest
 
 
 def test_reference_reproduces_all_printed_conditions():

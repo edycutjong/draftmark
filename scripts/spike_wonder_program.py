@@ -20,7 +20,7 @@ from pathlib import Path
 
 from _common import CACHE, ROOT, meta
 
-from api.core import selftest
+from api._core import selftest
 
 PAGES = [4, 21, 22, 26, 36, 37, 38, 39]
 OUTDIR = CACHE / "wonder"

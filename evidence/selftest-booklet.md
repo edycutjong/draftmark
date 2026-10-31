@@ -7,13 +7,13 @@ see `data/booklets/trieste/CITATION.md`).
 
 **Pass rule (pre-set in the spec):** a row passes if |program - printed| / printed <= 0.1 %. Verdict PASS only if
 >= ceil(0.9 N) = 20 of N = 22 rows pass, both out-of-range probes raise, and 200 randomized cases agree
-with our reference program within 0.05 %. Every program runs in the sandbox (`api/core/sandbox.py`: AST gate,
+with our reference program within 0.05 %. Every program runs in the sandbox (`api/_core/sandbox.py`: AST gate,
 `python -I -S` subprocess, rlimits, audit hook).
 
 ## Result
 
 - **Default proven program:** `data/programs/trieste/run-booklet-only/program.py` by muse-wonder-1.0, sha256 `4b3aa8cd94879978…`, response `resp_6ae5a63a238297fff10f457e`, regenerations 2: **22 of 22 printed conditions**, probes raised [True, True], differential 200 cases max 0.00007 %, verdict **PASS**.
-- Our reference program (`api/core/reference_survey.py`, written before Wonder was called): 22 of 22.
+- Our reference program (`api/_core/reference_survey.py`, written before Wonder was called): 22 of 22.
 - The booklet's §3.1 procedure applied verbatim (no second trim correction): 14 of 22.
 - A generic textbook template that does not read this booklet's conventions (`scripts/baseline_generic.py`): 0 of 22; first diverging intermediate `d_fp` on every row.
 

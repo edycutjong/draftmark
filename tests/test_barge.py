@@ -1,6 +1,6 @@
 import pytest
 
-from api.core import barge
+from api._core import barge
 
 
 def test_box_displacement_and_cargo():

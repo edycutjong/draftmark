@@ -4,8 +4,8 @@ import math
 
 from _common import EVIDENCE, ROOT
 
-from api.core import reference_survey as R
-from api.core import selftest
+from api._core import reference_survey as R
+from api._core import selftest
 
 P = ROOT / "data" / "programs" / "trieste"
 
@@ -63,14 +63,14 @@ def main():
          "see `data/booklets/trieste/CITATION.md`).", "",
          f"**Pass rule (pre-set in the spec):** a row passes if |program - printed| / printed <= 0.1 %. Verdict PASS only if",
          f">= ceil(0.9 N) = {need} of N = {n} rows pass, both out-of-range probes raise, and 200 randomized cases agree",
-         "with our reference program within 0.05 %. Every program runs in the sandbox (`api/core/sandbox.py`: AST gate,",
+         "with our reference program within 0.05 %. Every program runs in the sandbox (`api/_core/sandbox.py`: AST gate,",
          "`python -I -S` subprocess, rlimits, audit hook).", "",
          "## Result", "",
          f"- **Default proven program:** `data/programs/trieste/{proven['default_program']}` by {proven['program_author']}, "
          f"sha256 `{proven['sha256'][:16]}…`, response `{proven['response_id']}`, regenerations {proven['regen_count']}: "
          f"**{st['pass_count']} of {st['n']} printed conditions**, probes raised {st['probes_raised']}, differential "
          f"{st['differential_n']} cases max {st['differential_max_err_pct']:.5f} %, verdict **{st['verdict']}**.",
-         f"- Our reference program (`api/core/reference_survey.py`, written before Wonder was called): {ref_pass} of {n}.",
+         f"- Our reference program (`api/_core/reference_survey.py`, written before Wonder was called): {ref_pass} of {n}.",
          f"- The booklet's §3.1 procedure applied verbatim (no second trim correction): {verb_pass} of {n}.",
          f"- A generic textbook template that does not read this booklet's conventions (`scripts/baseline_generic.py`): "
          f"{base['pass_count']} of {base['n']}; first diverging intermediate `d_fp` on every row.", "",

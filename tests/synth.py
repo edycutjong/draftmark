@@ -1,7 +1,7 @@
 """Synthetic SAM objects with known geometry (tests only)."""
 import numpy as np
 
-from api.core.sam import SamObject
+from api._core.sam import SamObject
 
 
 def glyph(frame, oid, x0, y0, w, h):

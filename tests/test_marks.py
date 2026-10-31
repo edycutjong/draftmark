@@ -1,7 +1,7 @@
 import pytest
 from synth import glyph, ship_frame
 
-from api.core import marks
+from api._core import marks
 
 
 def test_metre_mark_glyphs_group_into_one_token():

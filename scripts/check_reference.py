@@ -11,7 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from api.core import reference_survey as R  # noqa: E402
+from api._core import reference_survey as R  # noqa: E402
 
 COND = ROOT / "data" / "booklets" / "trieste" / "conditions.csv"
 KEYS = ("fore_p", "fore_s", "mid_p", "mid_s", "aft_p", "aft_s", "sg")

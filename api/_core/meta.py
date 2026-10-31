@@ -124,7 +124,7 @@ def append_ledger(row: UsageRow, path: Path = LEDGER) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     if not path.exists():
         path.write_text(
-            "# Meta API usage ledger\n\nPrice-list estimates from `api/core/meta.py` PRICES "
+            "# Meta API usage ledger\n\nPrice-list estimates from `api/_core/meta.py` PRICES "
             "(not an invoice). Appended by the scripts; rule-5 budget: whole chain <= $40, dev cap "
             f"${DEV_CAP_USD:.0f} enforced by `ledger_total()`.\n\n" + LEDGER_HEADER
         )

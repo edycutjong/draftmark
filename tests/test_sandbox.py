@@ -1,4 +1,4 @@
-from api.core import sandbox
+from api._core import sandbox
 
 OK = '''import math
 def parse_booklet(b):
