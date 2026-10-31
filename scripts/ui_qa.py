@@ -53,7 +53,7 @@ with sync_playwright() as p:
             rec(sw <= w + 1, f"{vname}px {path} no horizontal overflow (scrollWidth {sw})")
             rec(not errs, f"{vname}px {path} no console errors {errs[:2]}")
             small = pg.evaluate("""() => [...document.querySelectorAll('a,button,summary,input,select,[role=tab]')]
-              .filter(e => e.offsetParent !== null && getComputedStyle(e).display !== 'inline').map(e => ({t:(e.innerText||e.getAttribute('aria-label')||e.tagName).slice(0,24),
+              .filter(e => e.offsetParent !== null && getComputedStyle(e).display !== 'inline' && !(e.tagName === 'INPUT' && e.closest('label') && e.closest('label').getBoundingClientRect().height >= 40)).map(e => ({t:(e.innerText||e.getAttribute('aria-label')||e.tagName).slice(0,24),
               w:e.getBoundingClientRect().width, h:e.getBoundingClientRect().height}))
               .filter(e => e.h < 40 && !/^(skip)/i.test(e.t))""")
             if vname == "375":
@@ -76,7 +76,7 @@ with sync_playwright() as p:
     ctx = b.new_context(viewport={"width": 1280, "height": 900})
     pg = ctx.new_page()
     pg.goto(BASE + "/", wait_until="networkidle")
-    for name, sel in [("nav link", ".nav a:not(.btn)"), ("accent button", ".btn--accent"), ("brand", ".brand"), ("tab", ".tab"), ("badge link", ".badge--link")]:
+    for name, sel in [("nav link", ".nav a:not(.btn)"), ("accent button", ".btn--accent"), ("brand", ".brand"), ("tab", ".tab[aria-selected=false]"), ("badge link", ".badge--link")]:
         el = pg.locator(sel).first
         if not el.count():
             print(f"SKIP hover {name}: {sel} not on /")
