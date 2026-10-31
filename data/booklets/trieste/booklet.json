@@ -1,0 +1,35 @@
+{
+ "id": "trieste",
+ "source_url": "https://moodle2.units.it/pluginfile.php/582393/mod_resource/content/0/Esercitazione%201.pdf",
+ "pdf_sha256": "299253f73621e8c20b264369f65467c91dd80817fc3ae2dc5d599d33e6cfce88",
+ "citation": "Trim and Stability Booklet, Studio Tecnico Moroso-Starita (University of Trieste course material); see CITATION.md",
+ "vessel": "Ro-Ro/passenger ship (not a bulk carrier)",
+ "units": "m, MT",
+ "lpp_m": 150.0,
+ "mark_positions": {
+  "fore_from_fp_m": 1.2,
+  "aft_from_ap_m": 8.8,
+  "mid": "Fr.94 - 200 mm"
+ },
+ "rho_table": 1.025,
+ "mark_system": {
+  "id": "ship-metric",
+  "scale": 1.0
+ },
+ "pages_for_program": [
+  4,
+  21,
+  22,
+  26,
+  36,
+  37,
+  38,
+  39
+ ],
+ "table_range_m": [
+  0.5,
+  9.3
+ ],
+ "table_file": "hydrostatics.csv",
+ "conditions_file": "conditions.csv"
+}
