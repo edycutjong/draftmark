@@ -35,7 +35,8 @@ function NoCodePath() {
       <p>
         Run the one live step anyone can, with no clip, no code and no cost: re-run the survey program Muse Wonder 1.0
         wrote against the booklet&apos;s 22 printed conditions, in the sandbox (no model call). There is no one-click clip:
-        our real-hull test clips are third-party footage we may not re-host.
+        our real-hull test clips are third-party footage we may not re-host. The Meta model calls themselves are recorded:
+        audit them by response id on <Link href="/evidence">/evidence</Link>.
       </p>
       <button type="button" className="btn btn--accent" onClick={() => void rerun()} disabled={st.state === "busy"}>
         {st.state === "busy" ? "Re-running in the sandbox…" : "Re-run Wonder's self-test live"}

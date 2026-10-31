@@ -61,8 +61,9 @@ Three steps, each with a check that is code, not a model's opinion:
    check fails. Each station's output carries an HMAC; if any was edited the certificate is `REFUSE UNSIGNED`. The HMAC
    guards the prototype's own chain; it is not a legal signature.
 
-What exists vs what is new: the calculators, readers and laser systems above exist. New here is the wave-averaged
-reading from a video clip plus an agent that writes and *proves* the survey program against the booklet.
+What exists vs what is new: the calculators, readers and laser systems above exist. What we demonstrate, without
+claiming others lack it, is the combination: a wave-averaged reading from a video clip plus an agent that writes and
+*proves* the survey program against the booklet, with refusal enforced by code.
 
 ## 🏗️ Architecture & Tech Stack
 
