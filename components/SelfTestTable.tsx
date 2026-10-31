@@ -13,7 +13,7 @@ export function SelfTestVerdict({ st }: { st: SelftestSummary }) {
         out-of-table probes refused {probes.filter(Boolean).length}/{probes.length}
       </span>
       <span className="data">
-        differential {st.differential_n ?? "—"} cases · max error {tiny(st.differential_max_err_pct)} %
+        vs our reference program, {st.differential_n ?? "—"} cases · max difference {tiny(st.differential_max_err_pct)} %
         {st.differential_failures != null ? ` · ${st.differential_failures} failures` : ""}
       </span>
     </p>

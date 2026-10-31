@@ -402,7 +402,7 @@ h2 em{font-style:normal;color:var(--after)}
         <text class="sv-ax" x="178" y="512">frame 0</text><text class="sv-ax" x="632" y="512" text-anchor="end">frame 59 · 10 s</text>
       </svg>
       <div class="verdict" id="verdict"><span class="verdict__w">REFUSE</span><span class="verdict__r">OUT_OF_TABLE · matrix row 4</span><span class="verdict__t">12.761&nbsp;m is past the only booklet's 0.5–9.3&nbsp;m table, so no tonnage is guessed.</span></div>
-      <p class="vlink"><a href="#replay">Booklet condition 4.1 (six drafts typed in) issues, with a warning&nbsp;→</a></p>
+      <p class="vlink"><a href="#replay">Other ship, six drafts typed in: booklet condition 4.1 issues 17,825.8&nbsp;t vs the printed 17,827.7&nbsp;t, cargo not computed&nbsp;→</a></p>
       <div class="inst__foot"><p class="tick" id="tick" aria-live="off"><b>60/60</b> frames kept · mean <b>12.761 m</b> · u_rep ±0.086 m · held</p><button class="replay" id="replayBtn" type="button">↻ Replay 10 s</button></div>
       <figcaption class="cap">Redrawn from 60 waterline heights measured on a real third-party clip, no ground truth. Band illustrative; repeatability ±0.086&nbsp;m (k=1: one standard deviation, not absolute accuracy); a one-pitch label error would move it 0.20&nbsp;m.</figcaption>
     </figure>
@@ -484,7 +484,7 @@ h2 em{font-style:normal;color:var(--after)}
         <p class="line-no">Line 003 · Prove</p>
         <h2>Wonder writes the program. <em>The booklet grades it.</em></h2>
       </div>
-      <p class="intro">Muse Wonder&nbsp;1.0 reads the Trieste stability booklet and writes that ship's survey program. It counts only after it reproduces the booklet's own printed conditions, and Wonder never sees the printed answers.</p>
+      <p class="intro">Muse Wonder&nbsp;1.0 reads eight pages of the Trieste booklet, with no printed displacement in them, and writes that ship's survey program. It counts only after it reproduces the booklet's own printed conditions, and Wonder never sees the printed answers.</p>
     </div>
     <div class="grade-wrap rv">
       <table class="grade">
@@ -657,7 +657,7 @@ h2 em{font-style:normal;color:var(--after)}
       <details><summary><span>Q2</span>What is live and what is recorded?</summary><div class="ans">This page replays recorded runs, each labelled with its run id: dB7X from real SAM and Spark calls, Trieste from Wonder's saved program re-run in the sandbox. In the live app the self-test re-runs; uploading a clip needs a judge code, because each upload spends Meta credit.</div></details>
       <details><summary><span>Q3</span>Why do both real clips end in REFUSE?</summary><div class="ans">The only booklet we have is the Trieste's, a Ro-Ro/passenger ship whose table covers 0.5–9.3&nbsp;m. Clip dB7X reads 12.761&nbsp;m and UKTRQ 20.830&nbsp;m, so the program raises <span class="data">OutOfTable</span> instead of extrapolating. The measurement stands; the weight is refused.</div></details>
       <details><summary><span>Q4</span>How do you know Wonder's program is right?</summary><div class="ans">It has to reproduce at least 20 of the booklet's 22 printed conditions within 0.1&nbsp;% (it reproduces 22), agree with our reference program over 200 random cases (largest difference 0.00007&nbsp;%), and raise on two out-of-table probes. The printed displacements were never in Wonder's context. Condition 4.1 is one of those 22, and the 200 cases check Wonder's program against our own reference program.</div></details>
-      <details><summary><span>Q5</span>How accurate is the weight?</summary><div class="ans">So far it is shown only on a synthetic barge: the draft came out 0.155&nbsp;mm from a truth known by construction, the cargo −0.17&nbsp;%, and the truth sat inside ±2u in 96 of 100 seeds. There is no physical scale check and no real-ship accuracy claim.</div></details>
+      <details><summary><span>Q5</span>How accurate is the weight?</summary><div class="ans">There is no physical scale check and no real-ship accuracy claim. On the filmed hull the stated figure is repeatability (±0.086&nbsp;m on dB7X), and a one-pitch label miss would move the draft 0.20&nbsp;m. On a barge generated in code, with SAM not run, the draft came out 0.155&nbsp;mm from its constructed truth, the cargo −0.17&nbsp;%, and the truth sat inside ±2u in 96 of 100 seeds.</div></details>
       <details><summary><span>Q6</span>What does a run cost?</summary><div class="ans">The dB7X measurement used two SAM&nbsp;3.1 video calls and two Spark&nbsp;1.3 reads: $0.0397 at list prices. Writing the program took three Wonder calls, est $0.481 for the default program (one booklet so far).</div></details>
     </div>
   </div>

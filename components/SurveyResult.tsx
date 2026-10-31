@@ -98,6 +98,9 @@ export function SurveyResult({ survey, booklet }: { survey: SurveyOut; booklet?:
             <dt>Deductions</dt>
             <dd className="data">
               {grouped(survey.deductions, 1)} {unit}
+              {survey.deductions === 0 && !(survey.deductibles && Object.keys(survey.deductibles).length)
+                ? " (none entered; not a measured empty ship)"
+                : ""}
               {survey.deductibles && Object.keys(survey.deductibles).length
                 ? ` (${Object.entries(survey.deductibles)
                     .map(([k, v]) => `${k} ${grouped(v, 1)}`)

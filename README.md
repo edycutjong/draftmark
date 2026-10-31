@@ -43,7 +43,9 @@ displacement through the ship's hydrostatic booklet, subtract ballast, fuel and 
 step: the sea moves across the numerals and the surveyor eyeballs a mean. The paperwork after it is a per-ship
 spreadsheet. A P&I club's guide expects "a well-conducted draught survey of a large vessel" to be accurate "to within
 0.5%" ([North of England P&I, *Draught Surveys: A Guide to Good Practice*](https://www.amnautical.com/products/draught-surveys-a-guide-to-good-practice-second-edition));
-on an illustrative 60,000 t cargo that is 300 t, and on our test booklet 1 cm of draft at 6.5 m is 36.99 t. Nearby tools exist as far as we saw in public material (named, not from a systematic prior-art search; no benchmark against them is claimed) (Excel draft-survey
+on an illustrative 60,000 t cargo that is 300 t, and on our test booklet 1 cm of draft at 6.5 m is 36.99 t. That 0.5 % is
+the guide's bar, not our result: on clip dB7X the stated figure is repeatability (±0.086 m), and a one-pitch label miss
+would move the draft 0.20 m. Nearby tools exist as far as we saw in public material (named, not from a systematic prior-art search; no benchmark against them is claimed) (Excel draft-survey
 calculators and apps, academic draft-line readers, laser/radar draft systems, "draft tube" practice); DraftMark does not claim to replace a surveyor's document.
 
 ### The Solution
@@ -77,8 +79,9 @@ one's HMAC with a key that never leaves the server (tokens expire after 24 h): a
 `UNSIGNED`) before any model call, and a survey that claims a measured clip without a valid chain is certified `REFUSE UNSIGNED`. Full write-up: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ```
-prepared clip --> /measure (SAM 3.1) --> /labels (Spark 1.3 + 5 code checks) --> /draft (least squares, dry marks)
-              --> /survey (proven Wonder program, one sandbox launch) --> certificate (code values only)
+prepared clip (port midship only) --> /measure (SAM 3.1) --> /labels (Spark 1.3 + 5 code checks) --> /draft (least squares)
+              --> /survey (other five drafts typed in; proven Wonder program, one sandbox launch)
+              --> certificate (code values only, or REFUSE)
 ```
 
 | Layer | Choice |
