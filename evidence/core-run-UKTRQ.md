@@ -6,8 +6,8 @@ Run `rec-uktrq-20261031` on 2026-10-31 16:08 +0700 by `scripts/core_run.py clip 
 |---|---|---|---|
 | measure | SAM 3.1 video x2 concepts (stored) | 14697 | resp_6ae5aff3a1dd4facbd3f4669, resp_6ae5aff313ac34f042304dee |
 | labels | Spark 1.3 x2 + 5 code checks (stored) | 46011 | resp_6ae5b00343caa8de0c3548cb, resp_6ae5b02b599a1c9ed28d4118 |
-| draft | pure code | 65 |  |
-| survey + certificate | proven program, one sandbox launch | 43 |  |
+| draft | pure code | 143 |  |
+| survey + certificate | proven program, one sandbox launch | 45 |  |
 
 | measure | value |
 |---|---|
@@ -24,7 +24,10 @@ Run `rec-uktrq-20261031` on 2026-10-31 16:08 +0700 by `scripts/core_run.py clip 
 | certificate decision | **REFUSE** OUT_OF_TABLE |
 | why | The draft is outside the vessel's hydrostatic table: the program refuses to extrapolate. OutOfTable: mean draft outside hydrostatic table |
 
-The survey step runs Wonder's proven Trieste program on this draft (midships live, the other four
+Anchor confirmation: a live user confirms the whole-metre anchor crop; this recorded replay has no user,
+so the script sets it to the code's own anchor check (`anchor_confirmed` = checks.anchor).
+
+The survey step runs Wonder's proven Trieste program on this draft (port midship live, the other five
 positions entered at the same value). This ship is not the Trieste booklet's vessel, so a draft
 outside the booklet's 0.5-9.3 m table is refused by the program (OutOfTable) and the certificate is
 REFUSE: the code refuses to extrapolate. The measurement itself stands (repeatability only, no

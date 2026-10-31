@@ -1,22 +1,6 @@
 {
  "runs": [
   {
-   "run_id": "rec-db7x-20261031",
-   "kind": "public-clip",
-   "title": "Real hull test clip dB7X_t45 (no ground truth)",
-   "date": "2026-10-31 16:07 +0700",
-   "decision": "REFUSE",
-   "reason": "OUT_OF_TABLE"
-  },
-  {
-   "run_id": "rec-uktrq-20261031",
-   "kind": "public-clip",
-   "title": "Real hull test clip UKTRQ_t20 (no ground truth)",
-   "date": "2026-10-31 16:08 +0700",
-   "decision": "REFUSE",
-   "reason": "OUT_OF_TABLE"
-  },
-  {
    "run_id": "rec-trieste-20261031",
    "kind": "booklet-proof",
    "title": "Wonder's survey program proves itself on the Trieste booklet (no scale truth)",
@@ -31,6 +15,22 @@
    "date": "2026-10-31 16:49 +0700",
    "decision": "ISSUE_WITH_WARNING",
    "reason": null
+  },
+  {
+   "run_id": "rec-db7x-20261031",
+   "kind": "public-clip",
+   "title": "Real hull test clip dB7X_t45 (no ground truth)",
+   "date": "2026-10-31 16:07 +0700",
+   "decision": "REFUSE",
+   "reason": "OUT_OF_TABLE"
+  },
+  {
+   "run_id": "rec-uktrq-20261031",
+   "kind": "public-clip",
+   "title": "Real hull test clip UKTRQ_t20 (no ground truth)",
+   "date": "2026-10-31 16:08 +0700",
+   "decision": "REFUSE",
+   "reason": "OUT_OF_TABLE"
   }
  ]
 }

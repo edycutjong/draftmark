@@ -55,6 +55,8 @@ Truth inside the certificate's +-u (k=1): 12/12; inside +-2u: 12/12. A coverage 
 
 - It shows the measuring chain (SAM mask edges + Spark's numeral reads checked by code + wave-averaging +
   the analytic box) recovers a known draft and cargo from rendered video with noise and swell.
+- The render and the survey share the box's constants (the same booklet file), so the box's dimensions and
+  light weight are not tested here; what is tested is reading the draft and carrying it to a cargo figure.
 - It does not show a physical scale check, real water, glare, a real meniscus, a real strip print or a real
   camera: the render is ours, so any systematic our renderer omits is invisible here.
 - The truth is the calm (equilibrium) draft; the clips are 10 s, so a partial swell period leaves a small

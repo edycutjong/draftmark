@@ -112,6 +112,7 @@ is logged with an estimated cost in `evidence/api-usage.md`.
   the code checks; SAM does not detect rendered water (0 masks on 12 clips), so the water mask there is a colour
   threshold on our own pixels. It checks the chain, not real water. The one-off `core-run-synth-barge.md` run uses
   geometry with labels from the renderer's truth.
-- Real-ship clips are third-party footage without ground truth: they show repeatability and refusal only. Weight
-  accuracy is shown on a rendered synthetic barge; the test booklet is a Ro-Ro/passenger ship, not a bulk carrier.
+- Real-ship clips are third-party footage without ground truth: they show repeatability and refusal only. The weight
+  chain is checked against a known truth only on a rendered synthetic barge (no real-ship or physical-scale accuracy
+  claim); the test booklet is a Ro-Ro/passenger ship, not a bulk carrier.
 - Rate counters are per instance, so a cold start resets them; the budget flag and kill switch are the hard stops.

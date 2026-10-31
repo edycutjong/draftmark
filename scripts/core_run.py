@@ -22,8 +22,8 @@ os.environ.setdefault("JUDGE_CODE", secrets.token_hex(16))  # local only: unlock
 from fastapi.testclient import TestClient  # noqa: E402
 
 from api._core import barge as B  # noqa: E402
-from api._core import marks, pipeline, selftest, survey  # noqa: E402
-from api.index import app  # noqa: E402
+from api._core import marks, pipeline, selftest, sign, survey  # noqa: E402
+from api.index import _labels_token, app  # noqa: E402
 
 RUNS = ROOT / "public" / "runs"
 CLIP_SRC = {"dB7X_t45": "https://www.youtube.com/watch?v=dB7X-manr10",
@@ -109,22 +109,36 @@ def run_clip(name: str, reuse: bool = False):
         steps.append(("labels", f"Spark 1.3 x{len(lab['response_ids'])} + 5 code checks", ms_l,
                       ", ".join(lab["response_ids"])))
     d = None
+    token = None
     if lab and lab["checks"]["ok"]:
-        d, ms_d = post("/api/py/draft", {"geometry": g, "drafts": lab["drafts"]})
+        lab_token = lab.get("labels_token")
+        if reuse and old:  # stored run: re-seal the stored geometry and re-issue the labels token in-process, so
+            # the re-certification goes through the same signed chain as a live run (no Meta call)
+            gs = sign.seal_geometry({**g, "provenance": {"run_id": run_id, "source": "recorded run re-certified",
+                                                         "clip": name, "models": [meta.SAM]}})
+            c = lab["checks"]
+            chk = marks.CheckResult(c["monotone"], c["pitch"], c["residual"], c["cross_frame"], c["anchor"], c)
+            lab_token = _labels_token(gs, lab["drafts"], chk, bool(lab.get("typed")))
+            g = {k: v for k, v in gs.items() if k not in ("sig", "iat")}
+            body_geom = gs
+        else:
+            body_geom = g
+        d, ms_d = post("/api/py/draft", {"geometry": body_geom, "drafts": lab["drafts"], "labels_token": lab_token})
+        token = d["result"].get("token")
         steps.append(("draft", "pure code", ms_d, ""))
     res = (d or {}).get("result") or {}
     measure_facts = {**res, "row1": g["row1"], "n_frames": g["n_frames"],
-                     "n_kept": res.get("n_kept", 0)}
+                     "n_kept": res.get("n_kept", 0), "token": token}
     dm = res.get("d_m")
     srv_in = None
     if dm is not None:
         drafts = {p: dm for p in survey.POSITIONS}
-        sources = {p: ("live" if p.startswith("mid") else "entered") for p in survey.POSITIONS}
+        sources = {p: ("live" if p in survey.LIVE_POSITIONS else "entered") for p in survey.POSITIONS}
         srv_in = {"drafts": drafts, "sources": sources, "u_live_m": res.get("u_rep_m"), "sg": 1.025}
     cert = None
     if g["n_frames"]:  # also a refusal goes through /survey, so it gets the same certificate as the UI path
         c, ms_s = post("/api/py/survey", {"mode": "ship", "run_mode": "RECORDED", "measure": measure_facts,
-                                          "labels": {"checks": lab["checks"]} if lab else None,
+                                          "labels": {"checks": lab["checks"], "anchor_confirmed": bool(lab["checks"]["anchor"])} if lab else None,
                                           "models": sorted({u["model"] for u in usage}),
                                           "survey": srv_in, "run_id": run_id,
                                           "booklet_info": {"id": "trieste"},
@@ -160,8 +174,11 @@ def run_clip(name: str, reuse: bool = False):
         L += [f"| certificate decision | **{cert['decision']}** {cert['reason'] or ''} |",
               f"| why | {cert['hint'] or ''} {cert['survey'].get('error') or ''} |"]
     reason = (cert or {}).get("reason")
+    if lab:
+        L += ["", "Anchor confirmation: a live user confirms the whole-metre anchor crop; this recorded replay has no user,",
+              "so the script sets it to the code's own anchor check (`anchor_confirmed` = checks.anchor)."]
     if reason == "OUT_OF_TABLE":
-        L += ["", "The survey step runs Wonder's proven Trieste program on this draft (midships live, the other four",
+        L += ["", "The survey step runs Wonder's proven Trieste program on this draft (port midship live, the other five",
               "positions entered at the same value). This ship is not the Trieste booklet's vessel, so a draft",
               "outside the booklet's 0.5-9.3 m table is refused by the program (OutOfTable) and the certificate is",
               "REFUSE: the code refuses to extrapolate. The measurement itself stands (repeatability only, no",
