@@ -23,3 +23,20 @@ Estimated cost of the run: $0.041.
 Latency: the measure step is dominated by decoding SAM's masks (pure-Python decoder in `meta_sam_parser`; locally
 16.5 s of 18.8 s for this clip, identical output from our own parser). 51 s is under the function's 300 s limit;
 the UI shows the stations as they finish.
+
+## Final run after review rounds 2 and 3 (2026-10-31 ~20:02 WIB, build `dfbc23f`, run `live-p1d-1793451671`)
+
+| step | result | wall time |
+|---|---|---|
+| measure | 200, row 1 clear, 60 frames, sealed; SAM 17.1 s + mask decode 39.1 s | 58.5 s |
+| labels | 200, checks ok on attempt 1, labels token | 12.0 s |
+| labels on an edited geometry | 400 `UNSIGNED` | 1.0 s |
+| draft | d = 12.761 m, u_rep = 0.086 m, 60/60, measure token | 1.6 s |
+| survey, signed (mid_p = the clip, other positions entered) | REFUSE `OUT_OF_TABLE`, inputs signed, models from the token | 0.6 s |
+| survey, token dropped, forged 6.5 m | REFUSE `UNSIGNED`, models [] | 0.6 s |
+| survey, body edited to 6.5 m, token kept | token's d = 12.761 m used: REFUSE `OUT_OF_TABLE` | 0.4 s |
+| self-test re-run | PASS 22/22 (both probes raise OutOfTable) | 0.4 s |
+
+Response ids: `resp_6ae5e69d37a25da88506485c`, `resp_6ae5e69fc2eec0d2028743a3` (SAM),
+`resp_6ae5e6d979e05de4a16d4ada`, `resp_6ae5e6def11021bc8f184e39` (Spark). Estimated cost $0.041. The draft moved by
+0.1 mm against the first run (12.76087 -> 12.76077 m) from the water edge now bridging <= 3 px mask holes.

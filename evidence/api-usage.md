@@ -73,3 +73,7 @@ Price-list estimates from `api/_core/meta.py` PRICES (not an invoice). Appended 
 | 2026-10-31 19:09 | p1d-review-r2b | muse-wonder-1.0 | outside architecture review r2 re-run (reasoning medium, no tools; estimated) | ~50k / ~5-10k | 0.3500 |  |  |
 | 2026-10-31 19:48 | p1d-review-r3a | muse-wonder-1.0 | outside architecture review r3 (reasoning medium; EMPTY — max_output_tokens; estimated) | ~52k / 16k | 0.5300 |  |  |
 | 2026-10-31 19:57 | p1d-review-r3b | muse-wonder-1.0 | outside architecture review r3 re-run on the slim packet (reasoning low, no tools; estimated) | ~28k / ~4k | 0.2000 |  |  |
+| 2026-10-31 13:01 | live-p1d-1793451671 | sam-3.1 | sam video 'water' upload | 0 (0) / 0 · 60 frames | 0.0120 | 6052 | resp_6ae5e69d37a25da88506485c |
+| 2026-10-31 13:01 | live-p1d-1793451671 | sam-3.1 | sam video 'white number' upload | 0 (0) / 0 · 60 frames | 0.0120 | 17142 | resp_6ae5e69fc2eec0d2028743a3 |
+| 2026-10-31 13:02 | live-p1d-1793451671 | muse-spark-1.3 | spark labels f0 try 1 | 462 (0) / 1402 | 0.0065 | 6190 | resp_6ae5e6d979e05de4a16d4ada |
+| 2026-10-31 13:02 | live-p1d-1793451671 | muse-spark-1.3 | spark labels f10 try 1 | 462 (0) / 2285 | 0.0103 | 10811 | resp_6ae5e6def11021bc8f184e39 |
