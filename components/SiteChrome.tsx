@@ -26,6 +26,9 @@ export function SiteHeader({ live }: { live?: boolean }) {
             <Link href="/">Recorded runs</Link>
           </li>
           <li>
+            <Link href="/evidence">Evidence</Link>
+          </li>
+          <li>
             {live ? (
               <span aria-current="page" className="nav__current">
                 Live survey
