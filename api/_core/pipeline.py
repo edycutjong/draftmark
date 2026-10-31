@@ -103,16 +103,22 @@ def geometry_from_objects(num_objs: list[SamObject], water_objs: list[SamObject]
                           system: MarkSystem, crop: dict | None = None) -> dict:
     """Stage 1. Returns the compact geometry with `row1` = None or a REFUSE reason."""
     num = sam.by_frame(num_objs)
-    wat = sam.by_frame(water_objs)
     toks, raw, capped = tokens_by_frame(num, n_frames, system)
+    return geometry_from_tokens(toks, raw, capped, sam.by_frame(water_objs), n_frames, fps, system, crop)
+
+
+def geometry_from_tokens(toks: dict[int, list[Token]], raw: dict[int, int], capped: list[int],
+                         wat: dict[int, list[SamObject]], n_frames: int, fps: float, system: MarkSystem,
+                         crop: dict | None = None) -> dict:
     col = column(toks)
     frames = []
     any_edge = False
     for i in range(n_frames):
+        ti = toks.get(i, [])
         prof = water_profile(wat.get(i, []), *col) if col else []
-        if toks[i] and col and measure.water_edge(water_from_profile(i, col[0], prof), *col) is not None:
+        if ti and col and measure.water_edge(water_from_profile(i, col[0], prof), *col) is not None:
             any_edge = True
-        frames.append({"i": i, "raw": raw[i], "tokens": [token_json(t) for t in toks[i]], "water": prof,
+        frames.append({"i": i, "raw": raw.get(i, 0), "tokens": [token_json(t) for t in ti], "water": prof,
                        "n_water_objs": len(wat.get(i, []))})
     n_num = sum(raw.values())
     n_wat = sum(len(v) for v in wat.values())
@@ -124,7 +130,7 @@ def geometry_from_objects(num_objs: list[SamObject], water_objs: list[SamObject]
         row1 = "WATER_MISS"
     else:
         row1 = None
-    lf = pick_label_frames(toks, fps)
+    lf = pick_label_frames({i: toks.get(i, []) for i in range(n_frames)}, fps)
     return {"n_frames": n_frames, "fps": fps, "mark_system": {"id": system.id, "scale": system.scale},
             "crop": crop, "column": list(col) if col else None, "frames": frames, "raw_numeral_objs": n_num,
             "raw_water_objs": n_wat, "object_cap_frames": capped, "row1": row1,

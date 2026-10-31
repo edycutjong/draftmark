@@ -52,3 +52,11 @@ Price-list estimates from `api/_core/meta.py` PRICES (not an invoice). Appended 
 | 2026-10-31 15:46 | p1a-cu | muse-spark-1.3 | spark computer-use step 0 | 3468 (0) / 209 | 0.0052 | 5270 | resp_6ae5aaddf681c335234c43a7 |
 | 2026-10-31 15:46 | p1a-cu | muse-spark-1.3 | spark computer-use step 1 | 2797 (0) / 102 | 0.0039 | 9430 | resp_6ae5aae61c5451215a11465c |
 | 2026-10-31 15:46 | p1a-cu | muse-spark-1.3 | spark computer-use step 0 | 3451 (0) / 304 | 0.0056 | 4758 | resp_6ae5aaee48a10393c2aa4696 |
+| 2026-10-31 16:07 | rec-db7x-20261031 | sam-3.1 | sam video 'white number' upload | 0 (0) / 0 · 60 frames | 0.0120 | 6858 | resp_6ae5afc5eaf19a98130b4b2d |
+| 2026-10-31 16:07 | rec-db7x-20261031 | sam-3.1 | sam video 'water' upload | 0 (0) / 0 · 60 frames | 0.0120 | 8196 | resp_6ae5afc6a737472e198542a8 |
+| 2026-10-31 16:07 | rec-db7x-20261031 | muse-spark-1.3 | spark labels f0 try 1 | 462 (0) / 947 | 0.0046 | 4772 | resp_6ae5afdecc5b13667f374d5e |
+| 2026-10-31 16:07 | rec-db7x-20261031 | muse-spark-1.3 | spark labels f10 try 1 | 462 (0) / 2468 | 0.0111 | 9766 | resp_6ae5afe8bf4fcf96229347a0 |
+| 2026-10-31 16:08 | rec-uktrq-20261031 | sam-3.1 | sam video 'white number' upload | 0 (0) / 0 · 48 frames | 0.0096 | 7436 | resp_6ae5aff3a1dd4facbd3f4669 |
+| 2026-10-31 16:08 | rec-uktrq-20261031 | sam-3.1 | sam video 'water' upload | 0 (0) / 0 · 48 frames | 0.0096 | 7815 | resp_6ae5aff313ac34f042304dee |
+| 2026-10-31 16:08 | rec-uktrq-20261031 | muse-spark-1.3 | spark labels f17 try 1 | 329 (0) / 1558 | 0.0070 | 6568 | resp_6ae5b00343caa8de0c3548cb |
+| 2026-10-31 16:08 | rec-uktrq-20261031 | muse-spark-1.3 | spark labels f29 try 1 | 329 (0) / 11603 | 0.0497 | 39396 | resp_6ae5b02b599a1c9ed28d4118 |

@@ -1,0 +1,59 @@
+"""Spend protection for the live endpoints (no DB on Hobby, so no global cap exists).
+
+- Open class (measure + labels on a committed fixture): per IP and per instance per hour.
+- Uploads and Wonder generation: JUDGE_CODE (compared in constant time).
+- Fail-closed: a 402 / billing 429 from Meta sets a per-instance BUDGET flag until the instance recycles.
+- Kill switch: LIVE_MODE=off -> every live call answers BUDGET and the recorded run is served.
+"""
+from __future__ import annotations
+
+import hmac
+import os
+import threading
+import time
+
+PER_IP_H = int(os.environ.get("LIVE_PER_IP_H", "5"))
+PER_INSTANCE_H = int(os.environ.get("LIVE_PER_INSTANCE_H", "15"))
+_lock = threading.Lock()
+_hits: dict[str, list[float]] = {}
+_budget_tripped: dict[str, str] = {}
+
+
+def live_mode() -> bool:
+    return os.environ.get("LIVE_MODE", "on").lower() != "off"
+
+
+def judge_ok(code: str | None) -> bool:
+    want = os.environ.get("JUDGE_CODE", "")
+    return bool(want) and bool(code) and hmac.compare_digest(want, code)
+
+
+def trip_budget(why: str) -> None:
+    _budget_tripped["reason"] = why[:200]
+
+
+def budget_reason() -> str | None:
+    if not live_mode():
+        return "LIVE_MODE=off"
+    return _budget_tripped.get("reason")
+
+
+def take(ip: str, now: float | None = None) -> tuple[bool, str | None]:
+    """Count one live run for ip; (allowed, reason when not)."""
+    now = now or time.time()
+    with _lock:
+        for k in (f"ip:{ip}", "instance"):
+            _hits[k] = [t for t in _hits.get(k, []) if now - t < 3600]
+        if len(_hits[f"ip:{ip}"]) >= PER_IP_H:
+            return False, f"{PER_IP_H} live runs per IP per hour"
+        if len(_hits["instance"]) >= PER_INSTANCE_H:
+            return False, f"{PER_INSTANCE_H} live runs per instance per hour"
+        _hits[f"ip:{ip}"].append(now)
+        _hits["instance"].append(now)
+    return True, None
+
+
+def reset() -> None:  # tests
+    with _lock:
+        _hits.clear()
+        _budget_tripped.clear()
