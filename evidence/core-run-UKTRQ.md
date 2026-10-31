@@ -6,8 +6,8 @@ Run `rec-uktrq-20261031` on 2026-10-31 16:08 +0700 by `scripts/core_run.py clip 
 |---|---|---|---|
 | measure | SAM 3.1 video x2 concepts (stored) | 14697 | resp_6ae5aff3a1dd4facbd3f4669, resp_6ae5aff313ac34f042304dee |
 | labels | Spark 1.3 x2 + 5 code checks (stored) | 46011 | resp_6ae5b00343caa8de0c3548cb, resp_6ae5b02b599a1c9ed28d4118 |
-| draft | pure code | 108 |  |
-| survey + certificate | proven program, one sandbox launch | 45 |  |
+| draft | pure code | 47 |  |
+| survey + certificate | proven program, one sandbox launch | 44 |  |
 
 | measure | value |
 |---|---|
@@ -25,9 +25,10 @@ Run `rec-uktrq-20261031` on 2026-10-31 16:08 +0700 by `scripts/core_run.py clip 
 | why | The draft is outside the vessel's hydrostatic table: the program refuses to extrapolate. OutOfTable: mean draft outside hydrostatic table |
 
 The survey step runs Wonder's proven Trieste program on this draft (midships live, the other four
-positions entered at the same value). This ship is not the Trieste booklet's vessel, so a draft outside
-the booklet's 0.5-9.3 m table is refused by the program (OutOfTable) and the certificate is REFUSE: the
-code refuses to extrapolate. The measurement itself stands (repeatability only, no ground truth).
+positions entered at the same value). This ship is not the Trieste booklet's vessel, so a draft
+outside the booklet's 0.5-9.3 m table is refused by the program (OutOfTable) and the certificate is
+REFUSE: the code refuses to extrapolate. The measurement itself stands (repeatability only, no
+ground truth). No cargo is computed for a real-hull test clip.
 
-Cost of this run (price-list estimate): $0.0760; rows appended to `evidence/api-usage.md`.
+Cost of this run (price-list estimate): $0.0760; its rows are in `evidence/api-usage.md`.
 Recorded run JSON: `public/runs/rec-uktrq-20261031.json`.

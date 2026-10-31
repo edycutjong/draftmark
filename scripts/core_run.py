@@ -122,11 +122,12 @@ def run_clip(name: str, reuse: bool = False):
         sources = {p: ("live" if p.startswith("mid") else "entered") for p in survey.POSITIONS}
         srv_in = {"drafts": drafts, "sources": sources, "u_live_m": res.get("u_rep_m"), "sg": 1.025}
     cert = None
-    if srv_in:
+    if g["n_frames"]:  # also a refusal goes through /survey, so it gets the same certificate as the UI path
         c, ms_s = post("/api/py/survey", {"mode": "ship", "run_mode": "RECORDED", "measure": measure_facts,
                                           "labels": {"checks": lab["checks"]} if lab else None,
                                           "models": sorted({u["model"] for u in usage}),
                                           "survey": srv_in, "run_id": run_id,
+                                          "booklet_info": {"id": "trieste"},
                                           "clip": {"id": name, "source": CLIP_SRC.get(name),
                                                    "note": "third-party test clip, no ground truth, not re-hosted"}})
         cert = c["certificate"]
@@ -158,11 +159,17 @@ def run_clip(name: str, reuse: bool = False):
     if cert:
         L += [f"| certificate decision | **{cert['decision']}** {cert['reason'] or ''} |",
               f"| why | {cert['hint'] or ''} {cert['survey'].get('error') or ''} |"]
-    L += ["", "The survey step runs Wonder's proven Trieste program on this draft (midships live, the other four",
-          "positions entered at the same value). This ship is not the Trieste booklet's vessel, so a draft outside",
-          "the booklet's 0.5-9.3 m table is refused by the program (OutOfTable) and the certificate is REFUSE: the",
-          "code refuses to extrapolate. The measurement itself stands (repeatability only, no ground truth).",
-          "", f"Cost of this run (price-list estimate): ${usd:.4f}; rows appended to `evidence/api-usage.md`.",
+    reason = (cert or {}).get("reason")
+    if reason == "OUT_OF_TABLE":
+        L += ["", "The survey step runs Wonder's proven Trieste program on this draft (midships live, the other four",
+              "positions entered at the same value). This ship is not the Trieste booklet's vessel, so a draft",
+              "outside the booklet's 0.5-9.3 m table is refused by the program (OutOfTable) and the certificate is",
+              "REFUSE: the code refuses to extrapolate. The measurement itself stands (repeatability only, no",
+              "ground truth). No cargo is computed for a real-hull test clip."]
+    else:
+        L += ["", f"Certificate: {(cert or {}).get('decision')} {reason or ''} — {(cert or {}).get('hint') or ''}"]
+    L += [
+          "", f"Cost of this run (price-list estimate): ${usd:.4f}; its rows are in `evidence/api-usage.md`.",
           f"Recorded run JSON: `public/runs/{path.name}`.", ""]
     (EVIDENCE / f"core-run-{name.split('_')[0]}.md").write_text("\n".join(L))
     print(json.dumps({"run": run_id, "d": dm, "u_rep": res.get("u_rep_m"), "kept": res.get("n_kept"),

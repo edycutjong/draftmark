@@ -182,6 +182,14 @@ export function Certificate({ run }: { run: Run }) {
           <p className="small">
             Read by <span className="data">{c.labels.read_by}</span>
             {c.labels.degraded ? " · degraded: labels by hand" : ""}
+            {" · anchor "}
+            {c.labels.degraded
+              ? "typed by hand"
+              : c.labels.anchor_confirmed === true
+                ? "confirmed by the user"
+                : c.labels.anchor_confirmed === false
+                  ? "rejected by the user"
+                  : "checked by code only (no user in this run)"}
           </p>
           {c.labels.checks ? <CheckTicks checks={c.labels.checks} /> : null}
         </Line>

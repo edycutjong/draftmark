@@ -17,6 +17,7 @@ PER_INSTANCE_H = int(os.environ.get("LIVE_PER_INSTANCE_H", "15"))
 _lock = threading.Lock()
 _hits: dict[str, list[float]] = {}
 _budget_tripped: dict[str, str] = {}
+_runs: dict[str, list] = {}  # run id measured here -> [ts, free label calls left]: labels ride on the measure hit
 
 
 def live_mode() -> bool:
@@ -38,10 +39,16 @@ def budget_reason() -> str | None:
     return _budget_tripped.get("reason")
 
 
-def take(ip: str, now: float | None = None) -> tuple[bool, str | None]:
-    """Count one live run for ip; (allowed, reason when not)."""
+def take(ip: str, now: float | None = None, run_id: str | None = None, ride: bool = False
+         ) -> tuple[bool, str | None]:
+    """Count one live run for ip; (allowed, reason when not). ride=True (labels): the first label call of a run
+    measured on this instance within the hour is free; /measure never rides."""
     now = now or time.time()
     with _lock:
+        r = _runs.get(run_id) if (ride and run_id) else None
+        if r and now - r[0] < 3600 and r[1] > 0:
+            r[1] -= 1
+            return True, None
         for k in (f"ip:{ip}", "instance"):
             _hits[k] = [t for t in _hits.get(k, []) if now - t < 3600]
         if len(_hits[f"ip:{ip}"]) >= PER_IP_H:
@@ -50,6 +57,8 @@ def take(ip: str, now: float | None = None) -> tuple[bool, str | None]:
             return False, f"{PER_INSTANCE_H} live runs per instance per hour"
         _hits[f"ip:{ip}"].append(now)
         _hits["instance"].append(now)
+        if run_id and not ride:
+            _runs[run_id] = [now, 1]
     return True, None
 
 
@@ -57,3 +66,4 @@ def reset() -> None:  # tests
     with _lock:
         _hits.clear()
         _budget_tripped.clear()
+        _runs.clear()

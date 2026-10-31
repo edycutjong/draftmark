@@ -20,7 +20,7 @@
    "run_id": "rec-trieste-20261031",
    "kind": "booklet-proof",
    "title": "Wonder's survey program proves itself on the Trieste booklet (no scale truth)",
-   "date": "2026-10-31 16:38 +0700",
+   "date": "2026-10-31 16:44 +0700",
    "decision": "ISSUE_WITH_WARNING",
    "reason": null
   },
@@ -28,7 +28,7 @@
    "run_id": "synth-barge-s3",
    "kind": "synthetic",
    "title": "Mini-barge, SYNTHETIC geometry (seed 3; not SAM, not the scale)",
-   "date": "2026-10-31 16:38 +0700",
+   "date": "2026-10-31 16:44 +0700",
    "decision": "ISSUE_WITH_WARNING",
    "reason": null
   }

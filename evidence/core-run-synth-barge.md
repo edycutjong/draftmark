@@ -1,6 +1,6 @@
 # Core run: mini-barge on SYNTHETIC geometry (seed 3)
 
-Run `synth-barge-s3` on 2026-10-31 16:38 +0700 by `scripts/core_run.py synth --seed 3`. Geometry from
+Run `synth-barge-s3` on 2026-10-31 16:44 +0700 by `scripts/core_run.py synth --seed 3`. Geometry from
 `scripts/error_model_synthetic.py` (two-harmonic swell, edge jitter, occlusion bias, print stretch, dropped
 frames). No SAM call: SAM does not detect synthetic water (P1a), so this exercises the code path from
 geometry to certificate, not the model. Labels come from the synthetic truth and pass the same five checks.

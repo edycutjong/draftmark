@@ -211,7 +211,7 @@ export interface Certificate {
   warnings: Warning[];
   decision_row: number | null;
   draft: Partial<DraftResult> | null;
-  labels: { read_by?: string; degraded?: boolean; checks?: Checks | null } | null;
+  labels: { read_by?: string; degraded?: boolean; anchor_confirmed?: boolean | null; checks?: Checks | null } | null;
   survey: SurveyOut | null;
   selftest: SelftestSummary | null;
   program_author?: string | null;

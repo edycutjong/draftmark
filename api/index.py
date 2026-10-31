@@ -70,7 +70,8 @@ def _meta_fail(e: Exception) -> JSONResponse:
     return _err(502, "UPSTREAM", type(e).__name__)
 
 
-def _gate(req: Request, upload: bool, code: str | None) -> JSONResponse | None:
+def _gate(req: Request, upload: bool, code: str | None, run_id: str | None = None,
+          ride: bool = False) -> JSONResponse | None:
     why = limits.budget_reason()
     if why:
         return _err(503, "BUDGET", why)
@@ -78,7 +79,7 @@ def _gate(req: Request, upload: bool, code: str | None) -> JSONResponse | None:
         return _err(503, "BUDGET", "no API key on this deployment")
     if upload and not limits.judge_ok(code):
         return _err(403, "JUDGE_CODE", "uploads need the judge code from the submission notes")
-    ok, why = limits.take(_ip(req))
+    ok, why = limits.take(_ip(req), run_id=run_id, ride=ride)
     if not ok:
         return _err(429, "RATE", why or "")
     return None
@@ -100,16 +101,18 @@ async def measure_ep(req: Request):
                 "frames": int(body.get("frames") or 0), "scale": float(body.get("scale") or 0.1)}
         if info["fps"] > 8.01 or info["frames"] > 64:
             return _err(413, "PAYLOAD", "<= 8 s at <= 8 fps")
+        if info["frames"] <= 0:
+            return _err(400, "PAYLOAD", "send the clip's frame count (frames > 0)")
         url = upload
     else:
         info = next((c for c in _clips() if c["id"] == body.get("fixture")), None)
         if info is None:
             return _err(404, "NO_FIXTURE", "unknown fixture id")
         url = meta.bytes_data_url((ROOT / "public" / info["file"].lstrip("/")).read_bytes(), "video/mp4")
-    blocked = _gate(req, bool(upload), body.get("judge_code"))
+    run_id = body.get("run_id") or f"live-{int(time.time())}"
+    blocked = _gate(req, bool(upload), body.get("judge_code"), run_id)
     if blocked:
         return blocked
-    run_id = body.get("run_id") or f"live-{int(time.time())}"
     cl = _client(run_id)
     concepts = ("white number", "water")
     t0 = time.time()
@@ -134,8 +137,22 @@ async def measure_ep(req: Request):
             "usage": [meta.as_dict(r) for r in cl.rows]}
 
 
+MAX_IMG_BYTES, MAX_IMG_PX = 2 * 1024 * 1024, 4_000_000
+
+
 def _img(data_url: str) -> Image.Image:
-    return Image.open(io.BytesIO(base64.b64decode(data_url.split(",", 1)[1]))).convert("RGB")
+    if not str(data_url).startswith(("data:image/jpeg;base64,", "data:image/png;base64,")):
+        raise ValueError("frames must be JPEG/PNG data URLs")
+    raw = base64.b64decode(data_url.split(",", 1)[1])
+    if len(raw) > MAX_IMG_BYTES:
+        raise ValueError("frame image > 2 MB")
+    try:
+        im = Image.open(io.BytesIO(raw))
+    except Exception as e:  # noqa: BLE001
+        raise ValueError("unreadable frame image") from e
+    if im.width * im.height > MAX_IMG_PX:
+        raise ValueError("frame image > 4 MP")
+    return im.convert("RGB")
 
 
 @app.post("/api/py/labels")
@@ -157,31 +174,37 @@ async def labels_ep(req: Request):
             return _err(400, "LABEL_FRAMES", "frame not in geometry")
         drafts, chk = marks.check_labels(toks[f1], typed, typed, system, strip)
         return {"ok": True, "typed": True, "drafts": drafts, "checks": chk.as_dict(), "reads": {}, "usage": []}
-    blocked = _gate(req, False, None)
-    if blocked:
-        return blocked
     frames = {int(k): v for k, v in (body.get("frames") or {}).items()}
     if not lf or set(frames) != set(lf):  # exactly the two frames >= 1 s apart chosen by /measure
         return _err(400, "LABEL_FRAMES", f"send exactly the label frames {lf}")
-    cl = _client(body.get("run_id") or f"live-{int(time.time())}")
+    try:
+        imgs = {f: _img(u) for f, u in frames.items()}
+    except ValueError as e:
+        return _err(400, "PAYLOAD", str(e))
+    run_id = body.get("run_id") or f"live-{int(time.time())}"
+    blocked = _gate(req, False, None, run_id, ride=True)
+    if blocked:
+        return blocked
+    cl = _client(run_id)
     reads, rids = {}, []
     try:
-        hint = None
+        hints: dict[int, str] | None = None
         for attempt in (1, 2):
-            def one(item, attempt=attempt, hint=hint):
-                f, url = item
-                img, numbering = labels.annotate(_img(url), toks[f])
-                return f, *labels.read(cl, img, numbering, system, feature=f"spark labels f{f} try {attempt}",
-                                       hint=hint)
+            def one(item, attempt=attempt, hints=hints):
+                f, im = item
+                img, numbering = labels.annotate(im, toks[f])
+                by_track, m = labels.read(cl, img, numbering, system, feature=f"spark labels f{f} try {attempt}",
+                                          hint=(hints or {}).get(f))
+                return f, by_track, m, numbering
 
             with ThreadPoolExecutor(2) as ex:  # the two reads are independent: run them concurrently
-                got = list(ex.map(one, frames.items()))
-            reads = {f: by_track for f, by_track, _ in got}
-            rids += [m.get("response_id") for _, _, m in got]
+                got = list(ex.map(one, imgs.items()))
+            reads = {f: by_track for f, by_track, _, _ in got}
+            rids += [m.get("response_id") for _, _, m, _ in got]
             drafts, chk = pipeline.check(geom, reads, strip)
             if chk.ok:
                 break
-            hint = _retry_hint(chk)
+            hints = {f: _retry_hint(chk, numbering) for f, _, _, numbering in got}
     except Exception as e:  # noqa: BLE001
         return _meta_fail(e)
     return {"ok": True, "typed": False, "drafts": drafts, "checks": chk.as_dict(), "attempts": attempt,
@@ -189,15 +212,19 @@ async def labels_ep(req: Request):
             "usage": [meta.as_dict(r) for r in cl.rows]}
 
 
-def _retry_hint(chk: marks.CheckResult) -> str:
-    """The re-read prompt carries what failed (never the expected answer)."""
+_CHECK_TEXT = {"monotone": "the marks must increase upward", "pitch": "spacing does not match 20 cm per step",
+               "residual": "the marks do not lie on one straight scale", "cross_frame": "the two frames disagree",
+               "anchor": "the whole-metre mark ('NM') is not on a wide box"}
+
+
+def _retry_hint(chk: marks.CheckResult, numbering: dict[str, str]) -> str:
+    """The re-read prompt for ONE image: what failed, in the box numbers drawn on that image (never the answer)."""
     d = chk.as_dict()
-    failed = [k for k in ("monotone", "pitch", "residual", "cross_frame", "anchor") if not d.get(k)]
-    parts = [f"failed: {', '.join(failed)}"]
-    if d.get("disagree"):
-        parts.append(f"the two frames disagree on tracks {d['disagree']}")
-    if d.get("gaps_in_pitches"):
-        parts.append(f"gaps between boxes, in mark pitches: {d['gaps_in_pitches']}")
+    box_of = {track: n for n, track in numbering.items()}
+    parts = [_CHECK_TEXT[k] for k in _CHECK_TEXT if not d.get(k)]
+    boxes = sorted({box_of[t] for t in d.get("disagree") or [] if t in box_of}, key=int)
+    if boxes:
+        parts.append(f"check boxes {', '.join(boxes)} again")
     return "; ".join(parts) + ". Read each box again exactly as painted; answer '?' if unsure."
 
 
@@ -234,6 +261,10 @@ async def survey_ep(req: Request):
     mode = body.get("mode", "ship")
     meas = body.get("measure") or {}
     lab = body.get("labels")
+    if not meas.get("n_frames") and not (mode == "ship" and body.get("survey") and body.get("booklet_info")):
+        return _err(400, "NO_EVIDENCE", "a certificate needs a measured clip, or a ship survey on a named booklet")
+    if meas.get("n_frames") and meas.get("d_m") is None and not meas.get("refused") and not meas.get("row1"):
+        meas = {**meas, "refused": True, "reason": meas.get("reason") or "FRAMES_LOW"}  # no draft = refused
     if mode == "barge":
         u = meas.get("u_abs_m") or meas.get("u_rep_m")
         if meas.get("d_m") is None:

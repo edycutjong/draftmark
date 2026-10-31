@@ -27,25 +27,27 @@ def mp4(n=10):
 def test_upload_mime_size_and_judge_code():
     r = api.post("/api/py/measure", json={"upload": "data:video/webm;base64,AAAA"})
     assert r.status_code == 415 and r.json()["reason"] == "PAYLOAD"
+    r = api.post("/api/py/measure", json={"upload": mp4(), "fps": 6})
+    assert r.status_code == 400 and r.json()["reason"] == "PAYLOAD"  # frame count required
     r = api.post("/api/py/measure", json={"upload": mp4(3 * 1024 * 1024 + 3)})
     assert r.status_code == 413 and r.json()["reason"] == "PAYLOAD"
     r = api.post("/api/py/measure", json={"upload": mp4(), "fps": 12, "frames": 30})
     assert r.status_code == 413
-    r = api.post("/api/py/measure", json={"upload": mp4(), "judge_code": "wrong"})
+    r = api.post("/api/py/measure", json={"upload": mp4(), "judge_code": "wrong", "fps": 6, "frames": 30})
     assert r.status_code == 403 and r.json()["reason"] == "JUDGE_CODE"
 
 
 def test_kill_switch_and_unknown_fixture(monkeypatch):
     assert api.post("/api/py/measure", json={"fixture": "nope"}).json()["reason"] == "NO_FIXTURE"
     monkeypatch.setenv("LIVE_MODE", "off")
-    r = api.post("/api/py/measure", json={"upload": mp4(), "judge_code": "j" * 32})
+    r = api.post("/api/py/measure", json={"upload": mp4(), "judge_code": "j" * 32, "fps": 6, "frames": 30})
     assert r.status_code == 503 and r.json()["reason"] == "BUDGET"
     assert api.get("/api/py/health").json()["budget"] == "LIVE_MODE=off"
 
 
 def test_budget_trip_fails_closed():
     limits.trip_budget("HTTP 402")
-    r = api.post("/api/py/measure", json={"upload": mp4(), "judge_code": "j" * 32})
+    r = api.post("/api/py/measure", json={"upload": mp4(), "judge_code": "j" * 32, "fps": 6, "frames": 30})
     assert r.status_code == 503 and r.json()["reason"] == "BUDGET"
 
 
@@ -78,7 +80,7 @@ OK_LABELS = {"checks": {k: True for k in ("monotone", "pitch", "residual", "cros
 
 def test_survey_ship_out_of_table_refuses_without_cargo():
     s = {"drafts": {p: 12.73 for p in ("fore_p", "fore_s", "mid_p", "mid_s", "aft_p", "aft_s")}, "sg": 1.025}
-    c = api.post("/api/py/survey", json={"mode": "ship", "survey": s, "measure": {"n_frames": 12, "n_kept": 12},
+    c = api.post("/api/py/survey", json={"mode": "ship", "survey": s, "measure": {"d_m": 12.73, "u_rep_m": 0.01, "n_frames": 12, "n_kept": 12},
                                           "labels": OK_LABELS})
     cert = c.json()["certificate"]
     assert (cert["decision"], cert["reason"]) == ("REFUSE", "OUT_OF_TABLE") and "cargo" not in cert["survey"]
@@ -127,3 +129,66 @@ def test_labels_require_the_measure_label_frames():
     g = _geom()
     r = api.post("/api/py/labels", json={"geometry": g, "frames": {"0": "data:image/jpeg;base64,AA"}})
     assert r.status_code == 400 and r.json()["reason"] == "LABEL_FRAMES"
+
+
+def test_refusal_prints_no_computed_figures():
+    d = {p: 6.5 for p in ("fore_p", "fore_s", "mid_p", "mid_s", "aft_p", "aft_s")}
+    d["mid_p"] = d["mid_s"] = 6.9  # implied sag 0.4 m: ENTERED_INCONSISTENT
+    c = api.post("/api/py/survey", json={"mode": "ship", "survey": {"drafts": d, "sg": 1.025},
+                                         "booklet_info": {"id": "trieste"}}).json()["certificate"]
+    assert (c["decision"], c["reason"]) == ("REFUSE", "ENTERED_INCONSISTENT")
+    assert not {"trace", "t_per_mm", "disp", "deductions", "consequence"} & set(c["survey"]) and c["survey"]["gate_fail"]
+
+
+def test_survey_needs_evidence():
+    assert api.post("/api/py/survey", json={"mode": "ship"}).json()["reason"] == "NO_EVIDENCE"
+    r = api.post("/api/py/survey", json={"mode": "barge", "measure": {"d_m": 0.1, "u_rep_m": 0.0005}})
+    assert r.status_code == 400
+    m = {"n_frames": 32, "n_kept": 32, "d_m": None}  # measured but no draft: certified as a refusal
+    c = api.post("/api/py/survey", json={"mode": "barge", "measure": m, "labels": OK_LABELS}).json()["certificate"]
+    assert (c["decision"], c["reason"]) == ("REFUSE", "FRAMES_LOW")
+
+
+def test_label_quota_rides_once_on_its_measure():
+    assert limits.take("9.9.9.9", now=10.0, run_id="r1")[0]  # the measure call
+    for _ in range(limits.PER_IP_H - 1):
+        limits.take("9.9.9.9", now=11.0)
+    assert limits.take("9.9.9.9", now=12.0, run_id="r1", ride=True)[0]  # first labels call is free
+    assert not limits.take("9.9.9.9", now=13.0, run_id="r1", ride=True)[0]  # a second one is not
+    assert not limits.take("9.9.9.9", now=14.0, run_id="r1")[0]  # re-using the id never frees a measure
+
+
+def test_reread_carries_failed_checks_by_box_number(monkeypatch):
+    import io
+
+    from PIL import Image
+
+    from api._core import labels as L
+    g = _geom()
+    good = labelled(g)
+    buf = io.BytesIO()
+    Image.new("RGB", (400, 1000)).save(buf, "JPEG")
+    url = "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()
+    calls = []
+
+    def fake_read(client, img, numbering, system, feature="", hint=None):
+        calls.append(hint)
+        by = dict(good)
+        if len(calls) <= 2:  # attempt 1: one frame swaps two labels -> cross-frame + monotone fail
+            ks = sorted(by)[:2]
+            by[ks[0]], by[ks[1]] = by[ks[1]], by[ks[0]]
+            if len(calls) == 2:
+                by = dict(good)
+        return {t: v for t, v in by.items() if t in numbering.values()}, {"response_id": f"r{len(calls)}"}
+
+    class Dummy:
+        rows: list = []
+
+    monkeypatch.setattr(L, "read", fake_read)
+    monkeypatch.setattr(index, "_client", lambda run_id: Dummy())
+    r = api.post("/api/py/labels", json={"geometry": g, "frames": {str(f): url for f in g["label_frames"]}})
+    out = r.json()
+    assert r.status_code == 200 and out["attempts"] == 2 and out["checks"]["ok"]
+    assert calls[0] is None and calls[1] is None and calls[2] and calls[3]
+    assert all(("box" in h or "increase" in h or "disagree" in h) for h in calls[2:])
+    assert not any(t in (calls[2] or "") for t in good)  # track ids never reach the prompt

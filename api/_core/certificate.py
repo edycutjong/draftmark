@@ -13,6 +13,10 @@ from . import decision as D
 from . import meta
 
 FOOTER = "Prototype — not a surveyor's certificate."
+# a refusal prints no computed displacement/cargo figure, only the inputs and the evidence for the refusal
+KEEP_ON_REFUSE = {"program_sha", "program_author", "response_id", "regen_count", "drafts", "sources", "sg",
+                  "out_of_table", "perturb_oot", "entered_inconsistent", "gate_fail", "error", "booklet_id",
+                  "booklet_note", "barge", "what_if", "u_label"}
 
 
 def facts(mode: str, meas: dict | None, labels: dict | None, srv: dict, selftest: dict | None,
@@ -75,7 +79,6 @@ def build(mode: str, run_mode: str, meas: dict | None, labels: dict | None, srv:
     }
     if dec.decision == D.REFUSE:
         # a refusal prints no cargo figure, only the evidence for the refusal
-        hide = ("cargo", "net", "disp", "u_cargo", "u_disp")
-        cert["survey"] = {k: v for k, v in srv.items() if k not in hide}
-        cert["facts"] = {k: v for k, v in f.items() if k not in hide}
+        cert["survey"] = {k: v for k, v in srv.items() if k in KEEP_ON_REFUSE}
+        cert["facts"] = {k: v for k, v in f.items() if k not in ("cargo", "u_cargo")}
     return cert
