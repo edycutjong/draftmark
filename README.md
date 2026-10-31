@@ -59,7 +59,11 @@ Three steps, each with a check that is code, not a model's opinion:
    extrapolate outside the table.
 3. **Certify.** The certificate is built by code and prints code values only and refuses (`REFUSE`) when a
    check fails. Each station's output carries an HMAC; if any was edited the certificate is `REFUSE UNSIGNED`. The HMAC
-   guards the prototype's own chain; it is not a legal signature.
+   guards the prototype's own chain; it is not a legal signature, and it does not authenticate the clip's source or
+   the uploader, or stop a complete valid run being replayed within its 24 h.
+
+Day-one output: a pre-read with its repeatability, the five label checks, which positions were filmed and which
+entered, the model response ids, and a refusal reason when there is one; before an official survey, not instead of it.
 
 What exists vs what is new: the calculators, readers and laser systems above exist. What we demonstrate, without
 claiming others lack it, is the combination: a wave-averaged reading from a video clip plus an agent that writes and

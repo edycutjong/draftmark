@@ -44,9 +44,9 @@ export default function Home() {
               booklet, and that program had to reproduce the booklet&apos;s printed conditions before it may compute.
             </p>
             <p className="caveat small">
-              Synthetic barge only for weight accuracy; no physical scale check yet. Prototype, not a surveyor&apos;s certificate.
-              The model calls on this page are recorded (response ids on <Link href="/evidence">/evidence</Link>); the live action
-              without a judge code is the <a href="#program-h">self-test re-run</a> of Wonder&apos;s program in the sandbox.
+              Live on this page, no code: the <a href="#program-h">self-test re-run</a> of Wonder&apos;s program in the sandbox.
+              Recorded: the SAM 3.1 and Spark 1.3 outputs (response ids on <Link href="/evidence">/evidence</Link>). Weight
+              accuracy is synthetic only; no physical scale check yet. Prototype, not a surveyor&apos;s certificate.
             </p>
             <p>
               <Link href="/survey" className="btn btn--accent">
@@ -131,6 +131,10 @@ export default function Home() {
                 <Badge tone="recorded">RECORDED · {programRun.date.split(" ")[0]}</Badge>
                 <Badge tone="proof">no scale truth</Badge>
               </Badges>
+              <p className="small muted">
+                Agent loop: Wonder writes the program → the sandbox grades it on the booklet → failing ids and its own
+                intermediates go back → it rewrites (2 repairs).
+              </p>
               <p className="muted">{programRun.title}</p>
             </div>
             <ProgramProof

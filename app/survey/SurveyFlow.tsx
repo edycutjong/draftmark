@@ -384,7 +384,7 @@ export function SurveyFlow() {
             ) : null}
           </div>
           <div>
-            <h3 className="h4">Upload a prepared clip (judge code)</h3>
+            <h3 className="h4">Optional: bring your own prepared clip (judge code)</h3>
             <div className="guidance small">
               <p>
                 <strong>Supported marks:</strong> {MARK_SYSTEMS.ship.label.toLowerCase()} (white numerals, whole metres with
