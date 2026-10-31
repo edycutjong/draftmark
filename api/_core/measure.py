@@ -169,7 +169,7 @@ def lag1(x: np.ndarray) -> float:
 
 
 def summarize(frames: list[FrameGeom], system: MarkSystem, u_sys_parts: dict | None = None,
-              min_kept_frac: float = 0.5, min_kept: int = 8) -> DraftResult:
+              min_kept_frac: float = 0.6, min_kept: int = 8) -> DraftResult:
     """Clip-level average + uncertainty. u_sys_parts (m, k=1) e.g. {"scale":..,"zero":..,"edge":..,"par":..};
     when None, u_abs is not computed (real-ship clips: repeatability only)."""
     drops: dict[str, int] = {}
@@ -181,7 +181,7 @@ def summarize(frames: list[FrameGeom], system: MarkSystem, u_sys_parts: dict | N
     base = dict(u_parts={}, n_frames=n, n_kept=len(kept), n_outliers=0, n_eff=None, rho1=None, median_m=None,
                 huber_m=None, sd_m=None, swell_p5_p95=None, pitch_px_median=None,
                 label_shift_sensitivity_m=system.pitch_m, drops=drops)
-    if len(kept) < max(min_kept, int(min_kept_frac * n)):
+    if len(kept) < max(min_kept, math.ceil(min_kept_frac * n)):
         return DraftResult(None, None, None, refused=True, reason="FRAMES_LOW", **base)
     d = np.array([f.d_m for f in kept])
     med = float(np.median(d))

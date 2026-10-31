@@ -68,7 +68,7 @@ def main():
          "There is no scale truth here: the check is that a program reproduces the displacements the booklet itself",
          "PRINTS for its 22 worked loading conditions (`data/booklets/trieste/conditions.csv`, verified row by row,",
          "see `data/booklets/trieste/CITATION.md`).", "",
-         f"**Pass rule (pre-set in the spec):** a row passes if |program - printed| / printed <= 0.1 %. Verdict PASS only if",
+         "**Pass rule (pre-set in the spec):** a row passes if |program - printed| / printed <= 0.1 %. Verdict PASS only if",
          f">= ceil(0.9 N) = {need} of N = {n} rows pass, both out-of-range probes raise, and 200 randomized cases agree",
          "with our reference program within 0.05 %. Every program runs in the sandbox (`api/_core/sandbox.py`: AST gate,",
          "`python -I -S` subprocess, rlimits, audit hook).", "",

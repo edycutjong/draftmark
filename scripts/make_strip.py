@@ -11,7 +11,6 @@ import sys
 
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
-from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.pdfgen import canvas
 
 FONT = "Helvetica-Bold"

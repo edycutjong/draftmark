@@ -52,6 +52,7 @@ class Token:
     glyph_ids: tuple[int, ...]
     box: tuple[float, float, float, float]
     glyphs: list[SamObject] = field(default_factory=list)
+    bottom_px: float | None = None  # set when rebuilt from compact geometry (no masks)
 
     @property
     def n_glyphs(self) -> int:
@@ -72,6 +73,8 @@ class Token:
     def mask_bottom(self, pct: float = 90.0) -> float:
         """Bottom edge from the masks: per column the lowest mask row, then the pct-th
         percentile across the token's width (robust to a ragged edge). Falls back to the box."""
+        if self.bottom_px is not None:
+            return self.bottom_px
         lows = []
         for g in self.glyphs:
             if g.mask is None or not g.mask.any():

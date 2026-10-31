@@ -15,8 +15,23 @@ import numpy as np
 
 try:
     import meta_sam_parser as msp
+    from meta_sam_parser import _segmentation as _msp_seg
 except ImportError:  # pragma: no cover - fallback path is tested explicitly
     msp = None
+    _msp_seg = None
+
+_RASTER: dict[tuple[str, int, int], bytes] = {}
+
+
+def _raster(mask) -> bytes:
+    """decode_mask_to_raster, memoised: the official parser decodes every mask to validate it and
+    discards the result; the decoder is pure Python, so a second decode doubled the measure time."""
+    k = (mask.payload, mask.width, mask.height)
+    r = _RASTER.get(k)
+    if r is None:
+        r = msp.decode_mask_to_raster(mask)
+        _RASTER[k] = r
+    return r
 
 
 @dataclass
@@ -83,8 +98,13 @@ def parse_msp(text: str, video: bool = True) -> list[SamObject]:
         raise ImportError("meta_sam_parser not installed")
     fmt = msp.video_segmentation_format() if video else msp.image_segmentation_format()
     p = fmt.create_parser()
-    p.push(text, emit=False)
-    res = p.finish(msp.CompletedOutcome()).result
+    orig = _msp_seg.decode_mask_to_raster
+    _msp_seg.decode_mask_to_raster = _raster
+    try:
+        p.push(text, emit=False)
+        res = p.finish(msp.CompletedOutcome()).result
+    finally:
+        _msp_seg.decode_mask_to_raster = orig
     boxes: dict[tuple[int, str], SamObject] = {}
     order: list[tuple[int, str]] = []
     for r in res.records:
@@ -94,8 +114,9 @@ def parse_msp(text: str, video: bool = True) -> list[SamObject]:
             boxes[k] = SamObject(fr, int(r.object_id), (float(r.left), float(r.top), float(r.right), float(r.bottom)))
             order.append(k)
         elif r.kind == "mask" and k in boxes:
-            raw = np.frombuffer(msp.decode_mask_to_raster(r.mask), dtype=np.uint8)
+            raw = np.frombuffer(_raster(r.mask), dtype=np.uint8)
             boxes[k].mask = raw.reshape(r.mask.height, r.mask.width) > 0
+    _RASTER.clear()
     return [boxes[k] for k in order]
 
 

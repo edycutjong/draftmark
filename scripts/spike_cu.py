@@ -12,7 +12,7 @@ import json
 import threading
 import time
 
-from _common import CACHE, EVIDENCE, ROOT, meta
+from _common import CACHE, ROOT, meta
 from playwright.sync_api import sync_playwright
 
 from api._core import cu, selftest
