@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DraftMark — the sea keeps moving, the reading holds still</title>
-<meta name="description" content="Ten seconds of video, one draft reading: SAM 3.1 finds the marks and water, code averages the waterline, Muse Wonder 1.0 writes and proves the survey program.">
+<meta name="description" content="One draft reading from ten seconds of video: SAM 3.1 finds the marks and water, code averages the line, Muse Wonder 1.0 writes the program the booklet grades.">
 <meta name="author" content="Edy Cu Tjong">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#17120F">
@@ -15,16 +15,16 @@
 <meta property="og:site_name" content="DraftMark">
 <meta property="og:url" content="https://draftmark.edycu.dev/">
 <meta property="og:title" content="DraftMark — read a ship's draft from ten seconds of video">
-<meta property="og:description" content="SAM 3.1 finds the marks and water; code averages the waterline; Muse Wonder 1.0 writes the survey program, the booklet grades it.">
-<meta property="og:image" content="https://draftmark.edycu.dev/og-image.png?v=5">
+<meta property="og:description" content="SAM 3.1 finds the marks and water; code averages the waterline; Muse Wonder 1.0 writes the program, the booklet grades it.">
+<meta property="og:image" content="https://draftmark.edycu.dev/og-image.png?v=6">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="DraftMark — time-average a ship's waterline from ten seconds of video of its draft marks; Muse Wonder's program reproduced 22/22 printed booklet conditions">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:creator" content="@edycutjong">
 <meta name="twitter:title" content="DraftMark — read a ship's draft from ten seconds of video">
-<meta name="twitter:description" content="SAM 3.1 finds the marks and water; code averages the waterline; Muse Wonder 1.0 writes the survey program, the booklet grades it.">
-<meta name="twitter:image" content="https://draftmark.edycu.dev/og-image.png?v=5">
+<meta name="twitter:description" content="SAM 3.1 finds the marks and water; code averages the waterline; Muse Wonder 1.0 writes the program, the booklet grades it.">
+<meta name="twitter:image" content="https://draftmark.edycu.dev/og-image.png?v=6">
 <link rel="preload" href="fonts/anybody-100-900.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/ibm-plex-sans-400-600.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/martian-mono-400-600.woff2" as="font" type="font/woff2" crossorigin>
@@ -91,12 +91,12 @@ img,svg{display:block;max-width:100%}
 .hero::after{content:"";position:absolute;inset:0;z-index:-1;opacity:.5;
   background:repeating-linear-gradient(180deg,transparent 0 79px,rgba(58,46,40,.55) 79px 80px)}
 .hero__world{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
-.hero__marks{position:absolute;right:2vw;top:2%;display:flex;flex-direction:column;align-items:flex-end;gap:2.2vw;font:800 clamp(130px,17vw,270px)/.78 var(--font-display);font-stretch:62%;color:rgba(242,238,230,.04)}
+.hero__marks{position:absolute;right:2vw;top:2%;display:flex;flex-direction:column;align-items:flex-end;gap:2.2vw;font:800 clamp(130px,17vw,270px)/.78 var(--font-display);font-stretch:62%;color:rgba(242,238,230,.028)}
 .hero__swell{position:absolute;left:0;bottom:7%;width:200%;height:120px;animation:drift 22s linear infinite}
 .hero__swell path{fill:none;stroke:rgba(111,140,138,.28);stroke-width:2}
 @keyframes drift{to{transform:translateX(-50%)}}
 .hero__grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:clamp(28px,4vw,64px);align-items:center}
-.where{font:500 11.5px/1.4 var(--font-data);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 22px}
+.where{font:500 11.5px/1.4 var(--font-data);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 22px}
 .where b{color:var(--after);font-weight:500}
 h1{font:800 clamp(42px,5.6vw,82px)/.9 var(--font-display);font-stretch:62%;text-transform:uppercase;letter-spacing:-.005em;margin:0;text-wrap:balance}
 h1 .l{display:block}
@@ -105,9 +105,9 @@ h1 em{font-style:normal;color:var(--after);text-shadow:0 0 34px rgba(242,179,61,
 .lede{font-size:clamp(17px,1.45vw,19px);line-height:1.6;color:#DCD5CB;max-width:58ch;margin:26px 0 30px}
 .lede b{color:var(--ink);font-weight:600}
 .cta{display:flex;flex-wrap:wrap;gap:12px}
-.strip{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 0;margin:26px 0 0;padding:14px 0 0;border-top:1px solid var(--rule);font:400 12.5px/1.7 var(--font-data);color:var(--muted)}
-.strip span{white-space:nowrap}
-.strip i{font-style:normal;color:var(--rule);margin:0 6px}
+.strip{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:28px 0 0;padding:16px 0 0;border-top:1px solid var(--rule);font:500 11.5px/1 var(--font-data);color:var(--muted)}
+.strip .m{border:1px solid rgba(111,140,138,.45);color:#BCCBC8;border-radius:3px;padding:7px 9px;white-space:nowrap}
+.strip .ctx{margin-left:auto;white-space:nowrap}
 
 /* the instrument: painted marks + recorder (real clip dB7X) */
 .inst{position:relative;background:linear-gradient(180deg,#201814,#1a1310);border:1px solid var(--rule);border-radius:6px;padding:14px 14px 12px;box-shadow:0 40px 80px -40px rgba(0,0,0,.8),inset 0 1px 0 rgba(242,238,230,.04)}
@@ -147,12 +147,15 @@ h1 em{font-style:normal;color:var(--after);text-shadow:0 0 34px rgba(242,179,61,
 .sv-held{stroke:var(--after);stroke-width:2.6}
 .sv-val{font:500 19px/1 var(--font-data);fill:var(--after)}
 .sv-u{font:400 12px/1 var(--font-data);fill:var(--muted)}
+.sv-val,.sv-u{paint-order:stroke;stroke:#1b1411;stroke-width:5px;stroke-linejoin:round}
 .sv-ax{font:400 11px/1 var(--font-data);fill:var(--muted)}
 .sv-tie{stroke:var(--before);stroke-width:1;stroke-dasharray:3 4;opacity:.8}
 .inst.held .sv-held{filter:drop-shadow(0 0 6px rgba(242,179,61,.75))}
 
 @media (max-width:960px){.hero__grid{grid-template-columns:minmax(0,1fr)}.lede{max-width:none}}
-@media (max-width:600px){.strip span{white-space:normal}.hero__marks{opacity:.6}}
+@media (max-width:600px){.strip .ctx{margin-left:0}.hero__marks{opacity:.6}}
+/* mobile: the instrument comes up under the headline, so the fold shows the waterline, not only words */
+@media (max-width:960px){.hero__grid{row-gap:0}.hero__grid > div:first-child{display:contents}.hero .where{order:1}.hero h1{order:2}.hero .inst{order:3;margin-top:28px!important}.hero .lede{order:4}.hero .cta{order:5}.hero .strip{order:6}}
 
 /* ---------- receipts ---------- */
 .receipts{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);background:linear-gradient(180deg,rgba(34,26,22,.6),rgba(23,18,15,0))}
@@ -166,6 +169,7 @@ h1 em{font-style:normal;color:var(--after);text-shadow:0 0 34px rgba(242,179,61,
 .rc a:hover{color:var(--after)}
 @media (max-width:860px){.rc{grid-template-columns:1fr 1fr}.rc > div{padding:22px 16px}.rc > div:nth-child(3){border-left:0;padding-left:0}.rc > div:nth-child(n+3){border-top:1px solid var(--rule)}}
 
+.rc-note{margin:0;padding:12px 0 14px;border-top:1px solid var(--rule);font:400 12px/1.5 var(--font-data);color:var(--muted)}
 .models{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;padding:0 0 4px}
 .models > div{padding:18px 22px 22px;border-left:1px solid var(--rule)}
 .models > div:first-child{border-left:0;padding-left:0}
@@ -205,25 +209,37 @@ h2 em{font-style:normal;color:var(--after)}
 .checks li::before{content:"✓";color:var(--after);font-family:var(--font-data);font-size:13px}
 .checks .data{color:var(--muted)}
 
-/* 003 prove: attempts ladder */
+/* 003 prove: the booklet grades each attempt, condition by condition (evidence/selftest-booklet.md) */
 .sec--prove{background:radial-gradient(70% 60% at 85% 30%,rgba(242,179,61,.06),transparent 70%)}
-.ladder{margin-top:6px;border:1px solid var(--rule);border-radius:6px;background:var(--plate);padding:8px 22px}
-.att{display:grid;grid-template-columns:96px 1fr 92px;gap:16px;align-items:center;padding:18px 0;border-bottom:1px solid var(--rule)}
-.att:last-child{border-bottom:0}
-.att__n{font:500 11px/1.3 var(--font-data);color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
-.att__what{font-size:14.5px;line-height:1.45;color:#D6CFC4}
-.att__what code{color:var(--refuse-text)}
-.bar{display:grid;grid-template-columns:repeat(22,1fr);gap:3px;margin-top:9px}
-.bar i{height:12px;border-radius:1px;background:rgba(242,238,230,.08)}
-.bar i.ok{background:var(--after)}
-.bar i.no{background:rgba(217,84,59,.75)}
-.att__score{font:800 34px/1 var(--font-display);font-stretch:62%;text-align:right}
-.att__score.no{color:var(--refuse-text)}
-.att__score.ok{color:var(--after)}
-.att__score small{display:block;font:400 10.5px/1.3 var(--font-data);color:var(--muted);letter-spacing:.04em;margin-top:4px}
-.base{display:flex;flex-wrap:wrap;gap:8px 22px;margin:18px 0 0;font:400 12.5px/1.6 var(--font-data);color:var(--muted)}
+.prove__head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,5vw,72px);align-items:end;margin-bottom:clamp(26px,3.6vw,40px)}
+.grade-wrap{position:relative;border:1px solid var(--rule);border-radius:6px;background:var(--plate);padding:clamp(12px,2.2vw,26px) clamp(12px,2.2vw,26px) 16px}
+.grade{width:100%;border-collapse:separate;border-spacing:4px 10px;table-layout:fixed}
+.grade th{font:500 11px/1 var(--font-data);color:var(--muted);letter-spacing:.02em;text-align:center;padding:0 0 2px;font-weight:500}
+.grade thead th:first-child,.grade tbody th{text-align:left;width:96px}
+.grade thead th:last-child{width:78px;text-align:right}
+.grade tbody th{text-transform:uppercase;letter-spacing:.06em;line-height:1.2}
+.grade td{position:relative;height:40px;padding:0;border-radius:3px}
+.grade td.ok{background:var(--after);box-shadow:inset 0 -3px 0 rgba(0,0,0,.18)}
+.grade td.no{background:#C9472F;box-shadow:inset 0 -3px 0 rgba(0,0,0,.25)}
+.grade td.grade__gate{background:repeating-linear-gradient(135deg,rgba(217,84,59,.15) 0 8px,transparent 8px 16px);outline:1px dashed rgba(217,84,59,.6);outline-offset:-1px;font-size:14px;line-height:1.3;color:#D6CFC4;padding:0 14px}
+.grade td.grade__gate code{color:var(--refuse-text)}
+.grade td.grade__s{font:800 32px/1 var(--font-display);font-stretch:62%;text-align:right;background:none;height:auto}
+.grade__s--no{color:var(--refuse-text)}
+.grade__s--ok{color:var(--after);text-shadow:0 0 18px rgba(242,179,61,.35)}
+.grade__key{display:flex;flex-wrap:wrap;gap:6px 20px;margin:2px 4px 0;font:400 12px/1.5 var(--font-data);color:var(--muted)}
+.grade__key .k{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:7px;vertical-align:-1px}
+.grade__key .k.ok{background:var(--after)}
+.grade__key .k.no{background:#C9472F}
+.grade__notes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px clamp(24px,4vw,56px);margin-top:22px}
+.grade__notes p:not(.base){margin:0;font-size:15.5px;line-height:1.55;color:#D6CFC4}
+.grade__notes p b{color:var(--ink);font-weight:600}
+.grade__notes .base{grid-column:1/-1}
+.js .grade td.ok,.js .grade td.no{transform:scaleY(.12);opacity:.25;transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .5s}
+.js .grade-wrap.in td.ok,.js .grade-wrap.in td.no{transform:none;opacity:1}
+.base{display:flex;flex-wrap:wrap;gap:8px 22px;margin:4px 0 0;font:400 12.5px/1.6 var(--font-data);color:var(--muted)}
 .base b{color:var(--ink);font-weight:500}
-@media (max-width:620px){.att{grid-template-columns:1fr 70px}.att__n{grid-column:1/-1}}
+@media (max-width:960px){.prove__head{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:760px){.grade thead{display:none}.grade{border-spacing:2px 8px}.grade tbody th{width:62px;font-size:10px}.grade td{height:30px}.grade td.grade__gate{font-size:12.5px;padding:7px 8px;height:auto}.grade td.grade__s{font-size:22px;width:50px}.grade__notes{grid-template-columns:minmax(0,1fr)}}
 
 /* 004 certify — the paper band */
 .sec--paper{background:var(--paper);color:var(--paper-ink);
@@ -324,7 +340,7 @@ h2 em{font-style:normal;color:var(--after)}
 .hero .stag:nth-child(2){animation-delay:.08s}.hero .stag:nth-child(3){animation-delay:.16s}.hero .stag:nth-child(4){animation-delay:.24s}.hero .stag:nth-child(5){animation-delay:.32s}
 @keyframes rise{from{opacity:.001;transform:translateY(18px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.js .rv{opacity:1;transform:none}}
-@media print{.nav,.rail,.replay,.tabs{display:none}.js .rv{opacity:1;transform:none}.panel[hidden]{display:block}body{background:#fff;color:#000}}
+@media print{.nav,.rail,.replay,.tabs{display:none}.js .rv{opacity:1;transform:none}.js .grade td.ok,.js .grade td.no{transform:none;opacity:1}.panel[hidden]{display:block}body{background:#fff;color:#000}}
 </style>
 </head>
 <body>
@@ -347,7 +363,7 @@ h2 em{font-style:normal;color:var(--after)}
   <div class="hero__world" aria-hidden="true"><div class="hero__marks"><span>2</span><span>13M</span><span>8</span></div><svg class="hero__swell" viewBox="0 0 2880 120" preserveAspectRatio="none"><path d="M0 60 C60 30 180 30 240 60 C300 90 420 90 480 60 C540 30 660 30 720 60 C780 90 900 90 960 60 C1020 30 1140 30 1200 60 C1260 90 1380 90 1440 60 C1500 30 1620 30 1680 60 C1740 90 1860 90 1920 60 C1980 30 2100 30 2160 60 C2220 90 2340 90 2400 60 C2460 30 2580 30 2640 60 C2700 90 2820 90 2880 60"/></svg></div>
   <div class="wrap hero__grid">
     <div>
-      <p class="where stag"><b>DraftMark</b> · reads a ship's draft marks from ten seconds of video</p>
+      <p class="where stag"><b>DraftMark</b> · reads draft marks from ten seconds of video</p>
       <h1 class="stag"><span class="l">The sea keeps</span> <span class="l">moving. The reading</span> <em class="l">finally holds still.</em></h1>
       <p class="lede stag">Before dawn, a surveyor must turn a moving waterline into one number that decides the cargo. SAM&nbsp;3.1 finds the marks in <b data-proof="evidence/core-run-dB7X.md">60 of 60 frames</b>; the program Muse Wonder&nbsp;1.0 wrote reproduces <b data-proof="evidence/selftest-booklet.md">22 of 22</b> booklet conditions before it computes.</p>
       <div class="cta stag">
@@ -355,7 +371,7 @@ h2 em{font-style:normal;color:var(--after)}
         <a class="btn" href="/deck">Pitch deck</a>
         <a class="btn btn--on" href="/survey">Run it live →</a>
       </div>
-      <p class="strip stag"><span>Meta AI Developer Hackathon · Push the Frontier · Indie</span><i>/</i><span>SAM 3.1</span><i>/</i><span>Muse Spark 1.3</span><i>/</i><span>Muse Wonder 1.0</span><i>/</i><span>code prints every number</span><i>/</i><span>refuses outside the table</span><i>/</i><span data-proof="evidence/core-run-dB7X.md">$0.0397 of Meta calls for the dB7X run (estimate)</span></p>
+      <p class="strip stag"><span class="m">SAM 3.1</span><span class="m">Muse Spark 1.3</span><span class="m">Muse Wonder 1.0</span><span class="ctx">Push the Frontier</span></p>
     </div>
 
     <figure class="inst" id="inst" style="margin:0">
@@ -370,6 +386,7 @@ h2 em{font-style:normal;color:var(--after)}
         <g clip-path="url(#hullClip)">
           <rect x="0" y="0" width="152" height="520" fill="url(#hullG)"/>
           <g stroke="rgba(242,238,230,.06)"><line x1="0" x2="152" y1="140" y2="140"/><line x1="0" x2="152" y1="300" y2="300"/><line x1="0" x2="152" y1="460" y2="460"/></g>
+          <text class="sv-ax" x="12" y="28">painted marks</text>
           <g id="nums"></g>
           <path id="sea" fill="url(#seaG)"/>
           <path id="seaEdge" fill="none" stroke="#cfe1dc" stroke-width="1.6" stroke-opacity=".85"/>
@@ -403,6 +420,7 @@ h2 em{font-style:normal;color:var(--after)}
       <div><b><span class="cu" data-to="17825.8" data-dec="1">17825.8</span><small>t</small></b><p>computed for booklet condition 4.1, printed 17827.7 t (−0.0106 %)</p><a href="https://github.com/edycutjong/draftmark/blob/main/evidence/core-run-trieste.md" data-proof="evidence/core-run-trieste.md">evidence/core-run-trieste.md</a></div>
       <div><b><span class="cu" data-to="124">124</span><small>tests</small></b><p>pytest, with both sandbox escapes kept as regressions</p><a href="https://github.com/edycutjong/draftmark/tree/main/tests" data-proof="README.md">tests/</a></div>
     </div>
+    <p class="rc-note"><span data-proof="evidence/core-run-dB7X.md">$0.0397</span> of Meta calls for the dB7X run (price-list estimate) · est $0.481 for the three Wonder calls that wrote the proven program</p>
     <div class="models">
       <div><span class="chip">sam-3.1 · video</span><h3>Sees the marks</h3><p>Two video calls per clip: “white number” and “water”.</p></div>
       <div><span class="chip">muse-spark-1.3 · json_schema</span><h3>Reads them</h3><p>Two strict-schema reads; it may answer “?”.</p></div>
@@ -417,7 +435,7 @@ h2 em{font-style:normal;color:var(--after)}
     <div class="rv">
       <p class="line-no">Line 001 · The reading</p>
       <h2>One number, read off a <em>moving sea.</em></h2>
-      <p class="intro">A draft survey weighs bulk cargo from six painted marks: read the waterline, look up displacement in the ship's booklet, subtract ballast, fuel and water. The weak steps are human.</p>
+      <p class="intro">A draft survey weighs bulk cargo from the draft marks at six positions: read the waterline, look up displacement in the ship's booklet, subtract ballast, fuel and water. The weak steps are human.</p>
     </div>
     <div class="pains rv">
       <div class="pain">
@@ -460,35 +478,32 @@ h2 em{font-style:normal;color:var(--after)}
 
 <!-- ===================== 003 PROVE ===================== -->
 <section class="sec sec--prove" id="prove" data-no="003">
-  <div class="wrap two">
-    <div class="rv">
-      <p class="line-no">Line 003 · Prove</p>
-      <h2>Wonder writes the program. <em>The booklet grades it.</em></h2>
+  <div class="wrap">
+    <div class="prove__head rv">
+      <div>
+        <p class="line-no">Line 003 · Prove</p>
+        <h2>Wonder writes the program. <em>The booklet grades it.</em></h2>
+      </div>
       <p class="intro">Muse Wonder&nbsp;1.0 reads the Trieste stability booklet and writes that ship's survey program. It counts only after it reproduces the booklet's own printed conditions, and Wonder never sees the printed answers.</p>
+    </div>
+    <div class="grade-wrap rv">
+      <table class="grade">
+        <caption class="sr-only">Wonder's three attempts, graded against the 22 printed loading conditions of the Trieste booklet</caption>
+        <thead><tr><th scope="col">condition</th><th scope="col">1</th><th scope="col">2.1</th><th scope="col">2.2</th><th scope="col">3.1</th><th scope="col">3.2</th><th scope="col">4.1</th><th scope="col">4.2</th><th scope="col">4.3</th><th scope="col">4.4</th><th scope="col">4.5</th><th scope="col">4.6</th><th scope="col">5.1</th><th scope="col">5.2</th><th scope="col">6.1</th><th scope="col">6.2</th><th scope="col">7.1</th><th scope="col">7.2</th><th scope="col">8.1</th><th scope="col">8.2</th><th scope="col">9.1</th><th scope="col">9.2</th><th scope="col">10</th><th scope="col">score</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Attempt 1</th><td colspan="22" class="grade__gate">Static gate refused <code>globals</code> on lines 230, 255 and 260. It never ran.</td><td class="grade__s grade__s--no">gate</td></tr>
+          <tr><th scope="row">Attempt 2</th><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="no"><span class="sr-only">miss</span></td><td class="no"><span class="sr-only">miss</span></td><td class="no"><span class="sr-only">miss</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="no"><span class="sr-only">miss</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="no"><span class="sr-only">miss</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="no"><span class="sr-only">miss</span></td><td class="no"><span class="sr-only">miss</span></td><td class="no"><span class="sr-only">miss</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="grade__s grade__s--no">14/22</td></tr>
+          <tr><th scope="row">Attempt 3</th><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="ok"><span class="sr-only">pass</span></td><td class="grade__s grade__s--ok">22/22</td></tr>
+        </tbody>
+      </table>
+      <p class="grade__key"><span><i class="k ok"></i>within 0.1&nbsp;% of the printed displacement</span><span><i class="k no"></i>outside it</span></p>
+    </div>
+    <div class="grade__notes rv">
+      <p><b>Attempt 2</b> ran in the sandbox and missed the second trim correction on 8 conditions.</p>
+      <p><b>Attempt 3</b> was shown only the failing ids and its own intermediates. All 22 pass; 200 random cases match our reference to 0.00007&nbsp;%.</p>
       <p class="base"><span>our reference program <b>22/22</b></span><span>booklet §3.1 applied verbatim <b>14/22</b></span><span>generic textbook template <b>0/22</b></span></p>
     </div>
-    <div class="rv">
-      <div class="ladder" role="list" aria-label="Wonder's three attempts">
-        <div class="att" role="listitem">
-          <div class="att__n">Attempt 1</div>
-          <div class="att__what">Rejected before it ran: the static gate refused <code>globals</code> on lines 230, 255 and 260.</div>
-          <div class="att__score no">gate<small>never ran</small></div>
-        </div>
-        <div class="att" role="listitem">
-          <div class="att__n">Attempt 2</div>
-          <div class="att__what">Ran in the sandbox and missed the second trim correction on 8 conditions.
-            <div class="bar" aria-hidden="true" data-pass="14"></div></div>
-          <div class="att__score no">14/22<small>fail</small></div>
-        </div>
-        <div class="att" role="listitem">
-          <div class="att__n">Attempt 3</div>
-          <div class="att__what">Shown only the failing ids and its own intermediates. All 22 pass; 200 random cases match our reference to 0.00007&nbsp;%.
-            <div class="bar" aria-hidden="true" data-pass="22"></div></div>
-          <div class="att__score ok">22/22<small>pass · $0.481 total</small></div>
-        </div>
-      </div>
-      <p class="cap"><span class="data">evidence/selftest-booklet.md</span> · est $0.481 for three Wonder calls · the program runs in a no-network sandbox and refuses to extrapolate.</p>
-    </div>
+    <p class="cap"><span class="data">evidence/selftest-booklet.md</span> · est $0.481 for three Wonder calls · the program runs in a no-network sandbox and refuses to extrapolate.</p>
   </div>
 </section>
 
@@ -520,7 +535,7 @@ h2 em{font-style:normal;color:var(--after)}
       <p class="line-no">Line 005 · Check</p>
       <span class="tag">SYNTHETIC</span>
       <h2>Weighed against a known truth. <em>A rendered one, for now.</em></h2>
-      <p class="intro">There is no physical scale check yet. The weight path runs on a barge generated as geometry in code, its truth known by construction, with swell, edge jitter and dropped frames added on purpose.</p>
+      <p class="intro">Both real clips refuse, so where is the weight checked? On a barge generated as geometry in code, its truth known by construction, with swell, edge jitter and dropped frames added on purpose. There is no physical scale check yet.</p>
     </div>
     <div class="synth rv">
       <div><b data-proof="evidence/core-run-synth-barge.md">−0.155 mm</b><p>draft vs the synthetic calm truth, 58 of 60 frames kept</p></div>
@@ -761,7 +776,7 @@ document.documentElement.classList.add("js");
     }).observe(inst);
   }
   document.addEventListener("visibilitychange", function () { if (document.hidden) { visible = false; } else { visible = true; if (running && !raf) raf = requestAnimationFrame(frame); } });
-  setTimeout(play, 350);
+  setTimeout(play, 2600); // open on the held result (verdict visible in the first seconds), then replay in real time
   wireRest();
 
   function wireRest() {
@@ -773,9 +788,9 @@ document.documentElement.classList.add("js");
       function step(now) { if (t1 === null) t1 = now; var p = Math.min(1, (now - t1) / 1400), q = 1 - Math.pow(1 - p, 3); e.textContent = (to * q).toFixed(dec); if (p < 1) requestAnimationFrame(step); else e.textContent = to.toFixed(dec); }
       requestAnimationFrame(step);
     }
-    // attempt bars
-    [].forEach.call(document.querySelectorAll(".bar"), function (b) {
-      var p = +b.getAttribute("data-pass"); for (var i = 0; i < 22; i++) { var c = document.createElement("i"); c.className = i < p ? "ok" : "no"; b.appendChild(c); }
+    // grade matrix: each attempt fills left to right when it scrolls in (attempt 2, then attempt 3)
+    [].forEach.call(document.querySelectorAll(".grade tbody tr"), function (tr, r) {
+      [].forEach.call(tr.querySelectorAll("td.ok,td.no"), function (td, c) { td.style.transitionDelay = ((r - 1) * 0.55 + c * 0.03).toFixed(2) + "s"; });
     });
     // terminal replay: the full text is already there; typing replays it once per view
     var terms = [].slice.call(document.querySelectorAll("[data-term]"));
