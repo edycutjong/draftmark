@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DraftMark — the sea keeps moving, the reading holds still</title>
-<meta name="description" content="Ten seconds of video, one draft reading: SAM 3.1 averages the waterline through the swell; Muse Wonder 1.0 writes the ship's survey program and proves it.">
+<meta name="description" content="Ten seconds of video, one draft reading: SAM 3.1 finds the marks and water, code averages the waterline, Muse Wonder 1.0 writes and proves the survey program.">
 <meta name="author" content="Edy Cu Tjong">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#17120F">
@@ -14,16 +14,16 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="DraftMark">
 <meta property="og:url" content="https://draftmark.edycu.dev/">
-<meta property="og:title" content="DraftMark — weigh a ship's cargo from a phone video">
-<meta property="og:description" content="SAM 3.1 measures the waterline through the swell; Muse Wonder 1.0 writes and proves the ship's survey program.">
+<meta property="og:title" content="DraftMark — read a ship's draft from ten seconds of video">
+<meta property="og:description" content="SAM 3.1 finds the marks and water; code averages the waterline; Muse Wonder 1.0 writes and proves the survey program.">
 <meta property="og:image" content="https://draftmark.edycu.dev/og-image.png?v=5">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="DraftMark — weigh a ship's cargo from a phone video of its draft marks; Muse Wonder's program reproduced 22/22 printed booklet conditions">
+<meta property="og:image:alt" content="DraftMark — time-average a ship's waterline from ten seconds of video of its draft marks; Muse Wonder's program reproduced 22/22 printed booklet conditions">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:creator" content="@edycutjong">
-<meta name="twitter:title" content="DraftMark — weigh a ship's cargo from a phone video">
-<meta name="twitter:description" content="SAM 3.1 measures the waterline through the swell; Muse Wonder 1.0 writes and proves the ship's survey program.">
+<meta name="twitter:title" content="DraftMark — read a ship's draft from ten seconds of video">
+<meta name="twitter:description" content="SAM 3.1 finds the marks and water; code averages the waterline; Muse Wonder 1.0 writes and proves the survey program.">
 <meta name="twitter:image" content="https://draftmark.edycu.dev/og-image.png?v=5">
 <link rel="preload" href="fonts/anybody-100-900.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/ibm-plex-sans-400-600.woff2" as="font" type="font/woff2" crossorigin>
@@ -67,6 +67,7 @@ img,svg{display:block;max-width:100%}
 .nav{position:sticky;top:0;z-index:20;background:rgba(23,18,15,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(58,46,40,.6)}
 .nav__in{display:flex;align-items:center;gap:28px;height:64px}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font:800 22px/1 var(--font-display);font-stretch:70%;letter-spacing:.02em;text-transform:uppercase}
+.brand{min-height:44px}
 .brand img{width:30px;height:30px}
 .nav__links{display:flex;gap:22px;margin-left:auto}
 .nav__links a{text-decoration:none;color:var(--muted);font-size:14px;transition:color .18s ease}
@@ -89,6 +90,11 @@ img,svg{display:block;max-width:100%}
   background:radial-gradient(60% 70% at 78% 18%,rgba(242,179,61,.10),transparent 70%),radial-gradient(90% 60% at 50% 120%,rgba(142,43,34,.42),transparent 70%)}
 .hero::after{content:"";position:absolute;inset:0;z-index:-1;opacity:.5;
   background:repeating-linear-gradient(180deg,transparent 0 79px,rgba(58,46,40,.55) 79px 80px)}
+.hero__world{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.hero__marks{position:absolute;right:-1.5vw;top:2%;display:flex;flex-direction:column;align-items:flex-end;gap:2.2vw;font:800 clamp(130px,17vw,270px)/.78 var(--font-display);font-stretch:62%;color:rgba(242,238,230,.04)}
+.hero__swell{position:absolute;left:0;bottom:7%;width:200%;height:120px;animation:drift 22s linear infinite}
+.hero__swell path{fill:none;stroke:rgba(111,140,138,.28);stroke-width:2}
+@keyframes drift{to{transform:translateX(-50%)}}
 .hero__grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:clamp(28px,4vw,64px);align-items:center}
 .where{font:500 11.5px/1.4 var(--font-data);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 22px}
 .where b{color:var(--after);font-weight:500}
@@ -114,9 +120,15 @@ h1 em{font-style:normal;color:var(--after);text-shadow:0 0 34px rgba(242,179,61,
 .inst__foot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 4px 0}
 .tick{font:500 12px/1.4 var(--font-data);color:var(--muted);min-height:34px}
 .tick b{color:var(--after);font-weight:500}
-.replay{background:none;border:1px solid var(--rule);color:var(--muted);font:500 11px/1 var(--font-data);padding:9px 12px;border-radius:3px;cursor:pointer;min-height:36px;white-space:nowrap;transition:color .18s,border-color .18s,transform .18s}
+.replay{background:none;border:1px solid var(--rule);color:var(--muted);font:500 11px/1 var(--font-data);padding:9px 12px;border-radius:3px;cursor:pointer;min-height:44px;white-space:nowrap;transition:color .18s,border-color .18s,transform .18s}
 .replay:hover{color:var(--ink);border-color:var(--muted)}
 .replay:active{transform:scale(.97)}
+.verdict{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin:12px 4px 0;padding:11px 14px;border:1.5px solid var(--refuse);border-radius:3px;background:rgba(217,84,59,.07);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1)}
+.js .inst:not(.held) .verdict{opacity:0;transform:translateY(8px)}
+.verdict__w{font:800 24px/1 var(--font-display);font-stretch:62%;letter-spacing:.05em;color:var(--refuse-text)}
+.verdict__r{font:500 11.5px/1.2 var(--font-data);color:var(--refuse-text)}
+.verdict__t{flex-basis:100%;font-size:13.5px;line-height:1.5;color:#D6CFC4}
+.verdict__t a{color:var(--after);text-decoration:underline;text-underline-offset:3px;display:inline-block;min-height:24px}
 .cap{font-size:12.5px;line-height:1.5;color:var(--muted);margin:12px 4px 0;max-width:62ch}
 /* svg parts */
 .sv-num{font:700 64px/1 var(--font-display);font-stretch:62%;fill:var(--ink)}
@@ -132,7 +144,8 @@ h1 em{font-style:normal;color:var(--after);text-shadow:0 0 34px rgba(242,179,61,
 .sv-tie{stroke:var(--before);stroke-width:1;stroke-dasharray:3 4;opacity:.8}
 .inst.held .sv-held{filter:drop-shadow(0 0 6px rgba(242,179,61,.75))}
 
-@media (max-width:960px){.hero__grid{grid-template-columns:1fr}.lede{max-width:none}}
+@media (max-width:960px){.hero__grid{grid-template-columns:minmax(0,1fr)}.lede{max-width:none}}
+@media (max-width:600px){.strip span{white-space:normal}.hero__marks{opacity:.6}}
 
 /* ---------- receipts ---------- */
 .receipts{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);background:linear-gradient(180deg,rgba(34,26,22,.6),rgba(23,18,15,0))}
@@ -142,8 +155,8 @@ h1 em{font-style:normal;color:var(--after);text-shadow:0 0 34px rgba(242,179,61,
 .rc b{display:block;font:800 clamp(40px,4.6vw,64px)/1 var(--font-display);font-stretch:62%;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
 .rc b small{font-size:.5em;color:var(--muted);font-weight:600;margin-left:4px}
 .rc p{margin:10px 0 6px;font-size:14px;line-height:1.45;color:#D2CABF}
-.rc a{font:400 11px/1.3 var(--font-data);color:var(--muted);text-decoration:none;border-bottom:1px dotted var(--rule)}
-.rc a:hover{color:var(--after);border-color:var(--after)}
+.rc a{display:inline-flex;align-items:center;min-height:40px;font:400 11px/1.3 var(--font-data);color:var(--muted);text-decoration:underline dotted;text-underline-offset:4px}
+.rc a:hover{color:var(--after)}
 @media (max-width:860px){.rc{grid-template-columns:1fr 1fr}.rc > div{padding:22px 16px}.rc > div:nth-child(3){border-left:0;padding-left:0}.rc > div:nth-child(n+3){border-top:1px solid var(--rule)}}
 
 .models{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;padding:0 0 4px}
@@ -163,7 +176,7 @@ h2{font:800 clamp(34px,4.6vw,62px)/.95 var(--font-display);font-stretch:66%;text
 h2 em{font-style:normal;color:var(--after)}
 .sec p.intro{font-size:18px;line-height:1.6;color:#D6CFC4;max-width:60ch;margin:0}
 .two{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(28px,5vw,72px);align-items:start}
-@media (max-width:960px){.two{grid-template-columns:1fr}}
+@media (max-width:960px){.two{grid-template-columns:minmax(0,1fr)}}
 
 /* 001 reading */
 .sec--reading{background:linear-gradient(180deg,var(--bg),#1b1411)}
@@ -240,7 +253,7 @@ h2 em{font-style:normal;color:var(--after)}
 .pair{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:22px;align-items:start}
 .term{background:#0f0b09;border:1px solid var(--rule);border-radius:6px;overflow:hidden}
 .term__bar{display:flex;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:1px solid var(--rule);font:400 11px/1.3 var(--font-data);color:var(--muted)}
-.term pre{margin:0;padding:18px 18px 20px;font:400 12.5px/1.75 var(--font-data);color:#CFC7BB;white-space:pre-wrap;word-break:break-word;min-height:420px}
+.term pre{margin:0;padding:18px 18px 20px;font:400 12.5px/1.75 var(--font-data);color:#CFC7BB;white-space:pre-wrap;word-break:break-word}
 .term .p{color:var(--after)}
 .term .k{color:var(--muted)}
 .term .g{color:var(--before)}
@@ -248,7 +261,7 @@ h2 em{font-style:normal;color:var(--after)}
 .term .w{color:var(--ink);font-weight:500}
 .term .cur::after{content:"▍";color:var(--after);animation:blink 1s steps(2,start) infinite}
 .panel[hidden]{display:none}
-@media (max-width:960px){.pair{grid-template-columns:1fr}.term pre{min-height:0}}
+@media (max-width:960px){.pair{grid-template-columns:minmax(0,1fr)}}
 
 /* ---------- what keeps it honest (asymmetric) ---------- */
 .bento{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;margin-top:38px}
@@ -256,10 +269,11 @@ h2 em{font-style:normal;color:var(--after)}
 .cell:hover{border-color:#5a4a40;transform:translateY(-2px)}
 .cell h3{margin:0 0 10px;font:700 24px/1.05 var(--font-display);font-stretch:72%;text-transform:uppercase;max-width:18ch}
 .cell p{margin:0 0 14px;color:var(--muted);font-size:15px;line-height:1.55}
-.cell--a{grid-column:span 4}.cell--b{grid-column:span 2}.cell--c{grid-column:span 2}.cell--d{grid-column:span 2}.cell--e{grid-column:span 2}
+.cell--a{grid-column:span 4;grid-row:span 2}.cell--b{grid-column:span 2}.cell--c{grid-column:span 2}.cell--d{grid-column:span 3}.cell--e{grid-column:span 3}
+.cell--a .glyph{position:static;width:100%;height:auto;max-width:520px;margin:4px 0 18px}
 .cell .glyph{position:absolute;right:18px;top:18px;width:54px;height:54px;opacity:.9}
 .cell--a .glyph{width:120px;height:72px}
-@media (max-width:900px){.bento{grid-template-columns:1fr 1fr}.cell--a{grid-column:span 2}.cell--b,.cell--c,.cell--d,.cell--e{grid-column:span 1}}
+@media (max-width:900px){.bento{grid-template-columns:1fr 1fr}.cell--a{grid-column:span 2;grid-row:auto}.cell--b,.cell--c,.cell--d,.cell--e{grid-column:span 1}}
 @media (max-width:600px){.bento{grid-template-columns:1fr}.cell--a,.cell--b,.cell--c,.cell--d,.cell--e{grid-column:span 1}}
 
 /* ---------- honest limits: a ruled ledger, not quote cards ---------- */
@@ -292,7 +306,7 @@ h2 em{font-style:normal;color:var(--after)}
 .foot{border-top:1px solid var(--rule);padding:34px 0 46px;font-size:13.5px;color:var(--muted)}
 .foot__in{display:flex;flex-wrap:wrap;gap:16px 34px;justify-content:space-between}
 .foot nav{display:flex;flex-wrap:wrap;gap:8px 20px}
-.foot a{color:var(--muted);text-decoration:none;border-bottom:1px solid transparent;transition:color .18s,border-color .18s}
+.foot a{color:var(--muted);text-decoration:none;border-bottom:1px solid transparent;transition:color .18s,border-color .18s;display:inline-flex;align-items:center;min-height:44px}
 .foot a:hover{color:var(--ink);border-color:var(--muted)}
 .foot p{margin:0;max-width:64ch}
 
@@ -323,11 +337,12 @@ h2 em{font-style:normal;color:var(--after)}
 <main id="main">
 <!-- ===================== HERO ===================== -->
 <section class="hero" data-no="">
+  <div class="hero__world" aria-hidden="true"><div class="hero__marks"><span>2</span><span>13M</span><span>8</span></div><svg class="hero__swell" viewBox="0 0 2880 120" preserveAspectRatio="none"><path d="M0 60 C60 30 180 30 240 60 C300 90 420 90 480 60 C540 30 660 30 720 60 C780 90 900 90 960 60 C1020 30 1140 30 1200 60 C1260 90 1380 90 1440 60 C1500 30 1620 30 1680 60 C1740 90 1860 90 1920 60 C1980 30 2100 30 2160 60 C2220 90 2340 90 2400 60 C2460 30 2580 30 2640 60 C2700 90 2820 90 2880 60"/></svg></div>
   <div class="wrap hero__grid">
     <div>
       <p class="where stag">Meta AI Developer Hackathon · <b>Push the Frontier</b> · Indie</p>
       <h1 class="stag"><span class="l">The sea keeps</span> <span class="l">moving. The reading</span> <em class="l">finally holds still.</em></h1>
-      <p class="lede stag">Before dawn, a surveyor on a launch must turn a waterline the swell keeps moving into one number that decides the cargo. DraftMark films ten seconds: SAM&nbsp;3.1 finds the marks and the water in <b data-proof="evidence/core-run-dB7X.md">60 of 60 frames</b>, code averages the line, and Muse Wonder&nbsp;1.0 writes the ship's survey program, which must match <b data-proof="evidence/selftest-booklet.md">22 of 22</b> printed booklet conditions before it may compute.</p>
+      <p class="lede stag">Before dawn, a surveyor on a launch must turn a waterline the swell keeps moving into the one number that decides the cargo. SAM&nbsp;3.1 finds the marks and the water in <b data-proof="evidence/core-run-dB7X.md">60 of 60 frames</b>; Muse Wonder&nbsp;1.0 writes the ship's survey program and must match <b data-proof="evidence/selftest-booklet.md">22 of 22</b> printed booklet conditions before it computes.</p>
       <div class="cta stag">
         <a class="btn" href="https://github.com/edycutjong/draftmark"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.22 1.88.87 2.34.66.07-.52.28-.87.5-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.22 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.66 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0Z"/></svg>GitHub</a>
         <a class="btn" href="/deck">Pitch deck</a>
@@ -364,8 +379,9 @@ h2 em{font-style:normal;color:var(--after)}
         <text id="valu" class="sv-u" x="632" text-anchor="end">±0.086 m · k=1</text>
         <text class="sv-ax" x="178" y="512">frame 0</text><text class="sv-ax" x="632" y="512" text-anchor="end">frame 59 · 10 s</text>
       </svg>
+      <div class="verdict" id="verdict"><span class="verdict__w">REFUSE</span><span class="verdict__r">OUT_OF_TABLE · matrix row 4</span><span class="verdict__t">12.761&nbsp;m is past the only booklet's 0.5–9.3&nbsp;m table, so no tonnage is guessed. <a href="#replay">The booklet case issues, with a warning: 17825.8&nbsp;t →</a></span></div>
       <div class="inst__foot"><p class="tick" id="tick" aria-live="off"><b>60/60</b> frames kept · mean <b>12.761 m</b> ± 0.086 m · held</p><button class="replay" id="replayBtn" type="button">↻ Replay 10 s</button></div>
-      <figcaption class="cap">Redrawn from the 60 waterline heights SAM&nbsp;3.1 and code measured on a real third-party clip (no ground truth): the band is illustrative and narrows to the repeatability ±0.086&nbsp;m; a one-pitch label error would move the reading 0.20&nbsp;m.</figcaption>
+      <figcaption class="cap">Redrawn from 60 waterline heights measured on a real third-party clip, no ground truth. Band illustrative; repeatability ±0.086&nbsp;m; a one-pitch label error would move it 0.20&nbsp;m.</figcaption>
     </figure>
   </div>
 </section>
@@ -400,12 +416,12 @@ h2 em{font-style:normal;color:var(--after)}
       <div class="pain">
         <svg viewBox="0 0 300 64" aria-hidden="true"><path d="M0 40 C25 18 40 14 60 30 S95 58 120 36 S160 8 185 30 S230 54 255 28 S285 22 300 34" fill="none" stroke="#6F8C8A" stroke-width="2"/><line x1="0" x2="300" y1="33" y2="33" stroke="#9A8F86" stroke-dasharray="2 6"/><text x="292" y="18" text-anchor="end" font-family="Martian Mono,monospace" font-size="12" fill="#9A8F86">mean = ?</text></svg>
         <h3>The eyeballed mean</h3>
-        <p>The surveyor picks a mean by eye. Nothing records it; nobody can repeat it.</p>
+        <p>The surveyor picks a mean by eye; the reading is a judgment, not a record.</p>
       </div>
       <div class="pain">
         <svg viewBox="0 0 300 64" aria-hidden="true"><g stroke="#3A2E28"><line x1="0" x2="300" y1="12" y2="12"/><line x1="0" x2="300" y1="28" y2="28"/><line x1="0" x2="300" y1="44" y2="44"/><line x1="0" x2="300" y1="60" y2="60"/><line x1="70" x2="70" y1="0" y2="64"/><line x1="160" x2="160" y1="0" y2="64"/></g><text x="10" y="24" font-family="Martian Mono,monospace" font-size="11" fill="#9A8F86">=B7*C7</text><text x="80" y="40" font-family="Martian Mono,monospace" font-size="11" fill="#9A8F86">=VLOOKUP(…)</text><text x="230" y="56" font-family="Martian Mono,monospace" font-size="12" fill="#DF5E44">#REF?</text></svg>
         <h3>The per-ship spreadsheet</h3>
-        <p>Every booklet has its own tables and signs. Nobody checks the sheet against it, line by line.</p>
+        <p>Every booklet has its own tables and sign conventions; a spreadsheet is hard to check against it line by line.</p>
       </div>
     </div>
   </div>
@@ -430,7 +446,7 @@ h2 em{font-style:normal;color:var(--after)}
       <div class="frame"><div class="frame__bar"><i></i><i></i><i></i><span>draftmark.edycu.dev/runs · clip dB7X</span></div>
         <img src="media/measure-grid.webp" width="1400" height="1037" loading="lazy" decoding="async" alt="The product's measurement view for clip dB7X: SAM 3.1 boxes on the painted marks, the 60 per-frame drafts with the running mean settling at 12.761 m, and the result table (repeatability ±0.0864 m, 60 of 60 frames kept).">
       </div>
-      <p class="cap">Recorded run <span class="data">rec-db7x-20261031</span>. Code averages through the swell: MAD outliers out, N<sub>eff</sub> 3.55 from the autocorrelation, u&nbsp;=&nbsp;sd/√N<sub>eff</sub>.</p>
+      <p class="cap">Recorded run <span class="data">rec-db7x-20261031</span>. Code averages through the swell: MAD outliers out, N<sub>eff</sub> 3.55 from the autocorrelation, u&nbsp;≈&nbsp;sd/√N<sub>eff</sub> on this clip.</p>
     </div>
   </div>
 </section>
@@ -497,7 +513,7 @@ h2 em{font-style:normal;color:var(--after)}
       <p class="line-no">Line 005 · Check</p>
       <span class="tag">SYNTHETIC</span>
       <h2>Weighed against a known truth. <em>A rendered one, for now.</em></h2>
-      <p class="intro">There is no physical scale check yet. The weight path runs on a code-rendered barge whose truth is known by construction, with swell, edge jitter and dropped frames added on purpose.</p>
+      <p class="intro">There is no physical scale check yet. The weight path runs on a barge generated as geometry in code, its truth known by construction, with swell, edge jitter and dropped frames added on purpose.</p>
     </div>
     <div class="synth rv">
       <div><b data-proof="evidence/core-run-synth-barge.md">−0.155 mm</b><p>draft vs the synthetic calm truth, 58 of 60 frames kept</p></div>
@@ -562,8 +578,8 @@ h2 em{font-style:normal;color:var(--after)}
     <h2 class="rv">What stops it <em>from lying</em></h2>
     <div class="bento">
       <article class="cell cell--a rv">
-        <svg class="glyph" viewBox="0 0 120 72" aria-hidden="true"><rect x="1" y="1" width="118" height="70" rx="4" fill="none" stroke="#3A2E28" stroke-width="2"/><rect x="34" y="18" width="52" height="36" rx="3" fill="none" stroke="#F2B33D" stroke-width="2"/><path d="M44 36h32M60 26v20" stroke="#F2B33D" stroke-width="2"/><path d="M8 36h18M94 36h18" stroke="#D9543B" stroke-width="2" stroke-dasharray="3 4"/></svg>
-        <h3>Generated code never runs in the server</h3>
+        <svg class="glyph" viewBox="0 0 520 170" role="img" aria-label="The generated program passes a static gate, then runs in a sandbox subprocess with no network; JSON goes in and comes out."><rect x="1" y="1" width="518" height="168" rx="6" fill="none" stroke="#3A2E28" stroke-width="2"/><text x="16" y="24" font-family="Martian Mono,monospace" font-size="12" fill="#9A8F86">server process</text><rect x="196" y="44" width="300" height="104" rx="5" fill="rgba(242,179,61,.05)" stroke="#F2B33D" stroke-width="2"/><text x="212" y="68" font-family="Martian Mono,monospace" font-size="12" fill="#F2B33D">sandbox subprocess · no network</text><text x="212" y="98" font-family="Martian Mono,monospace" font-size="13" fill="#F2EEE6">program.py  (sha 4b3aa8cd…)</text><text x="212" y="126" font-family="Martian Mono,monospace" font-size="12" fill="#9A8F86">JSON in → JSON out</text><text x="16" y="92" font-family="Martian Mono,monospace" font-size="12" fill="#F2EEE6">static gate</text><text x="16" y="112" font-family="Martian Mono,monospace" font-size="11" fill="#DF5E44">globals, dunders,</text><text x="16" y="128" font-family="Martian Mono,monospace" font-size="11" fill="#DF5E44">str.format: refused</text><path d="M150 98 H190" stroke="#F2B33D" stroke-width="2"/><path d="M184 92 l8 6 -8 6" fill="none" stroke="#F2B33D" stroke-width="2"/><path d="M496 30 L510 16 M510 30 L496 16" stroke="#D9543B" stroke-width="2"/><text x="440" y="27" font-family="Martian Mono,monospace" font-size="11" fill="#9A8F86">net</text></svg>
+        <h3>Generated code never runs in the server process</h3>
         <p>A static gate, then a no-network sandbox subprocess, JSON in and out. Two escapes we found ourselves, <span class="data">re.enum.sys</span> and a format-string walk, are regression tests now.</p>
         <span class="chip">api/_core/sandbox.py</span><span class="chip">tests/test_sandbox.py</span>
       </article>
@@ -576,7 +592,7 @@ h2 em{font-style:normal;color:var(--after)}
       <article class="cell cell--c rv">
         <svg class="glyph" viewBox="0 0 54 54" aria-hidden="true"><text x="4" y="22" font-family="Anybody,sans-serif" font-stretch="62%" font-weight="700" font-size="20" fill="#F2EEE6">13M</text><text x="4" y="46" font-family="Anybody,sans-serif" font-stretch="62%" font-weight="700" font-size="20" fill="#9A8F86">8</text><path d="M30 40l5 5 12-14" fill="none" stroke="#F2B33D" stroke-width="2.4"/></svg>
         <h3>Five agreements per label</h3>
-        <p>Clip eeLL failed them and was refused rather than read.</p>
+        <p>Clip eeLL failed two of them (fit residual, anchor) and was refused rather than read.</p>
         <span class="chip">muse-spark-1.3 + code</span>
       </article>
       <article class="cell cell--d rv">
@@ -588,7 +604,7 @@ h2 em{font-style:normal;color:var(--after)}
       <article class="cell cell--e rv">
         <svg class="glyph" viewBox="0 0 54 54" aria-hidden="true"><circle cx="27" cy="27" r="19" fill="none" stroke="#3A2E28" stroke-width="2"/><path d="M27 27 L27 12" stroke="#F2B33D" stroke-width="2.4"/><path d="M27 27 L38 33" stroke="#9A8F86" stroke-width="2"/></svg>
         <h3>Every call on the ledger</h3>
-        <p>Each Meta call is logged with its response id and a price-list cost estimate. Uploads need a judge code.</p>
+        <p>Each Meta call is logged with a price-list cost estimate and, where the API returned one, its response id. Uploads need a judge code.</p>
         <span class="chip">evidence/api-usage.md</span>
       </article>
     </div>
@@ -612,11 +628,11 @@ h2 em{font-style:normal;color:var(--after)}
   <div class="wrap">
     <h2 class="rv">Questions a judge <em>would ask</em></h2>
     <div class="qa">
-      <details><summary><span>Q1</span>Isn't this just an image analyzer?</summary><div class="ans">No. It measures a waterline in each of 60 video frames and averages it through the swell with a stated uncertainty. Then an agent writes the ship's program and must prove it against the booklet. Every step can refuse.</div></details>
-      <details><summary><span>Q2</span>What is live and what is recorded?</summary><div class="ans">This page replays recorded runs of real API calls, labelled with run ids. In the live app the Wonder self-test re-runs in the sandbox; uploading a clip needs a judge code, because each upload spends Meta credit.</div></details>
+      <details open><summary><span>Q1</span>Isn't this just an image analyzer?</summary><div class="ans">No. It measures a waterline in each of 60 video frames and averages it through the swell with a stated uncertainty. Then an agent writes the ship's program and must prove it against the booklet. Every step can refuse.</div></details>
+      <details><summary><span>Q2</span>What is live and what is recorded?</summary><div class="ans">This page replays recorded runs, each labelled with its run id: dB7X from real SAM and Spark calls, Trieste from Wonder's saved program re-run in the sandbox. In the live app the self-test re-runs; uploading a clip needs a judge code, because each upload spends Meta credit.</div></details>
       <details><summary><span>Q3</span>Why do both real clips end in REFUSE?</summary><div class="ans">The only booklet we have is the Trieste's, a Ro-Ro/passenger ship whose table covers 0.5–9.3&nbsp;m. Clip dB7X reads 12.761&nbsp;m and UKTRQ 20.830&nbsp;m, so the program raises <span class="data">OutOfTable</span> instead of extrapolating. The measurement stands; the weight is refused.</div></details>
       <details><summary><span>Q4</span>How do you know Wonder's program is right?</summary><div class="ans">It has to reproduce at least 20 of the booklet's 22 printed conditions within 0.1&nbsp;% (it reproduces 22), agree with our reference program over 200 random cases (largest difference 0.00007&nbsp;%), and raise on two out-of-table probes. The printed displacements were never in Wonder's context.</div></details>
-      <details><summary><span>Q5</span>How accurate is the weight?</summary><div class="ans">So far it is shown only on a synthetic barge: the draft came out 0.155&nbsp;mm from the truth by construction, the cargo −0.17&nbsp;%, and over 100 seeds the truth sat inside ±2u in 96. There is no physical scale check and no real-ship accuracy claim.</div></details>
+      <details><summary><span>Q5</span>How accurate is the weight?</summary><div class="ans">So far it is shown only on a synthetic barge: the draft came out 0.155&nbsp;mm from a truth known by construction, the cargo −0.17&nbsp;%, and over 100 seeds the truth sat inside ±2u in 96. There is no physical scale check and no real-ship accuracy claim.</div></details>
       <details><summary><span>Q6</span>What does a run cost?</summary><div class="ans">The dB7X measurement used two SAM&nbsp;3.1 video calls and two Spark&nbsp;1.3 reads: $0.0397 at list prices. Writing the program took three Wonder calls, est $0.481, once per ship.</div></details>
     </div>
   </div>
