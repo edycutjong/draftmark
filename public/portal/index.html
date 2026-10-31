@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DEMO PORTAL — DraftMark test filing desk</title>
+<style>
+  :root { --hull:#17120f; --mark:#f2ece4; --muted:#a89c90; --sea:#2f8f8a; --signal:#e2583e; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:#efe9e1; color:#1d1714; font:16px/1.5 "IBM Plex Sans", system-ui, sans-serif; }
+  header { background:var(--signal); color:#fff; padding:.6rem 1.2rem; font-weight:700; letter-spacing:.04em; }
+  main { max-width:44rem; margin:1.5rem auto; padding:0 1.2rem; }
+  h1 { font-size:1.4rem; margin:.2rem 0 1rem; }
+  label { display:block; font-weight:600; margin:.8rem 0 .25rem; }
+  input, select { width:100%; font:inherit; padding:.5rem .6rem; border:1px solid #8a7f75; border-radius:4px; background:#fff; }
+  button { margin-top:1.2rem; font:inherit; font-weight:700; padding:.6rem 1.4rem; background:var(--hull); color:var(--mark); border:0; border-radius:4px; cursor:pointer; }
+  .received { background:#fff; border:2px solid var(--sea); border-radius:6px; padding:1rem 1.2rem; margin-top:1.5rem; }
+  .received dt { font-weight:600; } .received dd { margin:0 0 .5rem; font-family:"Martian Mono", ui-monospace, monospace; }
+  .note { color:#5b5149; font-size:.9rem; }
+</style>
+</head>
+<body>
+<header>DEMO PORTAL — not a real authority. DraftMark test filing desk for agent demos.</header>
+<main>
+  <h1>File a draft-survey result</h1>
+  <p class="note">This page belongs to the DraftMark project. Nothing filed here goes anywhere; the page shows back exactly what it received.</p>
+  <form id="f" autocomplete="off">
+    <label for="vessel">Vessel name</label><input id="vessel" name="vessel">
+    <label for="survey_date">Survey date (YYYY-MM-DD)</label><input id="survey_date" name="survey_date">
+    <label for="displacement">Displacement (t)</label><input id="displacement" name="displacement">
+    <label for="cargo">Cargo (t)</label><input id="cargo" name="cargo">
+    <label for="uncertainty">Uncertainty ± (t)</label><input id="uncertainty" name="uncertainty">
+    <label for="decision">Decision</label>
+    <select id="decision" name="decision">
+      <option value="">— choose —</option><option>ISSUE</option><option>ISSUE_WITH_WARNING</option><option>REFUSE</option><option>PROTEST</option>
+    </select>
+    <button type="submit" id="submit">Submit filing</button>
+  </form>
+  <div id="out"></div>
+</main>
+<script>
+  const FIELDS = ["vessel", "survey_date", "displacement", "cargo", "uncertainty", "decision"];
+  document.getElementById("f").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const rec = {};
+    for (const k of FIELDS) rec[k] = document.getElementById(k).value.trim();
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(JSON.stringify(rec)));
+    const id = Array.from(new Uint8Array(buf)).slice(0, 4).map((b) => b.toString(16).padStart(2, "0")).join("");
+    const out = document.getElementById("out");
+    out.innerHTML = "";
+    const box = document.createElement("div");
+    box.className = "received";
+    box.setAttribute("data-receipt", id);
+    const h = document.createElement("h2");
+    h.textContent = "Received (demo receipt " + id + ")";
+    box.appendChild(h);
+    const dl = document.createElement("dl");
+    for (const k of FIELDS) {
+      const dt = document.createElement("dt"); dt.textContent = k;
+      const dd = document.createElement("dd"); dd.setAttribute("data-field", k); dd.textContent = rec[k] || "(empty)";
+      dl.append(dt, dd);
+    }
+    box.appendChild(dl);
+    out.appendChild(box);
+  });
+</script>
+</body>
+</html>

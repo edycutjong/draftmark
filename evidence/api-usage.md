@@ -36,3 +36,19 @@ Price-list estimates from `api/_core/meta.py` PRICES (not an invoice). Appended 
 | 2026-10-31 15:39 | p1a-synth-concepts | sam-3.1 | sam image 'water' synthetic murky | 0 (0) / 0 · 1 frames | 0.0025 | 1662 | resp_6ae5a948d70d21fc720c4da9 |
 | 2026-10-31 15:39 | p1a-synth-concepts | sam-3.1 | sam image 'water' synthetic blue | 0 (0) / 0 · 1 frames | 0.0025 | 1232 | resp_6ae5a949bf32691df401459e |
 | 2026-10-31 15:39 | p1a-probe-webm | sam-3.1 | sam video 'white number' synthetic mp4 probe | 0 (0) / 0 · 60 frames | 0.0120 | 7200 | resp_6ae5a95819b4830a46f746da |
+| 2026-10-31 15:43 | p1a-cu | muse-wonder-1.0 | wonder filing plan | 175 (0) / 511 | 0.0109 | 4003 | resp_6ae5aa45c365f10a6d90450b |
+| 2026-10-31 15:43 | p1a-cu | muse-spark-1.3 | spark computer-use step 0 | 3576 (0) / 596 | 0.0070 | 6081 | resp_6ae5aa4878c1fa889eb1434b |
+| 2026-10-31 15:44 | p1a-cu | muse-spark-1.3 | spark computer-use step 1 | 3292 (0) / 137 | 0.0047 | 8191 | resp_6ae5aa5128f21f96a31546db |
+| 2026-10-31 15:44 | p1a-cu | muse-spark-1.3 | spark computer-use step 2 | 4719 (3265) / 97 | 0.0027 | 9985 | resp_6ae5aa5c126a9811063c4162 |
+| 2026-10-31 15:44 | p1a-cu | muse-spark-1.3 | spark computer-use step 3 | 6106 (4673) / 176 | 0.0032 | 10037 | resp_6ae5aa66ce84280faaee4d89 |
+| 2026-10-31 15:44 | p1a-cu | muse-spark-1.3 | spark computer-use step 4 | 7572 (6081) / 98 | 0.0032 | 10729 | resp_6ae5aa7235bf40930bee4085 |
+| 2026-10-31 15:44 | p1a-cu | muse-spark-1.3 | spark computer-use step 5 | 8960 (0) / 193 | 0.0120 | 11846 | resp_6ae5aa7fd600897d2e0a4cb0 |
+| 2026-10-31 15:45 | p1a-cu | muse-spark-1.3 | spark computer-use step 6 | 10443 (7489) / 214 | 0.0057 | 14047 | resp_6ae5aa8eec5c29b67414482b |
+| 2026-10-31 15:45 | p1a-cu | muse-spark-1.3 | spark computer-use step 7 | 11947 (10433) / 211 | 0.0044 | 12037 | resp_6ae5aaa0287238449ffa4455 |
+| 2026-10-31 15:45 | p1a-cu | muse-spark-1.3 | spark computer-use step 8 | 13448 (11841) / 310 | 0.0051 | 14415 | resp_6ae5aaaeaaaf18b27b0b482f |
+| 2026-10-31 15:45 | p1a-cu | muse-spark-1.3 | spark computer-use step 9 | 15048 (8897) / 259 | 0.0101 | 11655 | resp_6ae5aabc099b2f9f53cb4a6d |
+| 2026-10-31 15:46 | p1a-cu | muse-spark-1.3 | spark computer-use step 10 | 16597 (13377) / 132 | 0.0066 | 10611 | resp_6ae5aac83e71bfedf8e645d9 |
+| 2026-10-31 15:46 | p1a-cu | muse-spark-1.3 | spark computer-use step 11 | 18019 (16577) / 110 | 0.0048 | 12330 | resp_6ae5aad6fd5c5a249a3547af |
+| 2026-10-31 15:46 | p1a-cu | muse-spark-1.3 | spark computer-use step 0 | 3468 (0) / 209 | 0.0052 | 5270 | resp_6ae5aaddf681c335234c43a7 |
+| 2026-10-31 15:46 | p1a-cu | muse-spark-1.3 | spark computer-use step 1 | 2797 (0) / 102 | 0.0039 | 9430 | resp_6ae5aae61c5451215a11465c |
+| 2026-10-31 15:46 | p1a-cu | muse-spark-1.3 | spark computer-use step 0 | 3451 (0) / 304 | 0.0056 | 4758 | resp_6ae5aaee48a10393c2aa4696 |
