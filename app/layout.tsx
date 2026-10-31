@@ -9,16 +9,16 @@ const data = Martian_Mono({ subsets: ["latin"], variable: "--ff-data", display: 
 
 // Social card: public/og-image.png is EXACTLY 1200x630 (< 500 KB). Bump ?v= whenever the image changes —
 // platforms cache cards by URL, so a regenerated image without a new query string is never seen.
-const OG_IMAGE = "/og-image.png?v=5";
+const OG_IMAGE = "/og-image.png?v=6";
 const CARD_TITLE = "DraftMark — read a ship's draft from ten seconds of video";
 const CARD_DESCRIPTION =
-  "SAM 3.1 finds the marks and water; code averages the waterline; Muse Wonder 1.0 writes the survey program, the booklet grades it.";
+  "SAM 3.1 finds the marks and water; code averages the waterline; Muse Wonder 1.0 writes the program, the booklet grades it.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://draftmark.edycu.dev"),
   title: "DraftMark — read a ship's draft marks from ten seconds of video",
   description:
-    "SAM 3.1 finds the marks and the water; code averages the waterline through the swell; Muse Wonder 1.0 writes and proves a survey program for the ship; code prints every number.",
+    "SAM 3.1 finds the marks and water; code averages the waterline through the swell; Muse Wonder 1.0 writes the ship's survey program; the booklet grades it.",
   authors: [{ name: "Edy Cu Tjong", url: "https://github.com/edycutjong" }],
   creator: "Edy Cu Tjong",
   icons: { icon: [{ url: "/icon.svg", type: "image/svg+xml" }], apple: "/icon-512.png" },
