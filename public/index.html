@@ -362,13 +362,13 @@ h2 em{font-style:normal;color:var(--after)}
     <div>
       <p class="where stag"><b>DraftMark</b> · measures a moving waterline over 60 frames of video</p>
       <h1 class="stag"><span class="l">The sea keeps</span> <span class="l">moving. The reading</span> <em class="l">finally holds still.</em></h1>
-      <p class="lede stag">Before dawn, a surveyor must turn a moving waterline into the one draft reading the cargo figure hangs on. On a 2&times; crop of the mark column, SAM&nbsp;3.1 finds the marks in <b data-proof="evidence/core-run-dB7X.md">60 of 60 frames</b> of a real hull clip; separately, the program Muse Wonder&nbsp;1.0 wrote must reproduce one booklet&rsquo;s printed conditions before it may compute (after two repairs, <b data-proof="evidence/selftest-booklet.md">22 of 22</b>).</p>
+      <p class="lede stag">Before dawn, a surveyor must turn a moving waterline into the one draft reading the cargo figure hangs on. On a 2&times; crop of the mark column, SAM&nbsp;3.1 finds the marks in <b data-proof="evidence/core-run-dB7X.md">60 of 60 frames</b> of a real hull clip; separately, the program Muse Wonder&nbsp;1.0 wrote must reproduce one booklet&rsquo;s printed conditions before it may compute (after two regenerations, <b data-proof="evidence/selftest-booklet.md">22 of 22</b>).</p>
       <div class="cta stag">
         <a class="btn" href="https://github.com/edycutjong/draftmark"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.22 1.88.87 2.34.66.07-.52.28-.87.5-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.22 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.66 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0Z"/></svg>GitHub</a>
         <a class="btn" href="/deck">Pitch deck</a>
         <a class="btn btn--on" href="/survey">Run it live →</a>
       </div>
-      <p class="ctanote stag">Live without a code: re-run Wonder&rsquo;s self-test. The real-hull measurement is a recorded replay on <a href="/runs">/runs</a>.</p>
+      <p class="ctanote stag">Today it outputs a wave-averaged midship draft with its repeatability and label checks, then a certificate or a coded refusal; not yet a real-ship cargo figure. Live without a code: re-run Wonder&rsquo;s self-test. The real-hull measurement is a recorded replay on <a href="/runs">/runs</a>.</p>
       <p class="strip stag"><span class="m">SAM 3.1</span><span class="m">Muse Spark 1.3</span><span class="m">Muse Wonder 1.0</span><span class="ctx">Push the Frontier</span></p>
     </div>
 
@@ -402,7 +402,7 @@ h2 em{font-style:normal;color:var(--after)}
         <text class="sv-ax" x="178" y="512">frame 0</text><text class="sv-ax" x="632" y="512" text-anchor="end">frame 59 · 10 s</text>
       </svg>
       <div class="verdict" id="verdict"><span class="verdict__w">REFUSE</span><span class="verdict__r">OUT_OF_TABLE · matrix row 4</span><span class="verdict__t">12.761&nbsp;m is past the only booklet's 0.5–9.3&nbsp;m table, so no tonnage is guessed.</span></div>
-      <p class="vlink"><a href="#replay">Other ship, six drafts typed in: booklet condition 4.1 issues 17,825.8&nbsp;t vs the printed 17,827.7&nbsp;t, cargo not computed&nbsp;→</a></p>
+      <p class="vlink"><a href="#replay">The booklet's own ship, six drafts typed in: displacement 17,825.8&nbsp;t vs the printed 17,827.7&nbsp;t (condition 4.1, one of the 22); cargo not computed&nbsp;→</a></p>
       <div class="inst__foot"><p class="tick" id="tick" aria-live="off"><b>60/60</b> frames kept · mean <b>12.761 m</b> · u_rep ±0.086 m · held</p><button class="replay" id="replayBtn" type="button">↻ Replay 10 s</button></div>
       <figcaption class="cap">Redrawn from 60 waterline heights measured on a real third-party clip, no ground truth. Band illustrative; repeatability ±0.086&nbsp;m (k=1: one standard uncertainty of the mean, not absolute accuracy); a one-pitch label error would move it 0.20&nbsp;m.</figcaption>
     </figure>
@@ -414,7 +414,7 @@ h2 em{font-style:normal;color:var(--after)}
   <div class="wrap">
     <h2 class="sr-only" id="rcH">Receipts and the three Meta models</h2>
     <div class="rc">
-      <div><b><span class="cu" data-to="22">22</span><small>/22</small></b><p>printed booklet conditions reproduced by the program Wonder wrote, after two repairs on the same rows (nothing held out)</p><a href="https://github.com/edycutjong/draftmark/blob/main/evidence/selftest-booklet.md" data-proof="evidence/selftest-booklet.md">evidence/selftest-booklet.md</a></div>
+      <div><b><span class="cu" data-to="22">22</span><small>/22</small></b><p>printed booklet conditions reproduced by the program Wonder wrote, after two regenerations on the same rows (nothing held out)</p><a href="https://github.com/edycutjong/draftmark/blob/main/evidence/selftest-booklet.md" data-proof="evidence/selftest-booklet.md">evidence/selftest-booklet.md</a></div>
       <div><b><span class="cu" data-to="60">60</span><small>/60</small></b><p>frames kept on real hull clip dB7X; clip UKTRQ kept 46/48, clip eeLL was refused by the label checks</p><a href="https://github.com/edycutjong/draftmark/blob/main/evidence/core-run-dB7X.md" data-proof="evidence/core-run-dB7X.md">evidence/core-run-dB7X.md</a></div>
       <div><b><span class="cu" data-to="-0.0106" data-dec="4">−0.0106</span><small>%</small></b><p>booklet condition 4.1: the program computes 17825.8 t, the booklet prints 17827.7 t (one of the 22 acceptance rows, not held out)</p><a href="https://github.com/edycutjong/draftmark/blob/main/evidence/core-run-trieste.md" data-proof="evidence/core-run-trieste.md">evidence/core-run-trieste.md</a></div>
       <div><b><span class="cu" data-to="127">127</span><small>tests</small></b><p>pytest, with both escapes kept as regression tests</p><a href="https://github.com/edycutjong/draftmark/tree/main/tests" data-proof="README.md">tests/</a></div>
@@ -500,7 +500,7 @@ h2 em{font-style:normal;color:var(--after)}
     </div>
     <div class="grade__notes rv">
       <p><b>Attempt 2</b> ran in the sandbox and missed the second trim correction on 8 conditions.</p>
-      <p><b>Attempt 3</b> was shown only the failing ids and its own intermediates. All 22 pass: the same 22 rows after two repairs, on one booklet. 200 random cases match our hand-written reference to 0.00007&nbsp;%.</p>
+      <p><b>Attempt 3</b> was shown only the failing ids and its own intermediates. All 22 pass: the same 22 rows after two regenerations, on one booklet. 200 random cases match our hand-written reference to 0.00007&nbsp;%.</p>
       <p class="base"><span>our reference program <b>22/22</b></span><span>booklet §3.1 applied verbatim <b>14/22</b></span><span>generic textbook template <b>0/22</b></span></p>
     </div>
     <p class="cap"><span class="data">evidence/selftest-booklet.md</span> · est $0.481 for three Wonder calls · the program runs in a no-network sandbox and refuses to extrapolate.</p>
@@ -534,11 +534,11 @@ h2 em{font-style:normal;color:var(--after)}
     <div class="rv">
       <p class="line-no">Line 005 · Check</p>
       <span class="tag">SYNTHETIC</span>
-      <h2>Weighed against a known truth. <em>A rendered one, for now.</em></h2>
-      <p class="intro">The real clips end in refusal, so where is the weight checked? On twelve loads of a barge drawn in code, the waterline set by physics and the swell by us. SAM reads the rendered numerals and Muse Spark their labels, live, but SAM finds no rendered water (0 masks on 12 clips), so the water edge is a colour threshold on our own pixels. This checks the chain, not real water, and the three code fixes it forced were found on these same loads, so it is not a held-out score. There is no physical scale check yet.</p>
+      <h2>Checked against a known truth. <em>A rendered one, for now.</em></h2>
+      <p class="intro">The real clips end in refusal, so where is the weight checked? On twelve loads of a barge drawn in code, the waterline set by physics and the swell by us. SAM segments the rendered numerals and Muse Spark reads them, live, but SAM finds no rendered water (0 masks on 12 clips), so the water edge is a colour threshold on our own pixels. This checks the label checks, the scale fit, the averaging and the cargo arithmetic, not SAM's water edge or real water, and the three code fixes it forced were found on these same loads, so it is not a held-out score. There is no physical scale check yet.</p>
     </div>
     <div class="synth rv">
-      <div><b data-proof="evidence/eval-synthetic.md">12 / 12</b><p>rendered loads within ±2 % of the synthetic truth (p90 0.42 %, worst 0.75 %)</p></div>
+      <div><b data-proof="evidence/eval-synthetic.md">12 / 12</b><p>rendered loads within ±2 % of the synthetic truth (p90 0.42 %, worst 0.75 %); ±2 % is our pre-registered pass rule, not comparable to the guide's 0.5 %</p></div>
       <div><b data-proof="evidence/eval-synthetic.md">0.12 %</b><p>median cargo error vs the synthetic truth; the draft reads slightly low on 10 of 12 loads</p></div>
       <div><b data-proof="evidence/eval-synthetic.md">0 / 12</b><p>clips where SAM found the rendered water; the water mask is a stand-in</p></div>
     </div>
@@ -608,7 +608,7 @@ h2 em{font-style:normal;color:var(--after)}
       <article class="cell cell--b rv">
         <svg class="glyph" viewBox="0 0 54 54" aria-hidden="true"><path d="M6 40 L18 28 L28 36 L48 12" fill="none" stroke="#F2B33D" stroke-width="2.4"/><rect x="34" y="34" width="16" height="14" rx="2" fill="none" stroke="#9A8F86" stroke-width="2"/><path d="M38 34v-4a4 4 0 0 1 8 0v4" fill="none" stroke="#9A8F86" stroke-width="2"/></svg>
         <h3>A signed chain</h3>
-        <p>Edit any station's output and the certificate reads <span class="data">REFUSE UNSIGNED</span>.</p>
+        <p>Edit any station's output and the certificate reads <span class="data">REFUSE UNSIGNED</span>. It guards the hand-offs between our stations, not who filmed the clip.</p>
         <span class="chip">hmac-sha256</span>
       </article>
       <article class="cell cell--c rv">
@@ -640,8 +640,8 @@ h2 em{font-style:normal;color:var(--after)}
     <ul class="ledger">
       <li class="rv"><span class="n">1/6</span><blockquote>“The weight check is on 12 loads of a rendered synthetic barge (code-drawn pixels, truth by physics), not a physical scale: it checks the chain's arithmetic, label checks and wave-averaging, not real water, glare or a real print.”<cite>README · Honest limits, 1</cite></blockquote></li>
       <li class="rv"><span class="n">2/6</span><blockquote>“The real-ship clips are third-party test footage with no ground truth (repeatability and refusal only, no accuracy claim); no real-ship draft accuracy is claimed.”<cite>README · Honest limits, 2</cite></blockquote></li>
-      <li class="rv"><span class="n">3/6</span><blockquote>“The test booklet is a Ro-Ro/passenger ship, not a bulk carrier; a draft outside its 0.5-9.3 m table is refused, so the two real clips certify as REFUSE OUT_OF_TABLE.”<cite>README · Honest limits, 3</cite></blockquote></li>
-      <li class="rv"><span class="n">4/6</span><blockquote>“Ship uncertainty is wave-averaging repeatability only; real ships have no absolute calibration.”<cite>README · Honest limits, 4</cite></blockquote></li>
+      <li class="rv"><span class="n">3/6</span><blockquote>“The test booklet is a Ro-Ro/passenger ship, not a bulk carrier; a draft outside its 0.5-9.3 m table is refused, so the two real clips certify as REFUSE OUT_OF_TABLE; the range check does not verify that a clip and a booklet belong to the same vessel (the operator must).”<cite>README · Honest limits, 3</cite></blockquote></li>
+      <li class="rv"><span class="n">4/6</span><blockquote>“Ship uncertainty is wave-averaging repeatability only (±0.086 m on clip dB7X's 10 s of swell: a spread, not an accuracy, and too wide to carry a cargo figure yet); real ships have no absolute calibration.”<cite>README · Honest limits, 4</cite></blockquote></li>
       <li class="rv"><span class="n">5/6</span><blockquote>“A consistent whole-metre misread passes the geometry checks by construction, so the user confirms the anchor crop on every live run.”<cite>README · Honest limits, 5</cite></blockquote></li>
       <li class="rv"><span class="n">6/6</span><blockquote>“A clip reads only the port midship mark; other positions are entered by hand and printed as entered. This is a prototype, not a surveyor's document.”<cite>README · Honest limits, 6</cite></blockquote></li>
     </ul>

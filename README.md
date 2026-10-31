@@ -68,8 +68,8 @@ Day-one output: a pre-read with its repeatability, the five label checks, which 
 entered, the model response ids, and a refusal reason when there is one; before an official survey, not instead of it.
 
 What exists vs what is new: the calculators, readers and laser systems above exist. What we demonstrate, without
-claiming others lack it, is the combination: a wave-averaged reading from a video clip plus an agent that writes and
-*proves* the survey program against the booklet, with refusal enforced by code.
+claiming others lack it, is the combination: a wave-averaged reading from a video clip plus an agent that writes
+the survey program and must reproduce the booklet's printed conditions with it before it computes, with refusal enforced by code.
 
 ## 🏗️ Architecture & Tech Stack
 
@@ -97,8 +97,10 @@ prepared clip (port midship only) --> /measure (SAM 3.1) --> /labels (Spark 1.3 
 | Model | What it does here | Code |
 |---|---|---|
 | SAM 3.1 (video) | "white number" and "water" concepts on a cropped mark column; masks decoded with `meta-sam-parser` | `api/index.py` (calls), `api/_core/sam.py` (mask decode), `api/_core/marks.py` (token grouping) |
-| Muse Spark 1.3 | strict JSON-schema label reads on two frames at least 1 s apart (a `?` enum lets it abstain); native computer-use sub-agent for a filing step on our demo portal (read-back 6/6, fault rejected; offline spike, not in the live flow) | `api/_core/labels.py`, `api/_core/cu.py`, `evidence/cu-runs.md` |
+| Muse Spark 1.3 | strict JSON-schema label reads on two frames at least 1 s apart (a `?` enum lets it abstain) | `api/_core/labels.py` |
 | Muse Wonder 1.0 | writes the survey program; regenerated on failing conditions | `scripts/spike_wonder_program.py`, `api/_core/selftest.py`, `evidence/selftest-booklet.md` |
+
+Not in the product flow: an offline Muse Spark 1.3 computer-use spike that files a report on our own labelled demo portal (read-back 6/6, an injected fault rejected): `api/_core/cu.py`, `evidence/cu-runs.md`.
 
 Friction we met and what we did about it: [docs/DX-REPORT.md](docs/DX-REPORT.md). Meta calls are logged with a price-list cost estimate (not an invoice) in [evidence/api-usage.md](evidence/api-usage.md).
 
@@ -128,8 +130,8 @@ Friction we met and what we did about it: [docs/DX-REPORT.md](docs/DX-REPORT.md)
 
 1. The weight check is on 12 loads of a rendered **synthetic** barge (code-drawn pixels, truth by physics), not a physical scale: it checks the chain's arithmetic, label checks and wave-averaging, not real water, glare or a real print. SAM finds the rendered numerals but returned 0 water masks on all 12 clips, so the water edge there is a colour threshold on our own pixels. The eval also ran on the same loads that exposed three code fixes (in-sample for those). No real-ship photo set was verifiably open, so none was run ([eval-dataset.md](evidence/eval-dataset.md)).
 2. The real-ship clips are third-party test footage with no ground truth (repeatability and refusal only, no accuracy claim); no real-ship draft accuracy is claimed.
-3. The test booklet is a Ro-Ro/passenger ship, not a bulk carrier; a draft outside its 0.5-9.3 m table is refused, so the two real clips certify as `REFUSE OUT_OF_TABLE`.
-4. Ship uncertainty is wave-averaging repeatability only; real ships have no absolute calibration.
+3. The test booklet is a Ro-Ro/passenger ship, not a bulk carrier; a draft outside its 0.5-9.3 m table is refused, so the two real clips certify as `REFUSE OUT_OF_TABLE`; the range check does not verify that a clip and a booklet belong to the same vessel (the operator must).
+4. Ship uncertainty is wave-averaging repeatability only (±0.086 m on clip dB7X's 10 s of swell: a spread, not an accuracy, and too wide to carry a cargo figure yet); real ships have no absolute calibration.
 5. A consistent whole-metre misread passes the geometry checks by construction, so the user confirms the anchor crop on every live run.
 6. A clip reads only the port midship mark; other positions are entered by hand and printed as entered. This is a prototype, not a surveyor's document.
 

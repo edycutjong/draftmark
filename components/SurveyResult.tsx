@@ -111,7 +111,7 @@ export function SurveyResult({ survey, booklet }: { survey: SurveyOut; booklet?:
         ) : null}
         {isNum(survey.net) ? (
           <div>
-            <dt>Net</dt>
+            <dt>Net displacement</dt>
             <dd className="data">
               {grouped(survey.net, 1)} {unit}
             </dd>
