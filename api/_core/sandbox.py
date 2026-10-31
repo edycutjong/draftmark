@@ -26,7 +26,7 @@ ALLOWED_IMPORTS = {"math", "bisect", "json", "statistics", "re"}  # re: the prog
 BANNED_NAMES = {"eval", "exec", "open", "compile", "__import__", "getattr", "setattr", "delattr", "vars", "locals",
                 "globals", "__builtins__", "breakpoint", "input", "memoryview", "help", "exit", "quit"}
 # x.open / x.eval / x.getattr on any object; re.compile stays legal; str.format can walk attributes from a runtime string
-BANNED_ATTRS = (BANNED_NAMES - {"compile"}) | {"format", "format_map"}
+BANNED_ATTRS = (BANNED_NAMES - {"compile"}) | {"format", "format_map", "mro"}
 MAX_BYTES = 64 * 1024
 # The only module attributes generated code may touch (gate) and the only ones the child's proxy modules hold
 # (runtime). Real modules leak their own imports as attributes (re.enum.sys -> sys.modules -> builtins.open).
@@ -88,7 +88,8 @@ def static_gate(code: str) -> GateResult:
             v.append(f"line {node.lineno}: attribute {node.attr} not allowed")
         elif isinstance(node, ast.Attribute) and node.attr.startswith("__") and node.attr.endswith("__"):
             v.append(f"line {node.lineno}: dunder attribute {node.attr} not allowed")
-        elif isinstance(node, ast.Constant) and isinstance(node.value, str) and "__" in node.value:
+        elif isinstance(node, ast.Constant) and isinstance(node.value, (str, bytes)) and \
+                ("__" in node.value if isinstance(node.value, str) else b"__" in node.value):
             v.append(f"line {node.lineno}: '__' inside a string not allowed (format-string attribute walk)")
     names = {n.name for n in tree.body if isinstance(n, ast.FunctionDef)}
     for need in ("parse_booklet", "survey"):

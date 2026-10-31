@@ -29,7 +29,7 @@ LIVE_POSITIONS = ("mid_p", "mid_s")  # one clip films one mark column; the app f
 
 def clean_sources(src: dict | None) -> dict:
     """A clip reading may stand only for the midship marks; any other position claiming it is entered."""
-    return {p: (v if v not in ("live", "clip") or p in LIVE_POSITIONS else "entered") for p, v in (src or {}).items()}
+    return {p: (v if v in ("live", "clip") and p in LIVE_POSITIONS else "entered") for p, v in (src or {}).items()}
 
 
 def validate(inp: dict, top: dict) -> list[str]:
@@ -148,12 +148,16 @@ def ship(inp: dict, prog: dict | None = None) -> dict:
         return out
     res = rr.data["results"]
     if not res[0]["ok"]:
-        out["out_of_table"] = "OutOfTable" in (res[0]["error"] or "")
+        out["out_of_table"] = (res[0]["error"] or "").startswith("OutOfTable:")  # the class, not a substring
         out["program_error"] = not out["out_of_table"]
         out["error"] = res[0]["error"]
         out["gate_fail"] = gate(drafts, None)
         return out
     o = res[0]["out"]
+    if not all(isinstance(o.get(k), (int, float)) and isfinite(o[k]) for k in ("d_mm", "d_fp", "d_ap", "disp_final")):
+        out["program_error"] = True  # a NaN or a string must never reach the decision
+        out["error"] = "program returned a non-finite or missing value"
+        return out
     rows = R.table()
     lo, hi = rows[0]["draft"] + NEMOTO_DD_M, rows[-1]["draft"] - NEMOTO_DD_M
     if not lo <= o["d_mm"] <= hi:  # the second trim correction reads MTC at d +-0.5 m: never extrapolate it
@@ -168,7 +172,8 @@ def ship(inp: dict, prog: dict | None = None) -> dict:
     u_disp = 0.0
     if len(res) > 7:
         up, dn = res[7], res[8]
-        if not (up["ok"] and dn["ok"]) or not all(lo <= r["out"]["d_mm"] <= hi for r in (up, dn)):
+        if not (up["ok"] and dn["ok"]) or not all(isfinite(r["out"].get("d_mm")) and lo <= r["out"]["d_mm"] <= hi
+                                                    and isfinite(r["out"].get("disp_final")) for r in (up, dn)):
             out["perturb_oot"] = True
         else:
             u_disp = abs(up["out"]["disp_final"] - dn["out"]["disp_final"]) / 2

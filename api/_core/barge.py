@@ -44,9 +44,9 @@ def survey(b: Barge, strip_draft_m: float, u_draft_m: float | None = None, u_geo
         rel2 = ((g.get("u_L", 0.0) / b.L_m) ** 2 + (g.get("u_B", 0.0) / b.B_m) ** 2
                 + (g.get("u_rho", 0.0) / b.rho_kg_m3) ** 2 + (g.get("u_zero", 0.0) / t) ** 2
                 + (g.get("u_taper", 0.0) / b.L_m) ** 2)
-        u_disp = math.sqrt((b.rho_kg_m3 * b.area_m2 * u_draft_m) ** 2 + (disp ** 2) * rel2
-                           + g.get("u_scale_kg", 0.001) ** 2)
+        u_disp = math.sqrt((b.rho_kg_m3 * b.area_m2 * u_draft_m) ** 2 + (disp ** 2) * rel2)
         out["u_disp_kg"] = u_disp
+        # cargo = disp - light weight: the kitchen-scale term belongs to the weighed light weight, counted once
         out["u_cargo_kg"] = math.sqrt(u_disp ** 2 + g.get("u_scale_kg", 0.001) ** 2)
     return out
 

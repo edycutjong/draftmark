@@ -42,3 +42,8 @@ def test_frames_gate_boundaries():
     assert D.decide({**OK_BARGE, "n_frames": 10, "n_kept": 6}).decision == "ISSUE_WITH_WARNING"
     assert D.decide({**OK_BARGE, "n_frames": 10, "n_kept": 5}).reason == "FRAMES_LOW"
     assert D.decide({**OK_BARGE, "n_frames": 10, "n_kept": 9}).decision == "ISSUE"
+
+
+def test_zero_cargo_with_uncertainty_never_passes():
+    d = D.decide({**OK_SHIP, "cargo": 0.0, "u_cargo": 5.0})
+    assert (d.decision, d.reason) == ("REFUSE", "U_TOO_WIDE")

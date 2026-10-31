@@ -14,6 +14,7 @@ import time
 
 PER_IP_H = int(os.environ.get("LIVE_PER_IP_H", "5"))
 PER_INSTANCE_H = int(os.environ.get("LIVE_PER_INSTANCE_H", "15"))
+JUDGE_PER_IP_H = int(os.environ.get("JUDGE_PER_IP_H", "15"))  # judge-code uploads: a judge tries several clips
 FREE_PER_IP_H = int(os.environ.get("FREE_PER_IP_H", "60"))  # no-API endpoints that still burn function CPU (sandbox)
 _lock = threading.Lock()
 _hits: dict[str, list[float]] = {}
@@ -40,8 +41,8 @@ def budget_reason() -> str | None:
     return _budget_tripped.get("reason")
 
 
-def take(ip: str, now: float | None = None, run_id: str | None = None, ride: bool = False
-         ) -> tuple[bool, str | None]:
+def take(ip: str, now: float | None = None, run_id: str | None = None, ride: bool = False,
+         per_ip: int | None = None) -> tuple[bool, str | None]:
     """Count one live run for ip; (allowed, reason when not). ride=True (labels): the first label call of a run
     measured on this instance within the hour is free; /measure never rides."""
     now = now or time.time()
@@ -52,8 +53,9 @@ def take(ip: str, now: float | None = None, run_id: str | None = None, ride: boo
             return True, None
         for k in (f"ip:{ip}", "instance"):
             _hits[k] = [t for t in _hits.get(k, []) if now - t < 3600]
-        if len(_hits[f"ip:{ip}"]) >= PER_IP_H:
-            return False, f"{PER_IP_H} live runs per IP per hour"
+        cap = per_ip or PER_IP_H
+        if len(_hits[f"ip:{ip}"]) >= cap:
+            return False, f"{cap} live runs per IP per hour"
         if len(_hits["instance"]) >= PER_INSTANCE_H:
             return False, f"{PER_INSTANCE_H} live runs per instance per hour"
         _hits[f"ip:{ip}"].append(now)

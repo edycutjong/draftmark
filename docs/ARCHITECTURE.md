@@ -56,7 +56,8 @@ certified `REFUSE UNSIGNED` (decision row 0). Drafts typed by hand stay possible
 ## Proof of the model-written program (`api/_core/selftest.py`, `api/_core/sandbox.py`)
 
 - Static AST gate (imports limited to math, bisect, json, statistics, re, and per module only the listed public
-  functions: `re.enum.sys` is rejected; banned names and attributes; no `__` anywhere; 64 KB cap), then
+  functions: `re.enum.sys` is rejected; banned names and attributes incl. `format`/`mro`; no dunder attribute
+  access and no `__` in any string or bytes constant; 64 KB cap), then
   `python -I -S runner.py` in a fresh temp dir, empty environment, rlimits (CPU, address space, files, processes,
   file size), proxy modules holding only those functions, an audit hook refusing sockets, subprocesses, signals,
   directory listing and files outside the dir (paths normalised first), allowlisted builtins, JSON in/out.

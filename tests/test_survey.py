@@ -107,3 +107,20 @@ def test_survey_inputs_are_validated():
     bad = {**ok, "sg": 2.0, "deductibles": {"fuel": -500}, "lightship_constant": float("nan")}
     msgs = S.validate(bad, {"tol_pct": 1e9})
     assert len(msgs) == 4 and any("sg" in m for m in msgs) and any("tol_pct" in m for m in msgs)
+
+
+def test_non_finite_or_mislabelled_program_output_is_a_program_error(monkeypatch):
+    real = S.sandbox.run
+
+    def nan_run(code, req):
+        rr = real(code, req)
+        rr.data["results"][0]["out"]["disp_final"] = float("nan")
+        return rr
+    monkeypatch.setattr(S.sandbox, "run", nan_run)
+    assert run(drafts_of("4.1"))["program_error"]
+    monkeypatch.setattr(S.sandbox, "run", lambda code, req: S.sandbox.RunResult(
+        True, {"ok": True, "results": [{"ok": False, "error": "KeyError: 'OutOfTable'"}]}, None, 5, 0))
+    r = run(drafts_of("4.1"))
+    assert r["program_error"] and not r["out_of_table"]
+    assert S.clean_sources({"mid_p": "foo", "mid_s": "live", "fore_p": "live"}) == \
+        {"mid_p": "entered", "mid_s": "live", "fore_p": "entered"}

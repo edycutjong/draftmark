@@ -16,7 +16,9 @@ def test_zero_offset_and_uncertainty():
     out = barge.survey(b, 0.118, u_draft_m=0.001, u_geom={"u_L": 0.0005, "u_B": 0.0005})
     assert out["disp_kg"] == pytest.approx(1.2)
     # 1 mm of draft on 100 cm^2 = 10 g; 0.5 mm on 100 mm sides = 0.5 % each
-    assert out["u_disp_kg"] == pytest.approx((0.01 ** 2 + 2 * (0.006) ** 2 + 0.001 ** 2) ** 0.5, rel=1e-3)
+    assert out["u_disp_kg"] == pytest.approx((0.01 ** 2 + 2 * (0.006) ** 2) ** 0.5, rel=1e-3)
+    # cargo = disp - light weight: the 1 g kitchen-scale term enters once, on the weighed light weight
+    assert out["u_cargo_kg"] == pytest.approx((out["u_disp_kg"] ** 2 + 0.001 ** 2) ** 0.5, rel=1e-9)
 
 
 def test_out_of_box_raises():

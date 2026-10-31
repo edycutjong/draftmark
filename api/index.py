@@ -16,6 +16,7 @@ import json
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+import numpy as np
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from PIL import Image
@@ -31,6 +32,7 @@ SCALES = (1.0, 0.1)  # ship metric marks; the 1:10 barge strip
 MEAS_KEYS = ("d_m", "u_rep_m", "u_abs_m", "n_frames", "n_kept", "refused", "reason", "row1")
 
 
+@app.exception_handler(np.linalg.LinAlgError)  # a singular fit from client drafts
 @app.exception_handler(AttributeError)
 @app.exception_handler(KeyError)
 @app.exception_handler(TypeError)
@@ -88,7 +90,7 @@ def _gate(req: Request, upload: bool, code: str | None, run_id: str | None = Non
         return _err(503, "BUDGET", "no API key on this deployment")
     if upload and not limits.judge_ok(code):
         return _err(403, "JUDGE_CODE", "uploads need the judge code from the submission notes")
-    ok, why = limits.take(_ip(req), run_id=run_id, ride=ride)
+    ok, why = limits.take(_ip(req), run_id=run_id, ride=ride, per_ip=limits.JUDGE_PER_IP_H if upload else None)
     if not ok:
         return _err(429, "RATE", why or "")
     return None
@@ -110,8 +112,8 @@ async def measure_ep(req: Request):
                 "frames": int(body.get("frames") or 0), "scale": float(body.get("scale") or 1.0)}
         if info["scale"] not in SCALES:
             return _err(400, "PAYLOAD", f"scale must be one of {SCALES}")
-        if info["fps"] <= 0:
-            return _err(400, "PAYLOAD", "fps > 0")
+        if info["fps"] < 1.0 or info["frames"] / info["fps"] > 10.5:  # > 8 fps is the 413 below
+            return _err(400, "PAYLOAD", ">= 1 fps and at most 10 s of frames")
         if info["fps"] > 8.01 or info["frames"] > 64:
             return _err(413, "PAYLOAD", "<= 8 s at <= 8 fps")
         if info["frames"] <= 0:
@@ -185,6 +187,8 @@ async def labels_ep(req: Request):
         [int(k) for k in (body.get("frames") or {})]
     except (AttributeError, KeyError, TypeError, ValueError) as e:
         return _err(400, "PAYLOAD", f"bad labels request: {type(e).__name__}")
+    if geom.get("row1"):  # decision row 1 already refused this clip: no Spark call, no token
+        return _err(400, "PAYLOAD", f"measurement refused at row 1: {geom['row1']}")
     strip = marks.strip_sequence() if system.scale < 1 else None
     typed = body.get("typed")
     lf = geom.get("label_frames")
@@ -208,6 +212,7 @@ async def labels_ep(req: Request):
     except ValueError as e:
         return _err(400, "PAYLOAD", str(e))
     run_id = body.get("run_id") or f"live-{int(time.time())}"
+    run_id = (geom.get("provenance") or {}).get("run_id") or run_id  # sealed: a body run id cannot borrow a ride
     blocked = _gate(req, False, None, run_id, ride=True)
     if blocked:
         return blocked
@@ -348,6 +353,11 @@ async def survey_ep(req: Request):
             srv_in["u_live_m"] = tok.get("u_rep_m")
     if meas.get("n_frames") and meas.get("d_m") is None and not meas.get("refused") and not meas.get("row1"):
         meas = {**meas, "refused": True, "reason": meas.get("reason") or "FRAMES_LOW"}  # no draft = refused
+    if mode == "ship" and not srv_in and meas.get("d_m") is not None and not meas.get("refused"):
+        return _err(400, "NO_EVIDENCE", "a ship certificate on a measured draft needs the survey inputs")
+    wi = body.get("what_if") or {}
+    if mode == "barge" and any(not (isinstance(v, (int, float)) and survey.isfinite(v) and v > 0) for v in wi.values()):
+        return _err(400, "PAYLOAD", "what-if values must be finite and > 0")
     if mode == "barge":
         u = meas.get("u_abs_m") if meas.get("u_abs_m") is not None else meas.get("u_rep_m")
         if meas.get("d_m") is None:

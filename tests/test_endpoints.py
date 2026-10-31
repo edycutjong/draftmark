@@ -313,3 +313,19 @@ def test_implausible_survey_inputs_are_400():
          "deductibles": {"ballast": -9000}}
     r = api.post("/api/py/survey", json={"mode": "ship", "survey": s, "booklet_info": {"id": "trieste"}})
     assert r.status_code == 400 and "deductible" in r.json()["detail"]
+
+
+def test_round3_guards():
+    m = seal({"d_m": 6.5, "u_rep_m": 0.01, "n_frames": 12, "n_kept": 12}, OK_LABELS, ["sam-3.1"], 1.0)
+    r = api.post("/api/py/survey", json={"mode": "ship", "measure": m, "labels": OK_LABELS})
+    assert r.status_code == 400 and r.json()["reason"] == "NO_EVIDENCE"  # no survey inputs, no ship ISSUE
+    b = seal({"d_m": 0.12, "u_abs_m": 0.0005, "n_frames": 32, "n_kept": 32}, OK_LABELS)
+    r = api.post("/api/py/survey", json={"mode": "barge", "measure": b, "labels": OK_LABELS, "what_if": {"L_m": 0}})
+    assert r.status_code == 400
+    r = api.post("/api/py/measure", json={"upload": mp4(), "fps": 0.5, "frames": 30})
+    assert r.status_code == 400
+    num, wat = clip()
+    g = pipeline.geometry_from_objects(num, wat, 12, 6.0, marks.SHIP)
+    g = sign.seal_geometry({**g, "row1": "OBJECT_CAP"})
+    r = api.post("/api/py/labels", json={"geometry": g, "frames": {}})
+    assert r.status_code == 400 and "row 1" in r.json()["detail"]
