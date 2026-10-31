@@ -321,7 +321,7 @@ def probe_sandbox():
     out["mem_limit_blocks"] = (not r.ok, (r.error or "")[-120:])
     # audit hook: a file object passed in cannot exist (JSON), so test open() via the hook directly
     code = "import json\ndef parse_booklet(b):\n    return {}\ndef survey(c, s):\n    return {}\n"
-    hook_test = sandbox.RUNNER.replace('req = json.loads(sys.stdin.read())',
+    hook_test = sandbox.runner_source().replace('req = json.loads(sys.stdin.read())',
                                        'open("/etc/hostname")\nreq = json.loads(sys.stdin.read())')
     with tempfile.TemporaryDirectory() as d:
         open(os.path.join(d, "program.py"), "w").write(code)

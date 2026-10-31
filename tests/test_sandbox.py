@@ -1,3 +1,7 @@
+import json
+import subprocess
+import sys
+
 from api._core import sandbox
 
 OK = '''import math
@@ -38,3 +42,38 @@ def test_child_env_is_empty_and_open_blocked_at_runtime():
     assert r.ok and r.data["results"][0]["ok"]
     sneaky = "import json\ndef parse_booklet(b):\n    import math\n    return {}\ndef survey(c, s):\n    import os\n    return {}\n"
     assert not sandbox.static_gate(sneaky).ok
+
+
+ESCAPE = '''import re
+def parse_booklet(b):
+    return {}
+def survey(c, s):
+    sy = re.enum.sys
+    return {"disp_final": 1.0, "leak": sy.modules["builtins"].open("/etc/hosts").read()[:20]}
+'''
+
+
+def test_gate_rejects_module_internals_and_aliasing():
+    for src in ("import re\nx = re.enum\n", "import re as r\nx = r\n", "from re import enum\n", "import re._parser\n",
+                "import json.decoder\n", "import json\nx = json.decoder\n", "x = [].open\n", "import math\ny = [math]\n"):
+        g = sandbox.static_gate(src + OK)
+        assert not g.ok, src
+    assert sandbox.static_gate("import re\nfrom bisect import bisect_left\np = re.compile('x')\n" + OK).ok
+    assert not sandbox.static_gate(ESCAPE).ok
+
+
+def test_runtime_proxies_hold_even_if_the_gate_is_bypassed(monkeypatch):
+    monkeypatch.setattr(sandbox, "static_gate", lambda code: sandbox.GateResult(True))
+    r = sandbox.run(ESCAPE, {"booklet": {}, "cases": [{}]})
+    assert r.ok and not r.data["results"][0]["ok"]
+    assert "AttributeError" in r.data["results"][0]["error"] and "Host" not in json.dumps(r.data)
+
+
+def test_audit_hook_normalises_paths(tmp_path):
+    runner = sandbox.runner_source().replace(
+        "req = json.loads(sys.stdin.read())", 'open(WORKDIR + "/../../../../../../etc/hosts")\nreq = 1')
+    (tmp_path / "runner.py").write_text(runner)
+    (tmp_path / "program.py").write_text(OK)
+    p = subprocess.run([sys.executable, "-I", "-S", str(tmp_path / "runner.py"), str(tmp_path)], input="{}",
+                       capture_output=True, text=True, env={}, timeout=10)
+    assert "blocked open" in p.stderr

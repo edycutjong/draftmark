@@ -3,9 +3,12 @@
 Never eval/exec generated code in the server process. The child runs
 `python -I -S runner.py` in a fresh temp dir with an empty environment, rlimits
 (CPU, address space, files, processes, file size), an audit hook that refuses
-sockets/subprocesses/files outside its dir, and an allowlisted __builtins__.
-Defense in depth, not a hard security boundary: the AST gate + rlimits + no secrets
-in the child env carry the weight.
+sockets/subprocesses/signals/directory listing and files outside its dir (path
+normalised, so `dir/../..` is refused), an allowlisted __builtins__, and proxy modules:
+`import re` binds a namespace holding only MODULE_API["re"], so `re.enum.sys` does not
+exist at runtime and the gate rejects it statically. Defense in depth, not a hard
+security boundary: the AST gate + proxies + rlimits + no secrets in the child env carry
+the weight.
 """
 from __future__ import annotations
 
@@ -22,7 +25,21 @@ from dataclasses import dataclass, field
 ALLOWED_IMPORTS = {"math", "bisect", "json", "statistics", "re"}  # re: the program parses raw page text
 BANNED_NAMES = {"eval", "exec", "open", "compile", "__import__", "getattr", "setattr", "delattr", "vars", "locals",
                 "globals", "__builtins__", "breakpoint", "input", "memoryview", "help", "exit", "quit"}
+BANNED_ATTRS = BANNED_NAMES - {"compile"}  # x.open / x.eval / x.getattr on any object; re.compile stays legal
 MAX_BYTES = 64 * 1024
+# The only module attributes generated code may touch (gate) and the only ones the child's proxy modules hold
+# (runtime). Real modules leak their own imports as attributes (re.enum.sys -> sys.modules -> builtins.open).
+MODULE_API = {
+    "math": sorted(n for n in dir(__import__("math")) if not n.startswith("_")),
+    "bisect": ["bisect", "bisect_left", "bisect_right", "insort", "insort_left", "insort_right"],
+    "json": ["dumps", "loads", "JSONDecodeError"],
+    "statistics": ["StatisticsError", "fmean", "geometric_mean", "harmonic_mean", "linear_regression", "mean",
+                   "median", "median_high", "median_low", "mode", "multimode", "pstdev", "pvariance", "quantiles",
+                   "stdev", "variance"],
+    "re": ["A", "ASCII", "DOTALL", "I", "IGNORECASE", "M", "MULTILINE", "S", "VERBOSE", "X", "compile", "error",
+           "escape", "findall", "finditer", "fullmatch", "match", "search", "split", "sub", "subn"],
+}
+assert set(MODULE_API) == ALLOWED_IMPORTS
 
 
 @dataclass
@@ -39,16 +56,35 @@ def static_gate(code: str) -> GateResult:
         tree = ast.parse(code)
     except SyntaxError as e:
         return GateResult(False, [f"syntax error: {e}"])
+    aliases: dict[str, str] = {}  # local name -> module
+    parent: dict[ast.AST, ast.AST] = {}
     for node in ast.walk(tree):
+        for ch in ast.iter_child_nodes(node):
+            parent[ch] = node
         if isinstance(node, ast.Import):
             for a in node.names:
-                if a.name.split(".")[0] not in ALLOWED_IMPORTS:
+                if a.name not in ALLOWED_IMPORTS:  # no submodules: re._parser, json.decoder ...
                     v.append(f"line {node.lineno}: import {a.name} not allowed")
+                else:
+                    aliases[a.asname or a.name] = a.name
         elif isinstance(node, ast.ImportFrom):
-            if (node.module or "").split(".")[0] not in ALLOWED_IMPORTS or node.level:
+            if (node.module or "") not in ALLOWED_IMPORTS or node.level:
                 v.append(f"line {node.lineno}: from {node.module} import not allowed")
-        elif isinstance(node, ast.Name) and node.id in BANNED_NAMES:
+            else:
+                for a in node.names:
+                    if a.name not in MODULE_API[node.module]:
+                        v.append(f"line {node.lineno}: from {node.module} import {a.name} not allowed")
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Name) and node.id in aliases:
+            par = parent.get(node)
+            if not (isinstance(par, ast.Attribute) and par.value is node):
+                v.append(f"line {node.lineno}: module {node.id} used as a value")
+            elif par.attr not in MODULE_API[aliases[node.id]]:
+                v.append(f"line {node.lineno}: {aliases[node.id]}.{par.attr} not allowed")
+        if isinstance(node, ast.Name) and node.id in BANNED_NAMES:
             v.append(f"line {node.lineno}: name {node.id} not allowed")
+        elif isinstance(node, ast.Attribute) and node.attr in BANNED_ATTRS:
+            v.append(f"line {node.lineno}: attribute {node.attr} not allowed")
         elif isinstance(node, ast.Attribute) and node.attr.startswith("__") and node.attr.endswith("__"):
             v.append(f"line {node.lineno}: dunder attribute {node.attr} not allowed")
         elif isinstance(node, ast.Constant) and isinstance(node.value, str) and \
@@ -62,24 +98,30 @@ def static_gate(code: str) -> GateResult:
 
 
 RUNNER = r'''
-import sys, json, resource
-SAFE_MODS = {"math", "bisect", "json", "statistics", "re"}
-_imp = __import__
-def _safe_import(name, globals=None, locals=None, fromlist=(), level=0):
-    if level or name.split(".")[0] not in SAFE_MODS:
-        raise ImportError("import of " + name + " blocked")
-    return _imp(name, globals, locals, fromlist, level)
+import sys, json, resource, types, os.path
 import math, bisect, statistics, re  # preload before the hook
-WORKDIR = sys.argv[1]
+API = json.loads(__API__)
+PROXY = {m: types.SimpleNamespace(**{n: getattr(sys.modules[m], n) for n in names}) for m, names in API.items()}
+def _safe_import(name, globals=None, locals=None, fromlist=(), level=0):
+    if level or name not in PROXY:
+        raise ImportError("import of " + name + " blocked")
+    return PROXY[name]  # a namespace of the allowed names only: no re.enum, no json.decoder
+WORKDIR = os.path.normpath(sys.argv[1])
+ROOTS = tuple(os.path.normpath(r) for r in {WORKDIR, sys.prefix, sys.base_prefix})
+BLOCKED = ("socket.", "subprocess.", "os.system", "os.exec", "os.spawn", "os.fork", "os.posix_spawn", "os.kill",
+           "os.killpg", "signal.", "os.listdir", "os.scandir", "os.remove", "os.unlink", "os.rename", "os.rmdir",
+           "os.mkdir", "os.chmod", "os.chown", "os.chdir", "os.link", "os.symlink", "os.truncate", "os.putenv",
+           "os.unsetenv", "shutil.", "ctypes.", "urllib.", "http.", "sys._getframe", "sys._current_frames")
+def _inside(p):
+    p = os.path.normpath(os.path.join(WORKDIR, p))  # string-only: no syscalls inside the hook
+    return any(p == r or p.startswith(r + os.sep) for r in ROOTS)
 def _hook(event, args):
-    if event.startswith(("socket.", "subprocess.", "os.system", "os.exec", "os.spawn", "os.fork", "os.posix_spawn",
-                         "ctypes.", "urllib.", "http.")):
+    if event.startswith(BLOCKED):
         raise RuntimeError("blocked: " + event)
     if event == "open":
-        path = str(args[0])
-        if not (path.startswith(WORKDIR) or path.startswith(sys.prefix) or path.startswith(sys.base_prefix)
-                or path.isdigit()):
-            raise RuntimeError("blocked open: " + path)
+        path = args[0]
+        if not (isinstance(path, int) or (isinstance(path, str) and _inside(path))):
+            raise RuntimeError("blocked open: " + str(path))
 sys.addaudithook(_hook)
 class OutOfTable(ValueError):
     pass
@@ -153,7 +195,7 @@ def run(code: str, request: dict, cpu_s: int = 5, mem_mb: int = 512, wall_s: flo
         with open(os.path.join(d, "program.py"), "w") as f:
             f.write(code)
         with open(os.path.join(d, "runner.py"), "w") as f:
-            f.write(RUNNER)
+            f.write(runner_source())
         t0 = time.time()
         try:
             p = subprocess.run([sys.executable, "-I", "-S", os.path.join(d, "runner.py"), d],
@@ -169,6 +211,10 @@ def run(code: str, request: dict, cpu_s: int = 5, mem_mb: int = 512, wall_s: flo
         except json.JSONDecodeError:
             return RunResult(False, {}, "bad JSON from child: " + p.stdout[:200], ms, p.returncode)
         return RunResult(bool(data.get("ok")), data, data.get("error"), ms, p.returncode)
+
+
+def runner_source() -> str:
+    return RUNNER.replace("__API__", repr(json.dumps(MODULE_API)))
 
 
 def sha256(code: str) -> str:
