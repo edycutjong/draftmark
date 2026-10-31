@@ -1,0 +1,13 @@
+{
+ "program_sha": "53df0895620d6a4aec58937057e8420df1ef6eef76bfd8203b5ee50e608aeaf8",
+ "rows": [],
+ "pass_count": 0,
+ "n": 22,
+ "probes_raised": [],
+ "differential_n": 0,
+ "differential_max_err_pct": null,
+ "differential_failures": 0,
+ "verdict": "FAIL",
+ "error": "static gate: line 230: name globals not allowed; line 255: name globals not allowed; line 260: name globals not allowed",
+ "wall_ms": 0
+}

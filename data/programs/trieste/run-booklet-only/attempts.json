@@ -1,0 +1,152 @@
+{
+ "manifest": {
+  "pages": [
+   4,
+   21,
+   22,
+   26,
+   36,
+   37,
+   38,
+   39
+  ],
+  "bundle_sha256": "bb96e5d1ae1e658eb2d147854af19bfb9e2cbb5b967a78d8748f7add62cabc7b",
+  "system_sha256": "c9f658a8ff0cb0c988bc25859e05b30115a5512f0a4cfc6b4339896e89e2bf30",
+  "page_sha256": {
+   "4": "e0d65d660efd7edcd8c7a740fa2a3806a012ff6db2a9be1a4c3f51c95e4498b1",
+   "21": "511add9a4b16b1ee75a5cab1e6ac13dc6bdb9b261608162aaf946eba623b3f51",
+   "22": "043c518bc7bf4cc8f883a75a9b13a17600fc44e2783f6d33cad8ab21ae3a5aab",
+   "26": "ece3bf8ae18cebbdc0283fd9090edbbfd6043238a5347f1639a2c1e082003d13",
+   "36": "e18556fa4418f65d6abf9eeae9acb5e9821140b3b0e502f6832bca188a275c42",
+   "37": "53b98fa5ff929fee9fb5ad630e3b714cfb6f848cf30d263d219e889ae8a43ad6",
+   "38": "83abf6c4494134ca6fe4471ad56652025e26b416988c527e7ae4b85ea90ec0e1",
+   "39": "e45d880671ae7060aabd556b9b10eb4b9dcaf4af5b53ef890b59458521b325be"
+  },
+  "leak_check": "no printed displacement string found in the bundle"
+ },
+ "attempts": [
+  {
+   "attempt": 1,
+   "response_id": "resp_6ae5a5f8ac84c849236c47d5",
+   "status": "completed",
+   "minutes": 0.55,
+   "usage": {
+    "input_tokens": 12428,
+    "input_tokens_details": {
+     "cached_tokens": 0
+    },
+    "output_tokens": 5554,
+    "output_tokens_details": {
+     "reasoning_tokens": 2381
+    },
+    "total_tokens": 17982
+   },
+   "est_usd": 0.160792,
+   "sha": "53df0895620d6a4aec58937057e8420df1ef6eef76bfd8203b5ee50e608aeaf8",
+   "verdict": "FAIL",
+   "pass_count": 0,
+   "n": 22,
+   "probes": [],
+   "diff_max": null,
+   "diff_fail": 0,
+   "error": "static gate: line 230: name globals not allowed; line 255: name globals not allowed; line 260: name globals not allowed",
+   "failing": [],
+   "sandbox_ms": 0
+  },
+  {
+   "attempt": 2,
+   "response_id": "resp_6ae5a6194a0590c4c3c04e31",
+   "status": "completed",
+   "minutes": 0.55,
+   "usage": {
+    "input_tokens": 12535,
+    "input_tokens_details": {
+     "cached_tokens": 0
+    },
+    "output_tokens": 4738,
+    "output_tokens_details": {
+     "reasoning_tokens": 2310
+    },
+    "total_tokens": 17273
+   },
+   "est_usd": 0.1449,
+   "sha": "aafca88d3610c83ec36cb6278caa7d5494ab2e563f8dba06e3b2412a8b179f19",
+   "verdict": "FAIL",
+   "pass_count": 14,
+   "n": 22,
+   "probes": [
+    true,
+    true
+   ],
+   "diff_max": 0.6992956836865756,
+   "diff_fail": 0,
+   "error": null,
+   "failing": [
+    [
+     "2.2",
+     "corr_trim2"
+    ],
+    [
+     "3.1",
+     "corr_trim2"
+    ],
+    [
+     "3.2",
+     "corr_trim2"
+    ],
+    [
+     "6.2",
+     "corr_trim2"
+    ],
+    [
+     "7.2",
+     "corr_trim2"
+    ],
+    [
+     "8.2",
+     "corr_trim2"
+    ],
+    [
+     "9.1",
+     "corr_trim2"
+    ],
+    [
+     "9.2",
+     "corr_trim2"
+    ]
+   ],
+   "sandbox_ms": 71
+  },
+  {
+   "attempt": 3,
+   "response_id": "resp_6ae5a63a238297fff10f457e",
+   "status": "completed",
+   "minutes": 0.89,
+   "usage": {
+    "input_tokens": 13483,
+    "input_tokens_details": {
+     "cached_tokens": 12404
+    },
+    "output_tokens": 8429,
+    "output_tokens_details": {
+     "reasoning_tokens": 5859
+    },
+    "total_tokens": 21912
+   },
+   "est_usd": 0.175377,
+   "sha": "4b3aa8cd9487997861292e976c5430732c30f92f277bd97de69dc9cc477d362f",
+   "verdict": "PASS",
+   "pass_count": 22,
+   "n": 22,
+   "probes": [
+    true,
+    true
+   ],
+   "diff_max": 7.100732429070297e-05,
+   "diff_fail": 0,
+   "error": null,
+   "failing": [],
+   "sandbox_ms": 41
+  }
+ ]
+}
