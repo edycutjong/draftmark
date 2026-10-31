@@ -1,6 +1,6 @@
 # Meta API usage ledger
 
-Price-list estimates from `api/core/meta.py` PRICES (not an invoice). Appended by the scripts; rule-5 budget: whole chain <= $40, dev cap $30 enforced by `ledger_total()`.
+Price-list estimates from `api/_core/meta.py` PRICES (not an invoice). Appended by the scripts; rule-5 budget: whole chain <= $40, dev cap $30 enforced by `ledger_total()`.
 
 | ts (WIB) | run_id | model | feature | tokens in (cached) / out · frames | est_usd | latency_ms | response_id |
 |---|---|---|---|---|---|---|---|
@@ -27,3 +27,12 @@ Price-list estimates from `api/core/meta.py` PRICES (not an invoice). Appended b
 | 2026-10-31 15:26 | p1a-wonder-trieste | muse-wonder-1.0 | wonder program trieste attempt 2 | 12535 (0) / 4738 | 0.1449 | 31384 | resp_6ae5a6194a0590c4c3c04e31 |
 | 2026-10-31 15:26 | p1a-wonder-trieste | muse-wonder-1.0 | wonder program trieste attempt 3 (submit) |  | 0.0000 | 1454 | resp_6ae5a63a238297fff10f457e |
 | 2026-10-31 15:27 | p1a-wonder-trieste | muse-wonder-1.0 | wonder program trieste attempt 3 | 13483 (12404) / 8429 | 0.1754 | 51918 | resp_6ae5a63a238297fff10f457e |
+| 2026-10-31 15:38 | p1a-sam-synth_s1 | sam-3.1 | sam video 'water' synth_s1 | 0 (0) / 0 · 60 frames | 0.0120 | 6011 | resp_6ae5a91f75673c5617e8424b |
+| 2026-10-31 15:38 | p1a-sam-synth_s1 | sam-3.1 | sam video 'white number' synth_s1 | 0 (0) / 0 · 60 frames | 0.0120 | 7235 | resp_6ae5a91e2b8696127929439a |
+| 2026-10-31 15:39 | p1a-synth-concepts | sam-3.1 | sam image 'water' synthetic probe | 0 (0) / 0 · 1 frames | 0.0025 | 1563 | resp_6ae5a9328fe6722087a54213 |
+| 2026-10-31 15:39 | p1a-synth-concepts | sam-3.1 | sam image 'sea water' synthetic probe | 0 (0) / 0 · 1 frames | 0.0025 | 1800 | resp_6ae5a934541527be040c4bdf |
+| 2026-10-31 15:39 | p1a-synth-concepts | sam-3.1 | sam image 'water surface' synthetic probe | 0 (0) / 0 · 1 frames | 0.0025 | 1721 | resp_6ae5a93552b1d863e3174523 |
+| 2026-10-31 15:39 | p1a-synth-concepts | sam-3.1 | sam image 'green water' synthetic probe | 0 (0) / 0 · 1 frames | 0.0025 | 1086 | resp_6ae5a937a00d0bd80eeb411d |
+| 2026-10-31 15:39 | p1a-synth-concepts | sam-3.1 | sam image 'water' synthetic murky | 0 (0) / 0 · 1 frames | 0.0025 | 1662 | resp_6ae5a948d70d21fc720c4da9 |
+| 2026-10-31 15:39 | p1a-synth-concepts | sam-3.1 | sam image 'water' synthetic blue | 0 (0) / 0 · 1 frames | 0.0025 | 1232 | resp_6ae5a949bf32691df401459e |
+| 2026-10-31 15:39 | p1a-probe-webm | sam-3.1 | sam video 'white number' synthetic mp4 probe | 0 (0) / 0 · 60 frames | 0.0120 | 7200 | resp_6ae5a95819b4830a46f746da |
