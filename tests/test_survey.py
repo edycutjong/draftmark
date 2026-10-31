@@ -35,8 +35,14 @@ def test_out_of_table_refuses_to_extrapolate():
 
 
 def test_perturbation_off_table():
-    r = run({p: 9.28 for p in S.POSITIONS}, live=S.POSITIONS, u=0.05)
+    r = run({p: 8.78 for p in S.POSITIONS}, live=S.POSITIONS, u=0.05)  # +u walks past 8.8 m (Nemoto edge)
     assert not r["out_of_table"] and r["perturb_oot"]
+
+
+def test_nemoto_points_never_extrapolate():
+    # 9.0 m is inside the printed table (0.5-9.3 m) but MTC at 9.5 m is not: refuse, never extrapolate
+    r = run({p: 9.0 for p in S.POSITIONS})
+    assert r["out_of_table"] and "MTC" in r["error"] and "cargo" not in r
 
 
 @pytest.mark.parametrize("change,frag", [({"fore_s": 0.4}, "port/starboard"), ({"mid_p": 0.25, "mid_s": 0.25}, "hog/sag")])
@@ -66,3 +72,19 @@ def test_barge_analytic_and_what_if():
     assert r["program_author"] == "analytic" and not r["what_if"]
     assert S.barge({"d_m": 0.12, "u_m": 0.0006, "what_if": {"rho_kg_m3": 1000}})["what_if"]
     assert S.barge({"d_m": 0.45, "u_m": 0.0006})["out_of_table"]
+
+
+def test_proven_refuses_a_stale_selftest(tmp_path, monkeypatch):
+    import json
+    import shutil
+
+    from api._core import survey as S
+    src = S.DATA / "programs" / "trieste"
+    dst = tmp_path / "programs" / "trieste"
+    shutil.copytree(src, dst)
+    run = dst / json.loads((dst / "proven.json").read_text())["default_program"]
+    st = json.loads((run.parent / "selftest.json").read_text())
+    (run.parent / "selftest.json").write_text(json.dumps({**st, "verdict": "FAIL"}))
+    monkeypatch.setattr(S, "DATA", tmp_path)
+    with pytest.raises(RuntimeError):
+        S.proven("trieste")

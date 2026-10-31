@@ -59,6 +59,8 @@ def take(ip: str, now: float | None = None, run_id: str | None = None, ride: boo
         _hits[f"ip:{ip}"].append(now)
         _hits["instance"].append(now)
         if run_id and not ride:
+            for k in [k for k, v in _runs.items() if now - v[0] >= 3600]:
+                del _runs[k]  # a run's free label ride expires after an hour
             _runs[run_id] = [now, 1]
     return True, None
 

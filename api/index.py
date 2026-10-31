@@ -138,7 +138,7 @@ async def measure_ep(req: Request):
         return _meta_fail(e)
     sam_ms = int((time.time() - t0) * 1000)
     texts = [meta.output_text(r) for r in resps]
-    system = marks.MarkSystem(scale=float(info.get("scale", 1.0)))
+    system = marks.SHIP if float(info.get("scale", 1.0)) == 1.0 else marks.BARGE
     observed = 1 + max((int(m) for t in texts for m in re.findall(r"<(\d+)f>", t)), default=0)
     n = max(int(info["frames"] or 0), observed)  # never trust a client-declared count below what SAM returned
     t1 = time.time()
@@ -332,6 +332,7 @@ async def survey_ep(req: Request):
         lab = {**(lab or {}), "typed": tok["typed"], "checks": tok["checks"]}
         lab.pop("synthetic", None)
         models = list(tok["models"])
+        body = {**body, "run_mode": "LIVE"}  # a signed measurement was made live: the anchor needs the user
         if srv_in and srv_in.get("drafts") and tok.get("d_m") is not None:
             src = srv_in.get("sources") or {}
             srv_in["drafts"] = {p: (tok["d_m"] if src.get(p) in ("live", "clip") else v) for p, v in srv_in["drafts"].items()}
@@ -339,7 +340,7 @@ async def survey_ep(req: Request):
     if meas.get("n_frames") and meas.get("d_m") is None and not meas.get("refused") and not meas.get("row1"):
         meas = {**meas, "refused": True, "reason": meas.get("reason") or "FRAMES_LOW"}  # no draft = refused
     if mode == "barge":
-        u = meas.get("u_abs_m") or meas.get("u_rep_m")
+        u = meas.get("u_abs_m") if meas.get("u_abs_m") is not None else meas.get("u_rep_m")
         if meas.get("d_m") is None:
             srv = {"program_author": "analytic", "out_of_table": False}
         else:

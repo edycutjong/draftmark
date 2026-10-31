@@ -213,7 +213,7 @@ def test_live_run_needs_the_users_anchor_confirmation():
     live = api.post("/api/py/survey", json={"mode": "barge", "measure": seal(m, lab), "labels": lab}).json()["certificate"]
     rec = api.post("/api/py/survey", json={"mode": "barge", "measure": seal(m, lab), "labels": lab,
                                            "run_mode": "RECORDED"}).json()["certificate"]
-    assert live["reason"] == "NO_ANCHOR" and rec["decision"] == "ISSUE"
+    assert live["reason"] == "NO_ANCHOR" and rec["reason"] == "NO_ANCHOR"  # a signed run is LIVE whatever the body says
 
 
 def test_typed_labels_must_pass_the_checks():

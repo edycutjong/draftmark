@@ -1,9 +1,10 @@
 {
- "booklet": "trieste",
- "default_program": "run-booklet-only/program.py",
- "sha256": "4b3aa8cd9487997861292e976c5430732c30f92f277bd97de69dc9cc477d362f",
- "program_author": "muse-wonder-1.0",
- "response_id": "resp_6ae5a63a238297fff10f457e",
- "regen_count": 2,
- "note": "Prompt = booklet pages + input drafts only (no standards hint). Attempt 1 rejected by the static gate, attempt 2 passed 14/22 (no second trim correction), attempt 3 passed 22/22 after feedback with failing cond ids + its own intermediates. A second run with a one-sentence UNECE hint (run-unece-hint/) passed 22/22 on attempt 1."
+  "booklet": "trieste",
+  "default_program": "run-booklet-only/program.py",
+  "sha256": "4b3aa8cd9487997861292e976c5430732c30f92f277bd97de69dc9cc477d362f",
+  "program_author": "muse-wonder-1.0",
+  "response_id": "resp_6ae5a63a238297fff10f457e",
+  "regen_count": 2,
+  "note": "Prompt = booklet pages + input drafts only (no standards hint). Attempt 1 rejected by the static gate, attempt 2 passed 14/22 (no second trim correction), attempt 3 passed 22/22 after feedback with failing cond ids + its own intermediates. A second run with a one-sentence UNECE hint (run-unece-hint/) passed 22/22 on attempt 1.",
+  "ship_sha256": "1ae8f437b6515647c643298965c233e29792951d3456829ef86b3f4715411a19"
 }

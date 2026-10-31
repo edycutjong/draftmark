@@ -23,6 +23,7 @@ WEIGHTS = {"fore_p": 1 / 16, "fore_s": 1 / 16, "mid_p": 6 / 16, "mid_s": 6 / 16,
 GATE_HOG_M, GATE_PS_M = 0.15, 0.30
 # trim range the self-test's differential cases covered (selftest.differential_cases: -1.0 .. +2.0 m)
 TRIM_PROVEN_M = (-1.0, 2.0)
+NEMOTO_DD_M = 0.5  # the program's second trim correction reads MTC at d_mm +- this
 MM = 0.001
 
 
@@ -42,8 +43,13 @@ def proven(booklet: str = "trieste") -> dict:
     if sandbox.sha256(code) != meta["sha256"]:
         raise RuntimeError("proven program sha mismatch")
     st = json.loads((run_dir / "selftest.json").read_text())
+    ship_txt = (run_dir / "ship.json").read_text()
+    if meta.get("ship_sha256") and sandbox.sha256(ship_txt) != meta["ship_sha256"]:
+        raise RuntimeError("ship.json does not match the proven manifest")
+    if st.get("program_sha") != meta["sha256"] or st.get("verdict") != "PASS":
+        raise RuntimeError("recorded self-test is not a PASS of this program")  # never certify on a stale proof
     att = json.loads((run_dir / "attempts.json").read_text())
-    return {"meta": meta, "code": code, "ship": json.loads((run_dir / "ship.json").read_text()), "selftest": st,
+    return {"meta": meta, "code": code, "ship": json.loads(ship_txt), "selftest": st,
             "attempts": att, "run": run_dir.name}
 
 
@@ -105,6 +111,13 @@ def ship(inp: dict, prog: dict | None = None) -> dict:
         out["gate_fail"] = gate(drafts, None)
         return out
     o = res[0]["out"]
+    rows = R.table()
+    lo, hi = rows[0]["draft"] + NEMOTO_DD_M, rows[-1]["draft"] - NEMOTO_DD_M
+    if not lo <= o["d_mm"] <= hi:  # the second trim correction reads MTC at d +-0.5 m: never extrapolate it
+        out["out_of_table"] = True
+        out["error"] = f"OutOfTable: mean draft {o['d_mm']:.3f} m needs MTC at +-{NEMOTO_DD_M} m inside {lo}-{hi} m"
+        out["gate_fail"] = gate(drafts, None)
+        return out
     disp = o["disp_final"]
     t_per_mm = {}
     for p, r in zip(POSITIONS, res[1:7]):
@@ -112,7 +125,7 @@ def ship(inp: dict, prog: dict | None = None) -> dict:
     u_disp = 0.0
     if len(res) > 7:
         up, dn = res[7], res[8]
-        if not (up["ok"] and dn["ok"]):
+        if not (up["ok"] and dn["ok"]) or not all(lo <= r["out"]["d_mm"] <= hi for r in (up, dn)):
             out["perturb_oot"] = True
         else:
             u_disp = abs(up["out"]["disp_final"] - dn["out"]["disp_final"]) / 2
@@ -125,7 +138,6 @@ def ship(inp: dict, prog: dict | None = None) -> dict:
         cargo, kind = net - float(inp["lightship_constant"]), "single"
     else:
         cargo, kind = None, None
-    rows = R.table()
     d_mm = o["d_mm"]
     tpc = R.interp(rows, d_mm, "tpcm") if rows[0]["draft"] <= d_mm <= rows[-1]["draft"] else None
     out.update(trace={k: o.get(k) for k in ("d_fp", "d_ap", "d_ms", "d_mm", "trim", "disp_table", "corr_trim1",

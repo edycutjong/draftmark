@@ -87,9 +87,8 @@ def static_gate(code: str) -> GateResult:
             v.append(f"line {node.lineno}: attribute {node.attr} not allowed")
         elif isinstance(node, ast.Attribute) and node.attr.startswith("__") and node.attr.endswith("__"):
             v.append(f"line {node.lineno}: dunder attribute {node.attr} not allowed")
-        elif isinstance(node, ast.Constant) and isinstance(node.value, str) and \
-                node.value.startswith("__") and node.value.endswith("__"):
-            v.append(f"line {node.lineno}: dunder string not allowed")
+        elif isinstance(node, ast.Constant) and isinstance(node.value, str) and "__" in node.value:
+            v.append(f"line {node.lineno}: '__' inside a string not allowed (format-string attribute walk)")
     names = {n.name for n in tree.body if isinstance(n, ast.FunctionDef)}
     for need in ("parse_booklet", "survey"):
         if need not in names:

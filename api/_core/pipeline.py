@@ -44,20 +44,7 @@ def column(toks: dict[int, list[Token]]) -> tuple[int, int] | None:
 
 def water_profile(water: list[SamObject], x_lo: int, x_hi: int) -> list[float | None]:
     """Top row of the water mask(s) per column x_lo..x_hi-1 (None where no mask covers the column)."""
-    out: list[float | None] = []
-    for c in range(x_lo, x_hi):
-        best = None
-        for o in water:
-            if o.mask is None:
-                continue
-            lc = c - int(o.box[0])
-            if 0 <= lc < o.mask.shape[1]:
-                ys = np.flatnonzero(o.mask[:, lc])
-                if ys.size:
-                    t = o.box[1] + ys[0]
-                    best = t if best is None else min(best, t)
-        out.append(None if best is None else float(best))
-    return out
+    return [measure.column_top(water, c) for c in range(x_lo, x_hi)]
 
 
 def water_from_profile(frame: int, x_lo: int, prof: list[float | None]) -> list[SamObject]:

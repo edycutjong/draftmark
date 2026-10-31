@@ -99,7 +99,7 @@ def decide(f: dict) -> Decision:
     if f.get("perturb_oot"):
         return _refuse("U_TOO_WIDE", 6)
     if cargo is not None and u is not None:
-        if mode == "ship" and cargo > 0 and u > SHIP_U_MAX_FRAC * cargo:
+        if mode == "ship" and cargo != 0 and u > SHIP_U_MAX_FRAC * abs(cargo):  # discharge (paired) is negative
             return _refuse("U_TOO_WIDE", 6)
         if mode == "barge" and f.get("expected_u") and u > BARGE_U_FACTOR * f["expected_u"]:
             return _refuse("U_TOO_WIDE", 6)

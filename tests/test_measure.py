@@ -58,3 +58,25 @@ def test_track_swap_drops_the_frame():
     drafts[a], drafts[b] = drafts[b], drafts[a]
     bad = measure.frame_draft(0, toks, drafts, [water], marks.SHIP)
     assert ok.kept and (bad.kept, bad.drop_reason) == (False, "TRACK_UNSTABLE")
+
+
+def test_water_edge_ignores_a_detached_spray_blob():
+    from api._core.sam import SamObject
+    body = np.zeros((40, 10), dtype=bool)
+    body[:, :] = True  # water from y=100 down to the crop bottom
+    spray = np.ones((3, 10), dtype=bool)  # a reflection blob 12 px above the surface, not connected
+    objs = [SamObject(0, 1, (0.0, 100.0, 10.0, 140.0), body), SamObject(0, 2, (0.0, 85.0, 10.0, 88.0), spray)]
+    w, mad, n = measure.water_edge(objs, 0, 10)
+    assert (w, mad, n) == (100.0, 0.0, 10)
+    joined = [SamObject(0, 1, (0.0, 97.0, 10.0, 140.0), np.ones((43, 10), dtype=bool))]  # touching = one surface
+    assert measure.water_edge(joined, 0, 10)[0] == 97.0
+
+
+def test_cross_frame_needs_three_shared_tokens():
+    toks = marks.group_glyphs(ship_frame()[0])
+    labs = ["12M", "2", "4", "6", "8", "13M", "2", "4"]
+    read = {t.track: lab for t, lab in zip(toks, labs)}
+    one = {toks[2].track: read[toks[2].track]}  # the second read kept a single agreeing token
+    assert not marks.check_labels(toks, read, one)[1].cross_frame
+    three = {t.track: read[t.track] for t in toks[:3]}
+    assert marks.check_labels(toks, read, three)[1].cross_frame

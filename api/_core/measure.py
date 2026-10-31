@@ -35,20 +35,29 @@ class FrameGeom:
     tracks: list[str] = field(default_factory=list)
 
 
+def column_top(water: list[SamObject], c: int) -> float | None:
+    """Top of the water in image column c: the contiguous run of water pixels (all masks united) that holds the
+    lowest water pixel, so a detached spray or reflection blob above the surface never becomes the edge."""
+    ys: set[float] = set()
+    for o in water:
+        if o.mask is None:
+            continue
+        lc = c - int(o.box[0])
+        if 0 <= lc < o.mask.shape[1]:
+            ys.update(float(o.box[1] + y) for y in np.flatnonzero(o.mask[:, lc]))
+    if not ys:
+        return None
+    top = max(ys)
+    while top - 1 in ys:
+        top -= 1
+    return top
+
+
 def water_edge(water: list[SamObject], x_lo: float, x_hi: float) -> tuple[float, float, int] | None:
     """Median top edge of the water mask(s) over columns [x_lo, x_hi); (w, MAD, n_cols)."""
     tops: list[float] = []
     for c in range(int(math.floor(x_lo)), int(math.ceil(x_hi))):
-        best = None
-        for o in water:
-            if o.mask is None:
-                continue
-            lc = c - int(o.box[0])
-            if 0 <= lc < o.mask.shape[1]:
-                ys = np.flatnonzero(o.mask[:, lc])
-                if ys.size:
-                    t = o.box[1] + ys[0]
-                    best = t if best is None else min(best, t)
+        best = column_top(water, c)
         if best is not None:
             tops.append(best)
     if len(tops) < 3:
@@ -201,7 +210,9 @@ def summarize(frames: list[FrameGeom], system: MarkSystem, u_sys_parts: dict | N
     sd = float(dk.std(ddof=1)) if len(dk) > 1 else 0.0
     u_swell = sd / math.sqrt(n_eff)
     u_rand = math.sqrt(float(vr.mean()) / n_eff)
-    u_rep = math.sqrt(u_swell ** 2 + u_rand ** 2)
+    # the frame-to-frame scatter already contains each frame's own fit/edge noise, so the propagated per-frame
+    # term is a floor (few or identical frames), not a second component to add in quadrature
+    u_rep = max(u_swell, u_rand)
     parts = {"swell": u_swell, "rand": u_rand}
     u_abs = None
     if u_sys_parts is not None:

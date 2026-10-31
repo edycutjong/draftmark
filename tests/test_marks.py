@@ -61,3 +61,13 @@ def test_checks_catch_misreads():
 def test_barge_strip_sequence_anchor():
     seq = marks.strip_sequence()
     assert seq[:6] == ["2", "4", "6", "8", "1M", "2"] and seq[-1] == "6" and "2M" in seq
+
+
+def test_a_merged_metre_box_read_as_a_digit_fails_the_anchor():
+    import dataclasses
+    toks, read = _tokens_and_labels()
+    t0 = toks[0]  # "12M" as ONE merged glyph box (SAM sometimes returns one box for "12M")
+    toks[0] = dataclasses.replace(t0, glyph_ids=t0.glyph_ids[:1], glyphs=t0.glyphs[:1])
+    assert toks[0].n_glyphs == 1 and marks.check_labels(toks, read, dict(read))[1].anchor
+    shifted = {**read, toks[0].track: "8", toks[5].track: "12M"}  # merged 12M box read as a digit
+    assert not marks.check_labels(toks, shifted, dict(shifted))[1].anchor

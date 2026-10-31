@@ -15,6 +15,7 @@ import numpy as np
 from .sam import SamObject
 
 SAM_VIDEO_OBJECT_CAP = 16
+MIN_SHARED = 3  # check (d): the two label reads must agree on at least this many tokens
 
 
 class ObjectCapError(ValueError):
@@ -43,7 +44,7 @@ class MarkSystem:
 
 
 SHIP = MarkSystem("ship-metric", 1.0)
-BARGE = MarkSystem("ship-metric", 0.1)
+BARGE = MarkSystem("barge-strip-1to10", 0.1)
 
 
 @dataclass
@@ -210,15 +211,15 @@ def check_labels(tokens: list[Token], read1: dict[str, str], read2: dict[str, st
     else:
         shared = set(read1) & set(read2)
         disagree = sorted(k for k in shared if read1[k] != read2[k])
-        cross = bool(shared) and not disagree
+        cross = len(shared) >= MIN_SHARED and not disagree  # one agreeing token is not a second read
         detail.update(shared=len(shared), disagree=disagree)
     # (e) anchor: every token labelled "NM" is geometrically wide; barge: run of the printed sequence
     digit_ws = [t.w for t in toks if t.n_glyphs == 1 and not _METRE.match(read1[t.track] or "")]
     med_w = median(digit_ws) if digit_ws else median(t.w for t in toks) if toks else 0
     metre = [t for t in toks if _METRE.match(read1[t.track] or "")]
     anchor = bool(metre) and all(wide_class(t, med_w) for t in metre)
-    # and no single-glyph narrow digit-labelled token may be wide (a missed "M")
-    anchor = anchor and not any(t.n_glyphs >= 2 for t in toks if not _METRE.match(read1[t.track] or ""))
+    # and no digit-labelled token may be wide-class (a missed "M": grouped glyphs, or one merged glyph box)
+    anchor = anchor and not any(wide_class(t, med_w) for t in toks if not _METRE.match(read1[t.track] or ""))
     if strip_sequence is not None and anchor:
         seq = list(strip_sequence)
         anchor = any(seq[i:i + len(labels)] == labels for i in range(len(seq) - len(labels) + 1)) or \
