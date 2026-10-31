@@ -1,0 +1,802 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DraftMark — the sea keeps moving, the reading holds still</title>
+<meta name="description" content="DraftMark reads a ship's draft marks from ten seconds of video: SAM 3.1 measures the waterline through the swell, Muse Wonder 1.0 writes the ship's survey program and must prove it against the booklet, code prints every number.">
+<meta name="author" content="Edy Cu Tjong">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#17120F">
+<link rel="canonical" href="https://draftmark.edycu.dev/">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-512.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="DraftMark">
+<meta property="og:url" content="https://draftmark.edycu.dev/">
+<meta property="og:title" content="DraftMark — weigh a ship's cargo from a phone video">
+<meta property="og:description" content="SAM 3.1 measures the waterline through the swell; Muse Wonder 1.0 writes and proves the ship's survey program.">
+<meta property="og:image" content="https://draftmark.edycu.dev/og-image.png?v=5">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="DraftMark — weigh a ship's cargo from a phone video of its draft marks; Muse Wonder's program reproduced 22/22 printed booklet conditions">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="DraftMark — weigh a ship's cargo from a phone video">
+<meta name="twitter:description" content="SAM 3.1 measures the waterline through the swell; Muse Wonder 1.0 writes and proves the ship's survey program.">
+<meta name="twitter:image" content="https://draftmark.edycu.dev/og-image.png?v=5">
+<link rel="preload" href="fonts/anybody-100-900.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:"Anybody";src:url(fonts/anybody-100-900.woff2) format("woff2");font-weight:100 900;font-stretch:50% 150%;font-display:swap}
+@font-face{font-family:"IBM Plex Sans";src:url(fonts/ibm-plex-sans-400-600.woff2) format("woff2");font-weight:400 600;font-display:swap}
+@font-face{font-family:"Martian Mono";src:url(fonts/martian-mono-400-600.woff2) format("woff2");font-weight:400 600;font-stretch:75% 112.5%;font-display:swap}
+/* specs/design.md §4 — hull-plate survey. --paper* = the certificate band (P4, borrowed from direction B). */
+:root{
+  --bg:#17120F;--plate:#221A16;--ink:#F2EEE6;--muted:#9A8F86;--hull:#8E2B22;
+  --before:#6F8C8A;--after:#F2B33D;--refuse:#D9543B;--rule:#3A2E28;--refuse-text:#DF5E44;
+  --paper:#F3EEE2;--paper-ink:#1D1712;--paper-rule:#D8CDB8;--stamp:#A3271D;
+  --font-display:"Anybody","Archivo Narrow","Arial Narrow",sans-serif;
+  --font-body:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  --font-data:"Martian Mono","IBM Plex Mono",ui-monospace,monospace;
+  --pitch:20px;--gut:clamp(20px,5vw,72px);--max:1240px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scrollbar-color:var(--rule) var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--font-body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--after);color:var(--bg)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--after);outline-offset:3px;border-radius:2px}
+img,svg{display:block;max-width:100%}
+.data,code,kbd,samp{font-family:var(--font-data);font-size:.86em;letter-spacing:-.01em}
+.skip{position:absolute;left:-999px;top:8px;background:var(--after);color:var(--bg);padding:8px 14px;z-index:99}
+.skip:focus{left:8px}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gut)}
+
+/* ---------- the draft scale down the left edge (design.md §3 layout habit) ---------- */
+.rail{position:fixed;left:0;top:0;bottom:0;width:44px;z-index:5;pointer-events:none;display:none}
+.rail::before{content:"";position:absolute;left:19px;top:0;bottom:0;width:6px;
+  background:repeating-linear-gradient(180deg,rgba(242,238,230,.13) 0 10px,transparent 10px 20px)}
+.rail__line{position:absolute;left:0;width:44px;top:50%;height:2px;background:var(--after);box-shadow:0 0 12px rgba(242,179,61,.55)}
+.rail__no{position:absolute;left:6px;top:calc(50% + 8px);font:500 10px/1 var(--font-data);color:var(--after);letter-spacing:.04em}
+@media (min-width:1180px){.rail{display:block}}
+
+/* ---------- nav ---------- */
+.nav{position:sticky;top:0;z-index:20;background:rgba(23,18,15,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(58,46,40,.6)}
+.nav__in{display:flex;align-items:center;gap:28px;height:64px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font:800 22px/1 var(--font-display);font-stretch:70%;letter-spacing:.02em;text-transform:uppercase}
+.brand img{width:30px;height:30px}
+.nav__links{display:flex;gap:22px;margin-left:auto}
+.nav__links a{text-decoration:none;color:var(--muted);font-size:14px;transition:color .18s ease}
+.nav__links a:hover{color:var(--ink)}
+@media (max-width:860px){.nav__links{display:none}.nav .btn{margin-left:auto}}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:12px 20px;border-radius:3px;font:600 15px/1 var(--font-body);text-decoration:none;
+  border:1px solid var(--rule);color:var(--ink);background:transparent;cursor:pointer;transition:transform .18s cubic-bezier(.2,.8,.2,1),background .18s ease,border-color .18s ease,box-shadow .18s ease}
+.btn:hover{border-color:var(--muted);background:rgba(242,238,230,.04);transform:translateY(-1px)}
+.btn:active{transform:translateY(0) scale(.98)}
+.btn--on{background:var(--after);border-color:var(--after);color:var(--bg)}
+.btn--on:hover{background:#F7C25E;border-color:#F7C25E;box-shadow:0 8px 28px -10px rgba(242,179,61,.7)}
+.btn--sm{min-height:40px;padding:10px 16px;font-size:14px}
+.btn svg{width:16px;height:16px}
+
+/* ---------- hero ---------- */
+.hero{position:relative;padding:clamp(40px,7vw,96px) 0 clamp(40px,6vw,72px);overflow:hidden;isolation:isolate}
+.hero::before{content:"";position:absolute;inset:0;z-index:-2;
+  background:radial-gradient(60% 70% at 78% 18%,rgba(242,179,61,.10),transparent 70%),radial-gradient(90% 60% at 50% 120%,rgba(142,43,34,.42),transparent 70%)}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;opacity:.5;
+  background:repeating-linear-gradient(180deg,transparent 0 79px,rgba(58,46,40,.55) 79px 80px)}
+.hero__grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:clamp(28px,4vw,64px);align-items:center}
+.where{font:500 11.5px/1.4 var(--font-data);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 22px}
+.where b{color:var(--after);font-weight:500}
+h1{font:800 clamp(42px,5.6vw,82px)/.9 var(--font-display);font-stretch:62%;text-transform:uppercase;letter-spacing:-.005em;margin:0;text-wrap:balance}
+h1 .l{display:block}
+@media (min-width:961px){h1 .l{white-space:nowrap}}
+h1 em{font-style:normal;color:var(--after);text-shadow:0 0 34px rgba(242,179,61,.28)}
+.lede{font-size:clamp(17px,1.45vw,19px);line-height:1.6;color:#DCD5CB;max-width:58ch;margin:26px 0 30px}
+.lede b{color:var(--ink);font-weight:600}
+.cta{display:flex;flex-wrap:wrap;gap:12px}
+.strip{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 0;margin:26px 0 0;padding:14px 0 0;border-top:1px solid var(--rule);font:400 12px/1.7 var(--font-data);color:var(--muted)}
+.strip span{white-space:nowrap}
+.strip i{font-style:normal;color:var(--rule);margin:0 6px}
+
+/* the instrument: painted marks + recorder (real clip dB7X) */
+.inst{position:relative;background:linear-gradient(180deg,#201814,#1a1310);border:1px solid var(--rule);border-radius:6px;padding:14px 14px 12px;box-shadow:0 40px 80px -40px rgba(0,0,0,.8),inset 0 1px 0 rgba(242,238,230,.04)}
+.inst__top{display:flex;justify-content:space-between;align-items:center;gap:12px;font:500 11px/1.3 var(--font-data);color:var(--muted);letter-spacing:.04em;padding:2px 4px 10px}
+.inst__top .rec{display:inline-flex;align-items:center;gap:7px;color:var(--ink)}
+.inst__top .rec::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--refuse);box-shadow:0 0 8px var(--refuse);animation:blink 1.2s steps(2,start) infinite}
+.inst.held .rec::before{background:var(--after);box-shadow:0 0 8px var(--after);animation:none}
+@keyframes blink{to{visibility:hidden}}
+.inst svg{width:100%;height:auto;border-radius:3px}
+.inst__foot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 4px 0}
+.tick{font:500 12px/1.4 var(--font-data);color:var(--muted);min-height:34px}
+.tick b{color:var(--after);font-weight:500}
+.replay{background:none;border:1px solid var(--rule);color:var(--muted);font:500 11px/1 var(--font-data);padding:9px 12px;border-radius:3px;cursor:pointer;min-height:36px;white-space:nowrap;transition:color .18s,border-color .18s,transform .18s}
+.replay:hover{color:var(--ink);border-color:var(--muted)}
+.replay:active{transform:scale(.97)}
+.cap{font-size:12.5px;line-height:1.5;color:var(--muted);margin:12px 4px 0;max-width:62ch}
+/* svg parts */
+.sv-num{font:700 64px/1 var(--font-display);font-stretch:62%;fill:var(--ink)}
+.sv-grid{stroke:rgba(58,46,40,.9);stroke-width:1}
+.sv-ghost{fill:none;stroke:var(--before);stroke-width:1.3;opacity:.2;stroke-linejoin:round}
+.sv-trace{fill:none;stroke:var(--before);stroke-width:2;stroke-linejoin:round}
+.sv-mean{fill:none;stroke:var(--after);stroke-width:2.6;stroke-linejoin:round}
+.sv-band{fill:var(--after);opacity:.13}
+.sv-held{stroke:var(--after);stroke-width:2.6}
+.sv-val{font:500 19px/1 var(--font-data);fill:var(--after)}
+.sv-u{font:400 12px/1 var(--font-data);fill:var(--muted)}
+.sv-ax{font:400 11px/1 var(--font-data);fill:var(--muted)}
+.sv-tie{stroke:var(--before);stroke-width:1;stroke-dasharray:3 4;opacity:.8}
+.inst.held .sv-held{filter:drop-shadow(0 0 6px rgba(242,179,61,.75))}
+
+@media (max-width:960px){.hero__grid{grid-template-columns:1fr}.lede{max-width:none}}
+
+/* ---------- receipts ---------- */
+.receipts{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);background:linear-gradient(180deg,rgba(34,26,22,.6),rgba(23,18,15,0))}
+.rc{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.rc > div{padding:30px 22px 26px;border-left:1px solid var(--rule)}
+.rc > div:first-child{border-left:0;padding-left:0}
+.rc b{display:block;font:800 clamp(40px,4.6vw,64px)/1 var(--font-display);font-stretch:62%;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.rc b small{font-size:.5em;color:var(--muted);font-weight:600;margin-left:4px}
+.rc p{margin:10px 0 6px;font-size:14px;line-height:1.45;color:#D2CABF}
+.rc a{font:400 11px/1.3 var(--font-data);color:var(--muted);text-decoration:none;border-bottom:1px dotted var(--rule)}
+.rc a:hover{color:var(--after);border-color:var(--after)}
+@media (max-width:860px){.rc{grid-template-columns:1fr 1fr}.rc > div{padding:22px 16px}.rc > div:nth-child(3){border-left:0;padding-left:0}.rc > div:nth-child(n+3){border-top:1px solid var(--rule)}}
+
+.models{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;padding:0 0 4px}
+.models > div{padding:18px 22px 22px;border-left:1px solid var(--rule)}
+.models > div:first-child{border-left:0;padding-left:0}
+.models h3{margin:0 0 6px;font:700 20px/1.1 var(--font-display);font-stretch:75%;text-transform:uppercase;letter-spacing:.02em}
+.models p{margin:0;font-size:14px;line-height:1.5;color:var(--muted)}
+.chip{display:inline-block;font:500 11px/1 var(--font-data);color:var(--before);border:1px solid rgba(111,140,138,.45);border-radius:2px;padding:5px 7px;margin:0 6px 8px 0;white-space:nowrap}
+.chip--a{color:var(--after);border-color:rgba(242,179,61,.45)}
+@media (max-width:860px){.models{grid-template-columns:1fr}.models > div{border-left:0;padding:16px 0;border-top:1px solid var(--rule)}}
+
+/* ---------- story sections (certificate line numbers) ---------- */
+.sec{position:relative;padding:clamp(64px,9vw,120px) 0}
+.line-no{font:500 12px/1 var(--font-data);color:var(--after);letter-spacing:.08em;display:inline-flex;align-items:center;gap:10px;margin:0 0 18px}
+.line-no::before{content:"";width:28px;height:2px;background:currentColor}
+h2{font:800 clamp(34px,4.6vw,62px)/.95 var(--font-display);font-stretch:66%;text-transform:uppercase;letter-spacing:-.003em;margin:0 0 20px;text-wrap:balance;max-width:20ch}
+h2 em{font-style:normal;color:var(--after)}
+.sec p.intro{font-size:18px;line-height:1.6;color:#D6CFC4;max-width:60ch;margin:0}
+.two{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(28px,5vw,72px);align-items:start}
+@media (max-width:960px){.two{grid-template-columns:1fr}}
+
+/* 001 reading */
+.sec--reading{background:linear-gradient(180deg,var(--bg),#1b1411)}
+.pains{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:8px}
+.pain{background:var(--plate);border:1px solid var(--rule);border-radius:4px;padding:22px 22px 20px}
+.pain svg{width:100%;height:64px;margin:0 0 14px}
+.pain h3{margin:0 0 8px;font:700 22px/1.1 var(--font-display);font-stretch:75%;text-transform:uppercase}
+.pain p{margin:0;color:var(--muted);font-size:15px;line-height:1.55}
+@media (max-width:620px){.pains{grid-template-columns:1fr}}
+
+/* 002 measure */
+.frame{border:1px solid var(--rule);border-radius:6px;overflow:hidden;background:#120e0c;box-shadow:0 30px 60px -36px rgba(0,0,0,.9)}
+.frame__bar{display:flex;align-items:center;gap:7px;padding:9px 12px;border-bottom:1px solid var(--rule);font:400 11px/1 var(--font-data);color:var(--muted)}
+.frame__bar i{width:9px;height:9px;border-radius:50%;background:var(--rule)}
+.frame__bar span{margin-left:8px}
+.frame img{width:100%;height:auto}
+.checks{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:0;border-top:1px solid var(--rule)}
+.checks li{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:baseline;padding:11px 0;border-bottom:1px solid var(--rule);font-size:15px}
+.checks li::before{content:"✓";color:var(--after);font-family:var(--font-data);font-size:13px}
+.checks .data{color:var(--muted)}
+
+/* 003 prove: attempts ladder */
+.sec--prove{background:radial-gradient(70% 60% at 85% 30%,rgba(242,179,61,.06),transparent 70%)}
+.ladder{margin-top:6px;border:1px solid var(--rule);border-radius:6px;background:var(--plate);padding:8px 22px}
+.att{display:grid;grid-template-columns:96px 1fr 92px;gap:16px;align-items:center;padding:18px 0;border-bottom:1px solid var(--rule)}
+.att:last-child{border-bottom:0}
+.att__n{font:500 11px/1.3 var(--font-data);color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.att__what{font-size:14.5px;line-height:1.45;color:#D6CFC4}
+.att__what code{color:var(--refuse-text)}
+.bar{display:grid;grid-template-columns:repeat(22,1fr);gap:3px;margin-top:9px}
+.bar i{height:12px;border-radius:1px;background:rgba(242,238,230,.08)}
+.bar i.ok{background:var(--after)}
+.bar i.no{background:rgba(217,84,59,.75)}
+.att__score{font:800 34px/1 var(--font-display);font-stretch:62%;text-align:right}
+.att__score.no{color:var(--refuse-text)}
+.att__score.ok{color:var(--after)}
+.att__score small{display:block;font:400 10.5px/1.3 var(--font-data);color:var(--muted);letter-spacing:.04em;margin-top:4px}
+.base{display:flex;flex-wrap:wrap;gap:8px 22px;margin:18px 0 0;font:400 12.5px/1.6 var(--font-data);color:var(--muted)}
+.base b{color:var(--ink);font-weight:500}
+@media (max-width:620px){.att{grid-template-columns:1fr 70px}.att__n{grid-column:1/-1}}
+
+/* 004 certify — the paper band */
+.sec--paper{background:var(--paper);color:var(--paper-ink);
+  background-image:linear-gradient(var(--paper-rule) 1px,transparent 1px);background-size:100% 40px;background-position:0 -1px}
+.sec--paper .line-no{color:var(--stamp)}
+.sec--paper h2 em{color:var(--stamp)}
+.sec--paper p.intro{color:#3B322A}
+.stamps{display:grid;gap:18px;margin-top:6px}
+.pin{background:#120e0c;border-radius:4px;padding:10px;box-shadow:0 1px 0 rgba(0,0,0,.12),0 18px 34px -18px rgba(40,25,10,.55);position:relative}
+.pin:nth-child(1){transform:rotate(-.8deg)}
+.pin:nth-child(2){transform:rotate(.6deg)}
+.pin img{width:100%;height:auto;border-radius:2px}
+.pin figcaption{font:400 11.5px/1.45 var(--font-data);color:#B8AEA3;padding:9px 4px 2px}
+.pin::before{content:"";position:absolute;top:-9px;left:50%;width:74px;height:18px;margin-left:-37px;background:rgba(243,238,226,.7);border:1px solid rgba(216,205,184,.9);transform:rotate(-2deg)}
+.formlines{margin:26px 0 0;padding:0;list-style:none;border-top:1.5px solid var(--paper-ink)}
+.formlines li{display:grid;grid-template-columns:44px 1fr;gap:10px;padding:10px 0;border-bottom:1px solid var(--paper-rule);font-size:15.5px;line-height:1.5}
+.formlines li span{font:500 11px/1.9 var(--font-data);color:var(--stamp)}
+.formlines code{font-family:var(--font-data);font-size:.82em;background:rgba(163,39,29,.08);padding:1px 5px;border-radius:2px}
+
+/* 005 synthetic check */
+.synth{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-top:34px;border-top:1px solid var(--rule)}
+.synth > div{padding:26px 22px 0 0}
+.synth b{display:block;font:800 clamp(38px,4.4vw,58px)/1 var(--font-display);font-stretch:62%;color:var(--ink)}
+.synth p{margin:10px 0 0;font-size:14.5px;line-height:1.5;color:var(--muted);max-width:34ch}
+.tag{display:inline-block;font:600 11px/1 var(--font-data);letter-spacing:.14em;color:var(--bg);background:var(--before);padding:6px 9px;border-radius:2px;margin:0 0 18px}
+@media (max-width:760px){.synth{grid-template-columns:1fr}.synth > div{padding:20px 0 0}}
+
+/* ---------- demo pair: terminal replay + real screen ---------- */
+.sec--demo{background:linear-gradient(180deg,#1b1411,var(--bg))}
+.tabs{display:flex;gap:6px;margin:0 0 18px;flex-wrap:wrap}
+.tabs button{font:500 13px/1 var(--font-data);color:var(--muted);background:transparent;border:1px solid var(--rule);border-radius:3px;padding:12px 14px;cursor:pointer;min-height:44px;transition:color .18s,border-color .18s,background .18s}
+.tabs button:hover{color:var(--ink);border-color:var(--muted)}
+.tabs button[aria-selected="true"]{color:var(--bg);background:var(--after);border-color:var(--after)}
+.pair{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:22px;align-items:start}
+.term{background:#0f0b09;border:1px solid var(--rule);border-radius:6px;overflow:hidden}
+.term__bar{display:flex;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:1px solid var(--rule);font:400 11px/1.3 var(--font-data);color:var(--muted)}
+.term pre{margin:0;padding:18px 18px 20px;font:400 12.5px/1.75 var(--font-data);color:#CFC7BB;white-space:pre-wrap;word-break:break-word;min-height:420px}
+.term .p{color:var(--after)}
+.term .k{color:var(--muted)}
+.term .g{color:var(--before)}
+.term .r{color:var(--refuse-text);font-weight:500}
+.term .w{color:var(--ink);font-weight:500}
+.term .cur::after{content:"▍";color:var(--after);animation:blink 1s steps(2,start) infinite}
+.panel[hidden]{display:none}
+@media (max-width:960px){.pair{grid-template-columns:1fr}.term pre{min-height:0}}
+
+/* ---------- what keeps it honest (asymmetric) ---------- */
+.bento{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;margin-top:38px}
+.cell{background:var(--plate);border:1px solid var(--rule);border-radius:5px;padding:24px 24px 22px;position:relative;overflow:hidden;transition:border-color .2s ease,transform .2s cubic-bezier(.2,.8,.2,1)}
+.cell:hover{border-color:#5a4a40;transform:translateY(-2px)}
+.cell h3{margin:0 0 10px;font:700 24px/1.05 var(--font-display);font-stretch:72%;text-transform:uppercase;max-width:18ch}
+.cell p{margin:0 0 14px;color:var(--muted);font-size:15px;line-height:1.55}
+.cell--a{grid-column:span 4}.cell--b{grid-column:span 2}.cell--c{grid-column:span 2}.cell--d{grid-column:span 2}.cell--e{grid-column:span 2}
+.cell .glyph{position:absolute;right:18px;top:18px;width:54px;height:54px;opacity:.9}
+.cell--a .glyph{width:120px;height:72px}
+@media (max-width:900px){.bento{grid-template-columns:1fr 1fr}.cell--a{grid-column:span 2}.cell--b,.cell--c,.cell--d,.cell--e{grid-column:span 1}}
+@media (max-width:600px){.bento{grid-template-columns:1fr}.cell--a,.cell--b,.cell--c,.cell--d,.cell--e{grid-column:span 1}}
+
+/* ---------- honest limits: a ruled ledger, not quote cards ---------- */
+.sec--honest{background:#120e0c;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.ledger{margin:30px 0 0;padding:0;list-style:none}
+.ledger li{display:grid;grid-template-columns:120px 1fr;gap:24px;padding:22px 0;border-top:1px solid var(--rule)}
+.ledger li:last-child{border-bottom:1px solid var(--rule)}
+.ledger .n{font:800 44px/1 var(--font-display);font-stretch:62%;color:var(--before)}
+.ledger blockquote{margin:0;font-size:clamp(17px,1.6vw,21px);line-height:1.5;color:var(--ink);max-width:62ch}
+.ledger cite{display:block;margin-top:8px;font:400 11.5px/1.4 var(--font-data);color:var(--muted);font-style:normal}
+@media (max-width:620px){.ledger li{grid-template-columns:1fr;gap:6px}}
+
+/* ---------- questions ---------- */
+.qa{margin-top:30px;border-top:1px solid var(--rule)}
+.qa details{border-bottom:1px solid var(--rule)}
+.qa summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:44px 1fr 24px;gap:12px;align-items:baseline;padding:20px 0;font:600 18px/1.35 var(--font-body);transition:color .18s}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary span{font:500 11px/1 var(--font-data);color:var(--muted)}
+.qa summary::after{content:"+";font:400 22px/1 var(--font-data);color:var(--after);transition:transform .25s cubic-bezier(.2,.8,.2,1);justify-self:end}
+.qa details[open] summary::after{transform:rotate(45deg)}
+.qa summary:hover{color:var(--after)}
+.qa .ans{padding:0 36px 22px 56px;color:#CFC7BB;font-size:16px;line-height:1.65;max-width:76ch}
+@media (max-width:620px){.qa .ans{padding:0 0 20px}}
+
+/* ---------- close + footer ---------- */
+.close{position:relative;text-align:center;padding:clamp(80px,11vw,140px) 0;overflow:hidden;isolation:isolate}
+.close::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(50% 60% at 50% 100%,rgba(242,179,61,.16),transparent 70%),radial-gradient(80% 50% at 50% 115%,rgba(142,43,34,.5),transparent 70%)}
+.close h2{margin:0 auto 26px;max-width:16ch}
+.close .cta{justify-content:center}
+.foot{border-top:1px solid var(--rule);padding:34px 0 46px;font-size:13.5px;color:var(--muted)}
+.foot__in{display:flex;flex-wrap:wrap;gap:16px 34px;justify-content:space-between}
+.foot nav{display:flex;flex-wrap:wrap;gap:8px 20px}
+.foot a{color:var(--muted);text-decoration:none;border-bottom:1px solid transparent;transition:color .18s,border-color .18s}
+.foot a:hover{color:var(--ink);border-color:var(--muted)}
+.foot p{margin:0;max-width:64ch}
+
+/* reveal: from an already-visible default (print, screenshots and no-JS see everything) */
+.js .rv{opacity:.35;transform:translateY(14px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
+.js .rv.in{opacity:1;transform:none}
+.hero .stag{animation:rise .8s cubic-bezier(.2,.8,.2,1) both}
+.hero .stag:nth-child(2){animation-delay:.08s}.hero .stag:nth-child(3){animation-delay:.16s}.hero .stag:nth-child(4){animation-delay:.24s}.hero .stag:nth-child(5){animation-delay:.32s}
+@keyframes rise{from{opacity:.001;transform:translateY(18px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.js .rv{opacity:1;transform:none}}
+@media print{.nav,.rail,.replay,.tabs{display:none}.js .rv{opacity:1;transform:none}.panel[hidden]{display:block}body{background:#fff;color:#000}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="rail" aria-hidden="true"><div class="rail__line"></div><div class="rail__no" id="railNo"></div></div>
+
+<header class="nav">
+  <div class="wrap nav__in">
+    <a class="brand" href="/" aria-label="DraftMark home"><img src="icon.svg" alt="" width="30" height="30">DraftMark</a>
+    <nav class="nav__links" aria-label="Sections">
+      <a href="#measure">Measure</a><a href="#prove">Prove</a><a href="#certify">Certify</a><a href="#replay">Replay</a><a href="#questions">Questions</a><a href="/deck">Deck</a>
+    </nav>
+    <a class="btn btn--on btn--sm" href="/survey">Run it live</a>
+  </div>
+</header>
+
+<main id="main">
+<!-- ===================== HERO ===================== -->
+<section class="hero" data-no="">
+  <div class="wrap hero__grid">
+    <div>
+      <p class="where stag">Meta AI Developer Hackathon · <b>Push the Frontier</b> · Indie</p>
+      <h1 class="stag"><span class="l">The sea keeps</span> <span class="l">moving. The reading</span> <em class="l">finally holds still.</em></h1>
+      <p class="lede stag">Before dawn, a surveyor on a launch must turn a waterline the swell keeps moving into one number that decides the cargo. DraftMark films ten seconds: SAM&nbsp;3.1 finds the marks and the water in <b data-proof="evidence/core-run-dB7X.md">60 of 60 frames</b>, code averages the line, and Muse Wonder&nbsp;1.0 writes the ship's survey program, which must match <b data-proof="evidence/selftest-booklet.md">22 of 22</b> printed booklet conditions before it may compute.</p>
+      <div class="cta stag">
+        <a class="btn" href="https://github.com/edycutjong/draftmark"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.22 1.88.87 2.34.66.07-.52.28-.87.5-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.22 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.66 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0Z"/></svg>GitHub</a>
+        <a class="btn" href="/deck">Pitch deck</a>
+        <a class="btn btn--on" href="/survey">Run it live →</a>
+      </div>
+      <p class="strip stag"><span>SAM 3.1</span><i>/</i><span>Muse Spark 1.3</span><i>/</i><span>Muse Wonder 1.0</span><i>/</i><span>code prints every number</span><i>/</i><span>refuses outside the table</span><i>/</i><span data-proof="evidence/core-run-dB7X.md">$0.0397 of Meta calls for the dB7X run (estimate)</span></p>
+    </div>
+
+    <figure class="inst" id="inst" style="margin:0">
+      <div class="inst__top"><span class="rec" id="recLabel">clip dB7X · real time</span><span>SAM 3.1 + code · 6 fps</span></div>
+      <svg id="vis" viewBox="0 0 640 520" role="img" aria-labelledby="visT">
+        <title id="visT">Real clip dB7X: the waterline measured in each of 60 frames moves across the painted marks 6, 8, 13M and 2; the running mean settles and holds at 12.761 metres, plus or minus 0.086 metres (repeatability).</title>
+        <defs>
+          <linearGradient id="hullG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1c1512"/><stop offset=".62" stop-color="#17120F"/><stop offset=".63" stop-color="#5b1d17"/><stop offset="1" stop-color="#8E2B22"/></linearGradient>
+          <linearGradient id="seaG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6F8C8A" stop-opacity=".78"/><stop offset="1" stop-color="#22302e" stop-opacity=".96"/></linearGradient>
+          <clipPath id="hullClip"><rect x="0" y="0" width="152" height="520" rx="3"/></clipPath>
+        </defs>
+        <g clip-path="url(#hullClip)">
+          <rect x="0" y="0" width="152" height="520" fill="url(#hullG)"/>
+          <g stroke="rgba(242,238,230,.06)"><line x1="0" x2="152" y1="140" y2="140"/><line x1="0" x2="152" y1="300" y2="300"/><line x1="0" x2="152" y1="460" y2="460"/></g>
+          <g id="nums"></g>
+          <path id="sea" fill="url(#seaG)"/>
+          <path id="seaEdge" fill="none" stroke="#cfe1dc" stroke-width="1.6" stroke-opacity=".85"/>
+        </g>
+        <g id="grid"></g>
+        <path id="ghost" class="sv-ghost"/>
+        <path id="band" class="sv-band"/>
+        <path id="trace" class="sv-trace"/>
+        <path id="mean" class="sv-mean"/>
+        <line id="tie" class="sv-tie"/>
+        <circle id="pen" r="4.2" fill="#cfe1dc"/>
+        <line id="held" class="sv-held" x1="0" x2="640"/>
+        <text id="val" class="sv-val" x="632" text-anchor="end">12.761 m</text>
+        <text id="valu" class="sv-u" x="632" text-anchor="end">±0.086 m · k=1</text>
+        <text class="sv-ax" x="178" y="512">frame 0</text><text class="sv-ax" x="632" y="512" text-anchor="end">frame 59 · 10 s</text>
+      </svg>
+      <div class="inst__foot"><p class="tick" id="tick" aria-live="off"><b>60/60</b> frames kept · mean <b>12.761 m</b> ± 0.086 m · held</p><button class="replay" id="replayBtn" type="button">↻ Replay 10 s</button></div>
+      <figcaption class="cap">Redrawn from the 60 waterline heights SAM&nbsp;3.1 and code measured on a real third-party clip (no ground truth): the band is illustrative and narrows to the repeatability ±0.086&nbsp;m; a one-pitch label error would move the reading 0.20&nbsp;m.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ===================== RECEIPTS ===================== -->
+<section class="receipts" aria-label="Receipts" data-no="">
+  <div class="wrap">
+    <div class="rc">
+      <div><b><span class="cu" data-to="22">22</span><small>/22</small></b><p>printed booklet conditions reproduced by the program Wonder wrote</p><a href="https://github.com/edycutjong/draftmark/blob/main/evidence/selftest-booklet.md" data-proof="evidence/selftest-booklet.md">evidence/selftest-booklet.md</a></div>
+      <div><b><span class="cu" data-to="60">60</span><small>/60</small></b><p>frames kept on real hull clip dB7X, numerals and water in every one</p><a href="https://github.com/edycutjong/draftmark/blob/main/evidence/core-run-dB7X.md" data-proof="evidence/core-run-dB7X.md">evidence/core-run-dB7X.md</a></div>
+      <div><b><span class="cu" data-to="17825.8" data-dec="1">17825.8</span><small>t</small></b><p>computed for booklet condition 4.1, printed 17827.7 t (−0.0106 %)</p><a href="https://github.com/edycutjong/draftmark/blob/main/evidence/core-run-trieste.md" data-proof="evidence/core-run-trieste.md">evidence/core-run-trieste.md</a></div>
+      <div><b><span class="cu" data-to="124">124</span><small>tests</small></b><p>pytest, with both sandbox escapes we found kept as regressions</p><a href="https://github.com/edycutjong/draftmark/tree/main/tests" data-proof="README.md">tests/</a></div>
+    </div>
+    <div class="models">
+      <div><span class="chip">sam-3.1 · video</span><h3>Sees the marks</h3><p>Two video calls per clip: “white number” and “water”.</p></div>
+      <div><span class="chip">muse-spark-1.3 · json_schema</span><h3>Reads them</h3><p>Two strict-schema reads; it may answer “?”.</p></div>
+      <div><span class="chip chip--a">muse-wonder-1.0</span><h3>Writes the program</h3><p>Turns the booklet into the ship's survey program, then proves it.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 001 THE READING ===================== -->
+<section class="sec sec--reading" id="reading" data-no="001">
+  <div class="wrap two">
+    <div class="rv">
+      <p class="line-no">Line 001 · The reading</p>
+      <h2>One number, read off a <em>moving sea.</em></h2>
+      <p class="intro">A draft survey weighs bulk cargo from six painted marks: read the waterline, look up displacement in the ship's booklet, subtract ballast, fuel and water. The weak steps are human.</p>
+    </div>
+    <div class="pains rv">
+      <div class="pain">
+        <svg viewBox="0 0 300 64" aria-hidden="true"><path d="M0 40 C25 18 40 14 60 30 S95 58 120 36 S160 8 185 30 S230 54 255 28 S285 22 300 34" fill="none" stroke="#6F8C8A" stroke-width="2"/><line x1="0" x2="300" y1="33" y2="33" stroke="#9A8F86" stroke-dasharray="2 6"/><text x="292" y="18" text-anchor="end" font-family="Martian Mono,monospace" font-size="12" fill="#9A8F86">mean = ?</text></svg>
+        <h3>The eyeballed mean</h3>
+        <p>The surveyor picks a mean by eye. Nothing records it; nobody can repeat it.</p>
+      </div>
+      <div class="pain">
+        <svg viewBox="0 0 300 64" aria-hidden="true"><g stroke="#3A2E28"><line x1="0" x2="300" y1="12" y2="12"/><line x1="0" x2="300" y1="28" y2="28"/><line x1="0" x2="300" y1="44" y2="44"/><line x1="0" x2="300" y1="60" y2="60"/><line x1="70" x2="70" y1="0" y2="64"/><line x1="160" x2="160" y1="0" y2="64"/></g><text x="10" y="24" font-family="Martian Mono,monospace" font-size="11" fill="#9A8F86">=B7*C7</text><text x="80" y="40" font-family="Martian Mono,monospace" font-size="11" fill="#9A8F86">=VLOOKUP(…)</text><text x="230" y="56" font-family="Martian Mono,monospace" font-size="12" fill="#DF5E44">#REF?</text></svg>
+        <h3>The per-ship spreadsheet</h3>
+        <p>Every booklet has its own tables and signs. Nobody checks the sheet against it, line by line.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 002 MEASURE ===================== -->
+<section class="sec" id="measure" data-no="002">
+  <div class="wrap two">
+    <div class="rv">
+      <p class="line-no">Line 002 · Measure</p>
+      <h2>SAM 3.1 watches <em>all sixty frames.</em></h2>
+      <p class="intro">Crop the mark column, scale it 2×, and SAM&nbsp;3.1 segments every painted numeral and the water surface in each frame. Spark&nbsp;1.3 reads the strings; a label only counts when five code checks agree.</p>
+      <ul class="checks">
+        <li><span>Monotone: the drafts climb with height</span><span class="data">ok</span></li>
+        <li><span>Pitch: numerals sit 20&nbsp;cm apart</span><span class="data">66.73 px</span></li>
+        <li><span>Fit residual across the column</span><span class="data">0.44 px rms</span></li>
+        <li><span>Two frames read the same strings</span><span class="data">9 shared</span></li>
+        <li><span>The whole-metre anchor confirmed</span><span class="data">13M · 14M</span></li>
+      </ul>
+    </div>
+    <div class="rv">
+      <div class="frame"><div class="frame__bar"><i></i><i></i><i></i><span>draftmark.edycu.dev/runs · clip dB7X</span></div>
+        <img src="media/measure-grid.webp" width="1400" height="1037" loading="lazy" decoding="async" alt="The product's measurement view for clip dB7X: SAM 3.1 boxes on the painted marks, the 60 per-frame drafts with the running mean settling at 12.761 m, and the result table (repeatability ±0.0864 m, 60 of 60 frames kept).">
+      </div>
+      <p class="cap">Recorded run <span class="data">rec-db7x-20261031</span>. Code averages through the swell: MAD outliers out, N<sub>eff</sub> 3.55 from the autocorrelation, u&nbsp;=&nbsp;sd/√N<sub>eff</sub>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 003 PROVE ===================== -->
+<section class="sec sec--prove" id="prove" data-no="003">
+  <div class="wrap two">
+    <div class="rv">
+      <p class="line-no">Line 003 · Prove</p>
+      <h2>Wonder writes the program. <em>The booklet grades it.</em></h2>
+      <p class="intro">Muse Wonder&nbsp;1.0 reads the Trieste stability booklet and writes that ship's survey program. It counts only after it reproduces the booklet's own printed conditions, and Wonder never sees the printed answers.</p>
+      <p class="base"><span>our reference program <b>22/22</b></span><span>booklet §3.1 applied verbatim <b>14/22</b></span><span>generic textbook template <b>0/22</b></span></p>
+    </div>
+    <div class="rv">
+      <div class="ladder" role="list" aria-label="Wonder's three attempts">
+        <div class="att" role="listitem">
+          <div class="att__n">Attempt 1</div>
+          <div class="att__what">Rejected before it ran: the static gate refused <code>globals</code> on lines 230, 255 and 260.</div>
+          <div class="att__score no">gate<small>never ran</small></div>
+        </div>
+        <div class="att" role="listitem">
+          <div class="att__n">Attempt 2</div>
+          <div class="att__what">Ran in the sandbox and missed the second trim correction on 8 conditions.
+            <div class="bar" aria-hidden="true" data-pass="14"></div></div>
+          <div class="att__score no">14/22<small>fail</small></div>
+        </div>
+        <div class="att" role="listitem">
+          <div class="att__n">Attempt 3</div>
+          <div class="att__what">Shown only the failing ids and its own intermediates. All 22 pass; 200 random cases match our reference to 0.00007&nbsp;%.
+            <div class="bar" aria-hidden="true" data-pass="22"></div></div>
+          <div class="att__score ok">22/22<small>pass · $0.481 total</small></div>
+        </div>
+      </div>
+      <p class="cap"><span class="data">evidence/selftest-booklet.md</span> · est $0.481 for three Wonder calls · the program runs in a no-network sandbox and refuses to extrapolate.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 004 CERTIFY (paper) ===================== -->
+<section class="sec sec--paper" id="certify" data-no="004">
+  <div class="wrap two">
+    <div class="rv">
+      <p class="line-no">Line 004 · Certify</p>
+      <h2>Code prints every number. <em>Then it signs them.</em></h2>
+      <p class="intro">No model writes a figure on the certificate. Code assembles it from signed station outputs and ends in a decision: issue, issue with a warning, or refuse.</p>
+      <ol class="formlines">
+        <li><span>004.1</span><div>Each station's output carries an HMAC-SHA256 signature; an edited measurement certifies <code>REFUSE UNSIGNED</code>.</div></li>
+        <li><span>004.2</span><div>Both real hull clips end in <code>REFUSE OUT_OF_TABLE</code>: 12.761&nbsp;m and 20.830&nbsp;m lie outside the only booklet's 0.5–9.3&nbsp;m table, and the program will not guess.</div></li>
+        <li><span>004.3</span><div>On the booklet itself it issues with a warning, because all six drafts were typed in, not filmed.</div></li>
+      </ol>
+    </div>
+    <div class="stamps rv">
+      <figure class="pin" style="margin:0"><img src="media/stamp-refuse.webp" width="1220" height="248" loading="lazy" decoding="async" alt="Certificate stamp: REFUSE, OUT_OF_TABLE, matrix row 4. The draft is outside the vessel's hydrostatic table: the program refuses to extrapolate."><figcaption>rec-db7x-20261031 · real hull · d 12.761 m</figcaption></figure>
+      <figure class="pin" style="margin:0"><img src="media/stamp-issue.webp" width="1356" height="230" loading="lazy" decoding="async" alt="Certificate stamp: ISSUE WITH WARNING, matrix row 9, POSITIONS_ENTERED: some draft positions were entered, not measured from a clip (6 positions entered)."><figcaption>rec-trieste-20261031 · booklet condition 4.1 · 6 drafts entered</figcaption></figure>
+      <figure class="pin" style="margin:0"><img src="media/certificate-db7x.webp" width="1100" height="993" loading="lazy" decoding="async" alt="Top of the printable certificate for recorded run rec-db7x-20261031, with the measured draft, the label checks and the REFUSE decision."><figcaption>printable certificate · draftmark.edycu.dev/certificate/rec-db7x-20261031</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 005 SYNTHETIC CHECK ===================== -->
+<section class="sec" id="check" data-no="005">
+  <div class="wrap">
+    <div class="rv">
+      <p class="line-no">Line 005 · Check</p>
+      <span class="tag">SYNTHETIC</span>
+      <h2>Weighed against a known truth. <em>A rendered one, for now.</em></h2>
+      <p class="intro">There is no physical scale check yet. The weight path runs on a code-rendered barge whose truth is known by construction, with swell, edge jitter and dropped frames added on purpose.</p>
+    </div>
+    <div class="synth rv">
+      <div><b data-proof="evidence/core-run-synth-barge.md">−0.155 mm</b><p>draft vs the synthetic calm truth, 58 of 60 frames kept</p></div>
+      <div><b data-proof="evidence/core-run-synth-barge.md">−0.17 %</b><p>cargo vs truth; it warns that 2u is wider than a ±2 % pass</p></div>
+      <div><b data-proof="README.md">96 / 100</b><p>seeds with the truth inside ±2u (RMSE 0.519 mm)</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== REPLAY (demo pair) ===================== -->
+<section class="sec sec--demo" id="replay" data-no="006">
+  <div class="wrap">
+    <div class="rv">
+      <h2>Two recorded runs, <em>line by line.</em></h2>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Recorded runs">
+      <button role="tab" id="tab-db7x" aria-controls="p-db7x" aria-selected="true">dB7X · real hull → REFUSE</button>
+      <button role="tab" id="tab-tri" aria-controls="p-tri" aria-selected="false" tabindex="-1">Trieste · booklet → ISSUE</button>
+    </div>
+    <div class="panel pair" id="p-db7x" role="tabpanel" aria-labelledby="tab-db7x">
+      <div class="term"><div class="term__bar"><span>replay · scripts/core_run.py · output abridged</span><span>2026-10-31 16:07 +0700</span></div>
+<pre data-term>
+<span class="p">$</span> python scripts/core_run.py clip dB7X_t45
+<span class="k">measure </span> SAM 3.1 video × 2 concepts            <span class="g">24322 ms</span>
+         60 frames @ 6 fps · numerals 60/60 · water 60/60
+<span class="k">labels  </span> Spark 1.3 × 2 + 5 code checks          <span class="g">14611 ms</span>
+         reads  6 8 13M 2 4 6 8 14M 2
+         monotone ✓ pitch ✓ residual ✓ two-frame ✓ anchor ✓
+<span class="k">draft   </span> pure code · 60/60 kept · N_eff 3.55       <span class="g">63 ms</span>
+         <span class="w">d = 12.761 m   u_rep = 0.086 m (k=1)</span>
+<span class="k">survey  </span> Wonder's proven program · sandbox         <span class="g">43 ms</span>
+         OutOfTable: mean draft outside hydrostatic table
+<span class="k">cert    </span> <span class="r">REFUSE · OUT_OF_TABLE</span>  (matrix row 4)
+{"run": "rec-db7x-20261031", "kept": 60, "usd": 0.0397}
+</pre></div>
+      <div><div class="frame"><div class="frame__bar"><i></i><i></i><i></i><span>draftmark.edycu.dev/runs</span></div>
+        <img src="media/wave-chart.webp" width="1400" height="709" loading="lazy" decoding="async" alt="The product's wave chart for clip dB7X: per-frame drafts in sea-glass, the running mean in amber settling at 12.761 m, plus or minus 0.0864 m."></div>
+        <p class="cap">The measurement stands (repeatability only, no ground truth). No cargo is computed for a real-hull test clip.</p></div>
+    </div>
+    <div class="panel pair" id="p-tri" role="tabpanel" aria-labelledby="tab-tri" hidden>
+      <div class="term"><div class="term__bar"><span>replay · scripts/core_run.py · output abridged</span><span>2026-10-31 16:49 +0700</span></div>
+<pre data-term>
+<span class="p">$</span> python scripts/core_run.py trieste --cond 4.1
+<span class="k">selftest</span> Wonder's program, sha 4b3aa8cd9487 · sandbox <span class="g">63 ms</span>
+         22/22 printed conditions · probes raised 2/2
+         differential max 0.00007 % over 200 cases
+<span class="k">survey  </span> condition 4.1 (p.148) · six drafts entered   <span class="g">34 ms</span>
+         <span class="w">disp 17825.8 t   printed 17827.7 t   −0.0106 %</span>
+<span class="k">cert    </span> <span class="p">ISSUE_WITH_WARNING · POSITIONS_ENTERED</span>
+{"selftest": "22/22 PASS", "disp": 17825.8, "printed": 17827.7}
+</pre></div>
+      <div><div class="frame"><div class="frame__bar"><i></i><i></i><i></i><span>draftmark.edycu.dev/runs</span></div>
+        <img src="media/program-proof.webp" width="1200" height="1337" loading="lazy" decoding="async" alt="The product's program proof: the self-test table with 22 of 22 printed booklet conditions passing, and Wonder's three attempts (gate reject, 14 of 22, 22 of 22)."></div>
+        <p class="cap">No cargo figure: no lightship or initial survey was entered.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WHAT KEEPS IT HONEST ===================== -->
+<section class="sec" id="guards" data-no="007">
+  <div class="wrap">
+    <h2 class="rv">What stops it <em>from lying</em></h2>
+    <div class="bento">
+      <article class="cell cell--a rv">
+        <svg class="glyph" viewBox="0 0 120 72" aria-hidden="true"><rect x="1" y="1" width="118" height="70" rx="4" fill="none" stroke="#3A2E28" stroke-width="2"/><rect x="34" y="18" width="52" height="36" rx="3" fill="none" stroke="#F2B33D" stroke-width="2"/><path d="M44 36h32M60 26v20" stroke="#F2B33D" stroke-width="2"/><path d="M8 36h18M94 36h18" stroke="#D9543B" stroke-width="2" stroke-dasharray="3 4"/></svg>
+        <h3>Generated code never runs in the server</h3>
+        <p>A static gate, then a no-network sandbox subprocess, JSON in and out. Two escapes we found ourselves, <span class="data">re.enum.sys</span> and a format-string walk, are regression tests now.</p>
+        <span class="chip">api/_core/sandbox.py</span><span class="chip">tests/test_sandbox.py</span>
+      </article>
+      <article class="cell cell--b rv">
+        <svg class="glyph" viewBox="0 0 54 54" aria-hidden="true"><path d="M6 40 L18 28 L28 36 L48 12" fill="none" stroke="#F2B33D" stroke-width="2.4"/><rect x="34" y="34" width="16" height="14" rx="2" fill="none" stroke="#9A8F86" stroke-width="2"/><path d="M38 34v-4a4 4 0 0 1 8 0v4" fill="none" stroke="#9A8F86" stroke-width="2"/></svg>
+        <h3>A signed chain</h3>
+        <p>Edit any station's output and the certificate reads <span class="data">REFUSE UNSIGNED</span>.</p>
+        <span class="chip">hmac-sha256</span>
+      </article>
+      <article class="cell cell--c rv">
+        <svg class="glyph" viewBox="0 0 54 54" aria-hidden="true"><text x="4" y="22" font-family="Anybody,sans-serif" font-stretch="62%" font-weight="700" font-size="20" fill="#F2EEE6">13M</text><text x="4" y="46" font-family="Anybody,sans-serif" font-stretch="62%" font-weight="700" font-size="20" fill="#9A8F86">8</text><path d="M30 40l5 5 12-14" fill="none" stroke="#F2B33D" stroke-width="2.4"/></svg>
+        <h3>Five agreements per label</h3>
+        <p>Clip eeLL failed them and was refused rather than read.</p>
+        <span class="chip">muse-spark-1.3 + code</span>
+      </article>
+      <article class="cell cell--d rv">
+        <svg class="glyph" viewBox="0 0 54 54" aria-hidden="true"><rect x="6" y="10" width="30" height="34" fill="none" stroke="#9A8F86" stroke-width="2"/><path d="M36 27h14" stroke="#D9543B" stroke-width="2.4" stroke-dasharray="3 3"/><path d="M44 21l6 6-6 6" fill="none" stroke="#D9543B" stroke-width="2.4"/></svg>
+        <h3>No extrapolation</h3>
+        <p>Past the hydrostatic table the program raises <span class="data">OutOfTable</span> and the certificate refuses.</p>
+        <span class="chip">tests/test_survey.py</span>
+      </article>
+      <article class="cell cell--e rv">
+        <svg class="glyph" viewBox="0 0 54 54" aria-hidden="true"><circle cx="27" cy="27" r="19" fill="none" stroke="#3A2E28" stroke-width="2"/><path d="M27 27 L27 12" stroke="#F2B33D" stroke-width="2.4"/><path d="M27 27 L38 33" stroke="#9A8F86" stroke-width="2"/></svg>
+        <h3>Every call on the ledger</h3>
+        <p>Each Meta call is logged with its response id and a price-list cost estimate. Uploads need a judge code.</p>
+        <span class="chip">evidence/api-usage.md</span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== HONEST LIMITS ===================== -->
+<section class="sec sec--honest" id="limits" data-no="008">
+  <div class="wrap">
+    <h2 class="rv">What this does <em>not</em> prove yet</h2>
+    <ul class="ledger">
+      <li class="rv"><span class="n">1/6</span><blockquote>“The weight check is on a rendered synthetic barge; it validates arithmetic and the error model, not the models. SAM does not detect rendered water.”<cite>README · Honest limits, 1</cite></blockquote></li>
+      <li class="rv"><span class="n">2/6</span><blockquote>“The real-ship clips are third-party test footage with no ground truth (repeatability and refusal only, no accuracy claim); no real-ship draft accuracy is claimed.”<cite>README · Honest limits, 2</cite></blockquote></li>
+      <li class="rv"><span class="n">5/6</span><blockquote>“A consistent whole-metre misread passes the geometry checks by construction, so the user confirms the anchor crop on every live run.”<cite>README · Honest limits, 5</cite></blockquote></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===================== QUESTIONS ===================== -->
+<section class="sec" id="questions" data-no="009">
+  <div class="wrap">
+    <h2 class="rv">Questions a judge <em>would ask</em></h2>
+    <div class="qa">
+      <details><summary><span>Q1</span>Isn't this just an image analyzer?</summary><div class="ans">No. It measures a waterline in each of 60 video frames and averages it through the swell with a stated uncertainty. Then an agent writes the ship's program and must prove it against the booklet. Every step can refuse.</div></details>
+      <details><summary><span>Q2</span>What is live and what is recorded?</summary><div class="ans">This page replays recorded runs of real API calls, labelled with run ids. In the live app the Wonder self-test re-runs in the sandbox; uploading a clip needs a judge code, because each upload spends Meta credit.</div></details>
+      <details><summary><span>Q3</span>Why do both real clips end in REFUSE?</summary><div class="ans">The only booklet we have is the Trieste's, a Ro-Ro/passenger ship whose table covers 0.5–9.3&nbsp;m. Clip dB7X reads 12.761&nbsp;m and UKTRQ 20.830&nbsp;m, so the program raises <span class="data">OutOfTable</span> instead of extrapolating. The measurement stands; the weight is refused.</div></details>
+      <details><summary><span>Q4</span>How do you know Wonder's program is right?</summary><div class="ans">It has to reproduce at least 20 of the booklet's 22 printed conditions within 0.1&nbsp;% (it reproduces 22), agree with our reference program over 200 random cases (largest difference 0.00007&nbsp;%), and raise on two out-of-table probes. The printed displacements were never in Wonder's context.</div></details>
+      <details><summary><span>Q5</span>How accurate is the weight?</summary><div class="ans">So far it is shown only on a synthetic barge: the draft came out 0.155&nbsp;mm from the truth by construction, the cargo −0.17&nbsp;%, and over 100 seeds the truth sat inside ±2u in 96. There is no physical scale check and no real-ship accuracy claim.</div></details>
+      <details><summary><span>Q6</span>What does a run cost?</summary><div class="ans">The dB7X measurement used two SAM&nbsp;3.1 video calls and two Spark&nbsp;1.3 reads: $0.0397 at list prices. Writing the program took three Wonder calls, est $0.481, once per ship.</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CLOSE ===================== -->
+<section class="close" data-no="010">
+  <div class="wrap">
+    <h2 class="rv">Film ten seconds. <em>Keep the number that holds.</em></h2>
+    <div class="cta rv">
+      <a class="btn" href="https://github.com/edycutjong/draftmark">GitHub</a>
+      <a class="btn" href="/deck">Pitch deck</a>
+      <a class="btn btn--on" href="/survey">Run it live →</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__in">
+    <nav aria-label="Footer"><a href="/survey">Live survey</a><a href="/runs">Recorded runs</a><a href="/evidence">Evidence</a><a href="/deck">Pitch deck</a><a href="https://github.com/edycutjong/draftmark">Source (MIT)</a></nav>
+    <p>Prototype, not a surveyor's certificate. Built by Edy Cu Tjong for the Meta AI Developer Hackathon. Clips dB7X and UKTRQ are third-party footage, not re-hosted; only derived geometry is committed. Fonts: Anybody, IBM Plex Sans, Martian Mono (OFL).</p>
+  </div>
+</footer>
+
+<script>
+document.documentElement.classList.add("js");
+(function () {
+  "use strict";
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // ---- real data: build/public/runs/rec-db7x-20261031.json -> draft.frames[].d_m (verified by scripts/check_landing.py)
+  var DS = [12.5948,12.5831,12.5877,12.6228,12.7537,12.8184,12.8718,12.9404,12.9099,12.8056,12.7062,12.6601,12.6418,12.6174,12.6469,12.7034,12.7794,12.8312,12.811,12.7141,12.6377,12.5741,12.584,12.6059,12.628,12.7236,12.8729,13.0487,13.1711,13.2104,13.1124,12.9972,12.9155,12.8115,12.7344,12.6803,12.6492,12.5939,12.546,12.5062,12.5061,12.5629,12.6433,12.7466,12.8226,12.8462,12.8301,12.8083,12.7928,12.6984,12.6577,12.6764,12.6861,12.6965,12.7609,12.8356,12.9451,12.9987,13.0143,12.9208];
+  var D = 12.760868856558746, U = 0.08636463176220432, N = DS.length, FPS = 6;
+  var MARKS = [[12.6, "6"], [12.8, "8"], [13.0, "13M"], [13.2, "2"]]; // labels.checks.labels as read on dB7X
+  var LO = 12.40, HI = 13.36, Y0 = 500, Y1 = 20, XA = 178, XB = 600;
+  function y(v) { return Y0 - (v - LO) / (HI - LO) * (Y0 - Y1); }
+  function x(i) { return XA + i / (N - 1) * (XB - XA); }
+  var mean = [], band = [], s = 0;
+  for (var k = 0; k < N; k++) { s += DS[k]; mean.push(s / (k + 1)); band.push(U * Math.sqrt(N / (k + 1))); } // WaveChart.tsx
+  var $ = function (id) { return document.getElementById(id); };
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, parent) { var e = document.createElementNS(NS, tag); for (var a in attrs) e.setAttribute(a, attrs[a]); parent.appendChild(e); return e; }
+  var grid = $("grid"), nums = $("nums");
+  for (var gi = 124; gi <= 133; gi++) { var g = gi / 10; el("line", { x1: 160, x2: 640, y1: y(g).toFixed(1), y2: y(g).toFixed(1), "class": "sv-grid", opacity: gi % 2 === 0 ? 1 : 0.45 }, grid); }
+  MARKS.forEach(function (m) { var t = el("text", { x: 22, y: y(m[0]).toFixed(1), "class": "sv-num" }, nums); t.textContent = m[1]; });
+  function clampY(v) { return Math.max(Y1 - 6, Math.min(Y0 + 6, y(v))); }
+  function pathTo(arr, upto) { var d = ""; for (var i = 0; i <= upto; i++) d += (i ? "L" : "M") + x(i).toFixed(1) + "," + y(arr[i]).toFixed(1); return d; }
+  function bandTo(upto) {
+    var d = "";
+    for (var i = 0; i <= upto; i++) d += (i ? "L" : "M") + x(i).toFixed(1) + "," + clampY(mean[i] + band[i]).toFixed(1);
+    for (var j = upto; j >= 0; j--) d += "L" + x(j).toFixed(1) + "," + clampY(mean[j] - band[j]).toFixed(1);
+    return d + "Z";
+  }
+  function level(f) { // smooth (cosine) interpolation between measured frames
+    var i = Math.floor(f) % N, j = (i + 1) % N, t = f - Math.floor(f), w = (1 - Math.cos(t * Math.PI)) / 2;
+    return DS[i] * (1 - w) + DS[j] * w;
+  }
+  var phase = 0;
+  function drawSea(lv, now) {
+    var yl = y(lv), d = "M0," + (yl + Math.sin(now / 420) * 2.2).toFixed(1), e = d;
+    for (var px = 8; px <= 152; px += 8) {
+      var yy = yl + Math.sin(now / 420 + px / 19) * 2.2 + Math.sin(now / 260 + px / 7) * 0.9;
+      d += "L" + px + "," + yy.toFixed(1); e += "L" + px + "," + yy.toFixed(1);
+    }
+    $("sea").setAttribute("d", d + "L152,520L0,520Z"); $("seaEdge").setAttribute("d", e);
+    $("tie").setAttribute("y1", yl.toFixed(1)); $("tie").setAttribute("y2", yl.toFixed(1)); $("tie").setAttribute("x1", 152);
+  }
+  function setHeld(v, show) {
+    var yy = y(v).toFixed(1);
+    ["held"].forEach(function (id) { $(id).setAttribute("y1", yy); $(id).setAttribute("y2", yy); });
+    $("held").setAttribute("opacity", show ? 1 : 0.35);
+    $("val").setAttribute("y", (y(v) - 12).toFixed(1)); $("valu").setAttribute("y", (y(v) + 22).toFixed(1));
+    $("val").setAttribute("opacity", show ? 1 : 0); $("valu").setAttribute("opacity", show ? 1 : 0);
+  }
+  var inst = $("inst"), tick = $("tick");
+  function finalState(now) { // already-visible default: full trace, final band, held line, value written
+    $("trace").setAttribute("d", pathTo(DS, N - 1)); $("mean").setAttribute("d", pathTo(mean, N - 1)); $("band").setAttribute("d", bandTo(N - 1));
+    drawSea(DS[N - 1], now || 0); $("pen").setAttribute("cx", x(N - 1)); $("pen").setAttribute("cy", y(DS[N - 1]));
+    $("tie").setAttribute("x2", x(N - 1)); setHeld(D, true); inst.classList.add("held");
+    $("recLabel").textContent = "clip dB7X · reading held";
+  }
+  $("ghost").setAttribute("d", pathTo(DS, N - 1)); // the whole measured swell, faint, so the recorder never starts empty
+  finalState(0);
+  if (reduce) return wireRest();
+
+  var t0 = null, running = false, visible = true, raf = 0;
+  function frame(now) {
+    raf = 0; if (!running) return;
+    if (t0 === null) t0 = now;
+    var t = (now - t0) / 1000, f = t * FPS;
+    if (f < N - 1) {
+      var i = Math.floor(f), lv = level(f);
+      $("trace").setAttribute("d", pathTo(DS, i) + "L" + (x(i) + (x(i + 1) - x(i)) * (f - i)).toFixed(1) + "," + y(lv).toFixed(1));
+      $("mean").setAttribute("d", pathTo(mean, i)); $("band").setAttribute("d", bandTo(i));
+      drawSea(lv, now); var px = x(i) + (x(i + 1) - x(i)) * (f - i);
+      $("pen").setAttribute("cx", px.toFixed(1)); $("pen").setAttribute("cy", y(lv).toFixed(1)); $("tie").setAttribute("x2", px.toFixed(1));
+      setHeld(mean[i], false);
+      tick.innerHTML = "frame <b>" + (i + 1) + "/60</b> · running mean " + mean[i].toFixed(3) + " m";
+    } else {
+      if (!inst.classList.contains("held")) {
+        $("trace").setAttribute("d", pathTo(DS, N - 1)); $("mean").setAttribute("d", pathTo(mean, N - 1)); $("band").setAttribute("d", bandTo(N - 1));
+        setHeld(D, true); inst.classList.add("held"); $("recLabel").textContent = "clip dB7X · reading held";
+        $("pen").setAttribute("cx", x(N - 1)); $("pen").setAttribute("cy", y(DS[N - 1])); $("tie").setAttribute("x2", x(N - 1));
+        tick.innerHTML = "<b>60/60</b> frames kept · mean <b>12.761 m</b> ± 0.086 m · held. The sea keeps moving.";
+      }
+      drawSea(level(f), now); // the sea keeps replaying the measured swell; the reading holds still
+    }
+    if (visible) raf = requestAnimationFrame(frame);
+  }
+  function play() {
+    inst.classList.remove("held"); $("recLabel").textContent = "clip dB7X · real time"; t0 = null; running = true;
+    if (!raf && visible) raf = requestAnimationFrame(frame);
+  }
+  $("replayBtn").addEventListener("click", play);
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(function (es) {
+      visible = es[0].isIntersecting;
+      if (visible && running && !raf) { raf = requestAnimationFrame(frame); }
+    }).observe(inst);
+  }
+  document.addEventListener("visibilitychange", function () { if (document.hidden) { visible = false; } else { visible = true; if (running && !raf) raf = requestAnimationFrame(frame); } });
+  setTimeout(play, 350);
+  wireRest();
+
+  function wireRest() {
+    // receipts count up (final values are already in the HTML)
+    var cus = [].slice.call(document.querySelectorAll(".cu"));
+    function countUp(e) {
+      var to = parseFloat(e.getAttribute("data-to")), dec = +(e.getAttribute("data-dec") || 0), t1 = null;
+      if (reduce) return;
+      function step(now) { if (t1 === null) t1 = now; var p = Math.min(1, (now - t1) / 1400), q = 1 - Math.pow(1 - p, 3); e.textContent = (to * q).toFixed(dec); if (p < 1) requestAnimationFrame(step); else e.textContent = to.toFixed(dec); }
+      requestAnimationFrame(step);
+    }
+    // attempt bars
+    [].forEach.call(document.querySelectorAll(".bar"), function (b) {
+      var p = +b.getAttribute("data-pass"); for (var i = 0; i < 22; i++) { var c = document.createElement("i"); c.className = i < p ? "ok" : "no"; b.appendChild(c); }
+    });
+    // terminal replay: the full text is already there; typing replays it once per view
+    var terms = [].slice.call(document.querySelectorAll("[data-term]"));
+    terms.forEach(function (pre) { pre._html = pre.innerHTML; });
+    function typeTerm(pre) {
+      if (reduce || pre._busy) return; pre._busy = true;
+      var lines = pre._html.replace(/^\n/, "").split("\n"), i = 0; pre.innerHTML = "";
+      (function next() {
+        if (i >= lines.length) { pre._busy = false; return; }
+        pre.innerHTML += (i ? "\n" : "") + lines[i]; i++;
+        setTimeout(next, i === 1 ? 520 : (/ms<\/span>$/.test(lines[i - 1]) ? 260 : 120));
+      })();
+    }
+    // tabs (roving tabindex, arrow keys)
+    var tabs = [].slice.call(document.querySelectorAll('[role="tab"]'));
+    function select(tab) {
+      tabs.forEach(function (t) { var on = t === tab; t.setAttribute("aria-selected", on); t.tabIndex = on ? 0 : -1; $(t.getAttribute("aria-controls")).hidden = !on; });
+      var pre = $(tab.getAttribute("aria-controls")).querySelector("[data-term]"); if (pre) typeTerm(pre);
+    }
+    tabs.forEach(function (t, i) {
+      t.addEventListener("click", function () { select(t); });
+      t.addEventListener("keydown", function (e) { if (e.key === "ArrowRight" || e.key === "ArrowLeft") { var n = tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length]; n.focus(); select(n); } });
+    });
+    // reveal, count-ups and the first replay on view; the rail reads the current line number
+    var railNo = $("railNo");
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          e.target.classList.add("in");
+          if (e.target.classList.contains("cu")) countUp(e.target);
+          if (e.target.id === "replay") typeTerm(document.querySelector("#p-db7x [data-term]"));
+          io.unobserve(e.target);
+        });
+      }, { rootMargin: "0px 0px -8% 0px" });
+      [].forEach.call(document.querySelectorAll(".rv"), function (e) {
+        if (e.getBoundingClientRect().top > window.innerHeight) io.observe(e); else e.classList.add("in");
+      });
+      cus.forEach(function (c) { io.observe(c); });
+      io.observe($("replay"));
+      var so = new IntersectionObserver(function (es) {
+        es.forEach(function (e) { if (e.isIntersecting) railNo.textContent = e.target.getAttribute("data-no"); });
+      }, { rootMargin: "-50% 0px -50% 0px" });
+      [].forEach.call(document.querySelectorAll("[data-no]"), function (sct) { so.observe(sct); });
+    } else {
+      [].forEach.call(document.querySelectorAll(".rv"), function (e) { e.classList.add("in"); });
+    }
+  }
+})();
+</script>
+</body>
+</html>
