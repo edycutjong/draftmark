@@ -104,6 +104,8 @@ h1 em{font-style:normal;color:var(--after);text-shadow:0 0 34px rgba(242,179,61,
 .lede{font-size:clamp(17px,1.45vw,19px);line-height:1.6;color:#DCD5CB;max-width:58ch;margin:26px 0 30px}
 .lede b{color:var(--ink);font-weight:600}
 .cta{display:flex;flex-wrap:wrap;gap:12px}
+.ctanote{margin:12px 0 0;font-size:13.5px;line-height:1.5;color:var(--muted)}
+.ctanote a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
 .strip{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:28px 0 0;padding:16px 0 0;border-top:1px solid var(--rule);font:500 11.5px/1 var(--font-data);color:var(--muted)}
 .strip .m{border:1px solid rgba(111,140,138,.45);color:#BCCBC8;border-radius:3px;padding:7px 9px;white-space:nowrap}
 .strip .ctx{margin-left:auto;white-space:nowrap}
@@ -150,7 +152,7 @@ h1 em{font-style:normal;color:var(--after);text-shadow:0 0 34px rgba(242,179,61,
 @media (max-width:960px){.hero__grid{grid-template-columns:minmax(0,1fr)}.lede{max-width:none}}
 @media (max-width:600px){.strip .ctx{margin-left:0}}
 /* mobile: the instrument comes up under the headline, so the fold shows the waterline, not only words */
-@media (max-width:960px){.hero__grid{row-gap:0}.hero__grid > div:first-child{display:contents}.hero .where{order:1}.hero h1{order:2}.hero .inst{order:3;margin-top:28px!important}.hero .lede{order:4}.hero .cta{order:5}.hero .strip{order:6}}
+@media (max-width:960px){.hero__grid{row-gap:0}.hero__grid > div:first-child{display:contents}.hero .where{order:1}.hero h1{order:2}.hero .inst{order:3;margin-top:28px!important}.hero .lede{order:4}.hero .cta{order:5}.hero .ctanote{order:6}.hero .strip{order:7}}
 
 /* ---------- receipts ---------- */
 .receipts{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);background:linear-gradient(180deg,rgba(34,26,22,.6),rgba(23,18,15,0))}
@@ -359,17 +361,18 @@ h2 em{font-style:normal;color:var(--after)}
     <div>
       <p class="where stag"><b>DraftMark</b> · measures a moving waterline over 60 frames of video</p>
       <h1 class="stag"><span class="l">The sea keeps</span> <span class="l">moving. The reading</span> <em class="l">finally holds still.</em></h1>
-      <p class="lede stag">Before dawn, a surveyor must turn a moving waterline into one number that decides the cargo. SAM&nbsp;3.1 finds the marks in <b data-proof="evidence/core-run-dB7X.md">60 of 60 frames</b> of a real hull clip; separately, the program Muse Wonder&nbsp;1.0 wrote must reproduce a booklet&rsquo;s printed conditions before it may compute (<b data-proof="evidence/selftest-booklet.md">22 of 22</b>).</p>
+      <p class="lede stag">Before dawn, a surveyor must turn a moving waterline into one number that decides the cargo. SAM&nbsp;3.1 finds the marks in <b data-proof="evidence/core-run-dB7X.md">60 of 60 frames</b> of a real hull clip; separately, the program Muse Wonder&nbsp;1.0 wrote must reproduce one booklet&rsquo;s printed conditions before it may compute (after two repairs, <b data-proof="evidence/selftest-booklet.md">22 of 22</b>).</p>
       <div class="cta stag">
         <a class="btn" href="https://github.com/edycutjong/draftmark"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.22 1.88.87 2.34.66.07-.52.28-.87.5-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.22 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.66 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0Z"/></svg>GitHub</a>
         <a class="btn" href="/deck">Pitch deck</a>
         <a class="btn btn--on" href="/survey">Run it live →</a>
       </div>
+      <p class="ctanote stag">Live without a code: re-run Wonder&rsquo;s self-test. The real-hull measurement is a recorded replay on <a href="/runs">/runs</a>.</p>
       <p class="strip stag"><span class="m">SAM 3.1</span><span class="m">Muse Spark 1.3</span><span class="m">Muse Wonder 1.0</span><span class="ctx">Push the Frontier</span></p>
     </div>
 
     <figure class="inst" id="inst" style="margin:0">
-      <div class="inst__top"><span class="rec" id="recLabel">clip dB7X · recorded · replayed 1×</span><span>SAM 3.1 + code · 6 fps</span></div>
+      <div class="inst__top"><span class="rec" id="recLabel">clip dB7X · recorded, redrawn 1×</span><span>SAM 3.1 + code · 6 fps</span></div>
       <svg id="vis" viewBox="0 0 640 520" role="img" aria-labelledby="visT">
         <title id="visT">Real clip dB7X: the waterline measured in each of 60 frames moves across the painted marks 6, 8, 13M and 2; the running mean settles and holds at 12.761 metres, plus or minus 0.086 metres (repeatability).</title>
         <defs>
@@ -459,8 +462,9 @@ h2 em{font-style:normal;color:var(--after)}
         <li><span>Pitch: numerals sit 20&nbsp;cm apart</span><span class="data">66.73 px</span></li>
         <li><span>Fit residual across the column</span><span class="data">0.44 px rms</span></li>
         <li><span>Two frames read the same strings</span><span class="data">9 shared</span></li>
-        <li><span>The whole-metre anchor confirmed</span><span class="data">13M · 14M</span></li>
+        <li><span>Whole-metre anchors read</span><span class="data">13M · 14M</span></li>
       </ul>
+      <p class="intro">Blind spot: a consistent one-metre misread passes all five, so a live run asks you to confirm the anchor crop.</p>
     </div>
     <div class="rv">
       <div class="frame"><div class="frame__bar"><i></i><i></i><i></i><span>draftmark.edycu.dev/runs · clip dB7X</span></div>
@@ -763,7 +767,7 @@ document.documentElement.classList.add("js");
     if (visible) raf = requestAnimationFrame(frame);
   }
   function play() {
-    phase = "replay"; inst.classList.remove("held"); $("recLabel").textContent = "clip dB7X · recorded · replayed 1×"; t0 = null; running = true;
+    phase = "replay"; inst.classList.remove("held"); $("recLabel").textContent = "clip dB7X · recorded, redrawn 1×"; t0 = null; running = true;
     if (!raf && visible) raf = requestAnimationFrame(frame);
   }
   $("replayBtn").addEventListener("click", play);

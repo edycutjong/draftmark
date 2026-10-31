@@ -50,9 +50,11 @@ function NoCodePath() {
       ) : null}
       {st.state === "error" ? <ErrorBox err={st.err} /> : null}
       <p className="small">
-        Then <Link href="/runs">open the recorded runs</Link>: real SAM 3.1 and Spark 1.3 output on a real hull clip, every
-        number re-derivable from the run record.
+        Then the real-hull measurement: recorded SAM 3.1 and Spark 1.3 output, every number re-derivable from the run record.
       </p>
+      <Link href="/runs" className="btn">
+        Open the recorded real-hull run →
+      </Link>
     </div>
   );
 }

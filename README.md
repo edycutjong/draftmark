@@ -58,7 +58,8 @@ Three steps, each with a check that is code, not a model's opinion:
    after it reproduces at least 90 % (20 of 22) of the booklet's own printed worked conditions within 0.1 % (the shipped program reproduces 22/22), runs in a no-network sandbox and refuses to
    extrapolate outside the table.
 3. **Certify.** The certificate is built by code and prints code values only and refuses (`REFUSE`) when a
-   check fails; it is unsigned and refused if any station's output was edited.
+   check fails. Each station's output carries an HMAC; if any was edited the certificate is `REFUSE UNSIGNED`. The HMAC
+   guards the prototype's own chain; it is not a legal signature.
 
 What exists vs what is new: the calculators, readers and laser systems above exist. New here is the wave-averaged
 reading from a video clip plus an agent that writes and *proves* the survey program against the booklet.
@@ -66,7 +67,9 @@ reading from a video clip plus an agent that writes and *proves* the survey prog
 ## 🏗️ Architecture & Tech Stack
 
 One Next.js app on Vercel plus one Python FastAPI function that holds every model call and every number. No
-database; the browser carries each station's HMAC-signed output to the next. Full write-up: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+database; the browser carries each station's HMAC-signed output to the next, and each station verifies the previous
+one's HMAC with a key that never leaves the server (tokens expire after 24 h): an edited geometry is refused (400
+`UNSIGNED`) before any model call, and a survey without a valid chain is certified `REFUSE UNSIGNED`. Full write-up: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ```
 prepared clip --> /measure (SAM 3.1) --> /labels (Spark 1.3 + 5 code checks) --> /draft (least squares, dry marks)
