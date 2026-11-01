@@ -45,3 +45,16 @@ test("recorded run JSON is served", async ({ request }) => {
   const run = await res.json();
   expect(run.draft.frames.length).toBeGreaterThan(0);
 });
+
+test("judge path lists the four stops with working links", async ({ page }) => {
+  const errors = failOnPageErrors(page);
+  await page.goto("/judge");
+  await expect(page.getByRole("heading", { level: 1, name: "Judge path" })).toBeVisible();
+  await expect(page.locator(".judge-steps > li")).toHaveCount(4);
+  await expect(page.getByText("REFUSE · OUT_OF_TABLE")).toBeVisible();
+  for (const href of ["/runs#program-h", "/certificate/rec-db7x-20261031", "/certificate/rec-trieste-20261031"]) {
+    const res = await page.request.get(href.split("#")[0]);
+    expect(res.ok()).toBeTruthy();
+  }
+  expect(errors).toEqual([]);
+});

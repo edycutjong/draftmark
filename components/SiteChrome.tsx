@@ -16,6 +16,9 @@ export function SiteHeader({ live }: { live?: boolean }) {
       <nav aria-label="Main">
         <ul className="nav">
           <li>
+            <Link href="/judge">Judge path</Link>
+          </li>
+          <li>
             <Link href="/runs">Recorded runs</Link>
           </li>
           <li>

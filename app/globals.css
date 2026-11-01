@@ -387,7 +387,7 @@ img { max-width: 100%; }
 @media print { .table-scroll--fade { mask-image: none; } }
 .nav a, .nav .nav__current { white-space: nowrap; }
 @media (max-width: 499px) {
-  .nav { gap: 0.6rem; font-size: 0.92rem; }
+  .nav { gap: 0.25rem 0.6rem; font-size: 0.92rem; flex-wrap: wrap; }
   .nav .btn { padding: 0.5rem 0.7rem; }
 }
 
@@ -396,3 +396,9 @@ img { max-width: 100%; }
 .nocode .verdict { margin: 0; }
 .tamper { display: grid; gap: 0.6rem; justify-items: start; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px dashed var(--rule); }
 .tamper .refusal { margin: 0; }
+
+/* /judge — numbered path */
+.judge-steps { max-width: 60rem; margin: 1.5rem 0 2rem; padding-left: 1.6rem; display: grid; gap: 0.5rem; }
+.judge-steps > li::marker { font: 600 1.2rem var(--font-data); color: var(--muted); }
+.judge-steps .h3 { margin-top: 0.75rem; }
+.judge-steps a + a { margin-left: 1.25rem; }
