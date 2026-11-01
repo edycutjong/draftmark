@@ -1,12 +1,14 @@
 name: Deploy
-# Production deploy runs only after CI succeeded on main.
+# After CI succeeds on main: cut a semantic-version release, then deploy production with that version.
+# Versioning (Angular commits since the last tag): `feat!:` / BREAKING CHANGE -> major, `feat:` -> minor,
+# `fix:` / `perf:` -> patch, anything else -> no new release (the deploy keeps the current version).
 on:
   workflow_run:
     workflows: [CI]
     types: [completed]
     branches: [main]
 permissions:
-  contents: read
+  contents: write   # push the tag and create the GitHub Release
 concurrency:
   group: deploy-production
   cancel-in-progress: false
@@ -24,14 +26,53 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0   # full history + tags: commits since the last tag decide the bump
+      - name: Compute version
+        id: ver
+        run: |
+          set -euo pipefail
+          LAST=$(git describe --tags --abbrev=0 --match 'v*' 2>/dev/null || echo "")
+          if [ -z "$LAST" ]; then
+            echo "next=v1.0.0" >> "$GITHUB_OUTPUT"; echo "release=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          LOG=$(git log --format=%B "${LAST}..HEAD")
+          BUMP=none
+          echo "$LOG" | grep -qE '^[a-z]+(\(.+\))?!:|BREAKING CHANGE:' && BUMP=major
+          [ "$BUMP" = none ] && echo "$LOG" | grep -qE '^feat(\(.+\))?:' && BUMP=minor
+          [ "$BUMP" = none ] && echo "$LOG" | grep -qE '^(fix|perf)(\(.+\))?:' && BUMP=patch
+          if [ "$BUMP" = none ]; then
+            echo "next=$LAST" >> "$GITHUB_OUTPUT"; echo "release=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          IFS=. read -r MA MI PA <<< "${LAST#v}"
+          case "$BUMP" in
+            major) MA=$((MA+1)); MI=0; PA=0 ;;
+            minor) MI=$((MI+1)); PA=0 ;;
+            patch) PA=$((PA+1)) ;;
+          esac
+          echo "next=v${MA}.${MI}.${PA}" >> "$GITHUB_OUTPUT"; echo "release=true" >> "$GITHUB_OUTPUT"
+      - name: Tag and publish the release
+        if: steps.ver.outputs.release == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VER: ${{ steps.ver.outputs.next }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "$VER" -m "$VER"
+          git push origin "$VER"
+          gh release create "$VER" --title "$VER" --generate-notes --verify-tag
       - uses: actions/setup-node@v4
         with:
           node-version: 22
       - run: npm install --global vercel@latest
       - run: vercel pull --yes --environment=production --token="${{ secrets.VERCEL_TOKEN }}"
       # Remote build, same path as the local CLI deploys (a prebuilt upload trips .vercelignore).
-      - run: vercel deploy --prod --token="${{ secrets.VERCEL_TOKEN }}"
+      - run: vercel deploy --prod --build-env NEXT_PUBLIC_APP_VERSION="${{ steps.ver.outputs.next }}" --token="${{ secrets.VERCEL_TOKEN }}"
       - name: Smoke test
+        env:
+          VER: ${{ steps.ver.outputs.next }}
         run: |
           sleep 5
           curl -fsS https://draftmark.edycu.dev/api/py/health
+          curl -fsS https://draftmark.edycu.dev/version.json | grep -q "\"$VER\""

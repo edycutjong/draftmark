@@ -20,3 +20,5 @@ __pycache__/
 dist/
 coverage/
 *.tsbuildinfo
+# generated at build (scripts/write-version.mjs)
+public/version.json

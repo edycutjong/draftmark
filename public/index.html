@@ -680,7 +680,7 @@ h2 em{font-style:normal;color:var(--after)}
 
 <footer class="foot">
   <div class="wrap foot__in">
-    <nav aria-label="Footer"><a href="/survey">Live survey</a><a href="/runs">Recorded runs</a><a href="/evidence">Evidence</a><a href="/deck">Pitch deck</a><a href="https://github.com/edycutjong/draftmark">Source (MIT)</a></nav>
+    <nav aria-label="Footer"><a href="/survey">Live survey</a><a href="/runs">Recorded runs</a><a href="/evidence">Evidence</a><a href="/deck">Pitch deck</a><a href="https://github.com/edycutjong/draftmark">Source (MIT)</a><a href="https://github.com/edycutjong/draftmark/releases">Release <span data-app-version>v1.0.0</span></a></nav>
     <p>Prototype, not a surveyor's certificate. Built by Edy Cu Tjong for the Meta AI Developer Hackathon. Clips dB7X and UKTRQ are third-party footage, not re-hosted; only derived geometry is committed. Fonts: Anybody, IBM Plex Sans, Martian Mono (OFL).</p>
   </div>
 </footer>
@@ -848,6 +848,13 @@ document.documentElement.classList.add("js");
     }
   }
 })();
+</script>
+<script>
+// Current release, written at build time by scripts/write-version.mjs (the static text is the fallback).
+fetch("/version.json").then(function (r) { return r.ok ? r.json() : null; }).then(function (v) {
+  if (!v || !v.version) return;
+  document.querySelectorAll("[data-app-version]").forEach(function (el) { el.textContent = v.version; });
+}).catch(function () {});
 </script>
 </body>
 </html>

@@ -1,10 +1,11 @@
 {
   "name": "draftmark",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "license": "MIT",
   "scripts": {
     "dev": "concurrently -n next,py \"next dev\" \"python3 -m uvicorn api.index:app --port 8000 --reload\"",
+    "prebuild": "node scripts/write-version.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
