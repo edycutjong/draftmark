@@ -167,9 +167,23 @@ npm run dev                # Next.js on :3000, FastAPI on :8000
 ```bash
 python3 -m pytest -q       # 127 tests
 ruff check . && npm run typecheck && npm run build
+npx playwright test        # 5 E2E specs on the production build
 ```
 
-GitHub Actions (`.github/workflows/`): `ci.yml` (ruff, pytest, typecheck, build, pip-audit, npm audit, gitleaks over full history), `codeql.yml` (Python + TypeScript), and `deploy.yml` (production deploy to Vercel only after CI succeeds on `main`). Dependabot covers npm, pip and Actions.
+`ci.yml` is a 6-stage pipeline:
+
+| Stage | Job | What it runs |
+|---|---|---|
+| 1 | Frontend Quality | `tsc` on Node 20 / 22 / 24 (main) |
+| 1 | Backend Quality | ruff, pytest |
+| 2 | Secret Scanning | gitleaks over the full history |
+| 2 | Dependency Audit | `npm audit` (production), `pip-audit` |
+| 3 | Build Verification | `next build`, bundle budget, landing/deck number check |
+| 4 | E2E Tests | Playwright on the built app |
+| 5 | Performance | Lighthouse CI on `/` and `/runs` (accessibility >= 0.9 gates) |
+| 6 | Deploy Gate | all stages green on `main` |
+
+Then `deploy.yml` cuts a semantic-version GitHub release from Angular commit messages (`feat:` minor, `fix:` patch, `!` major) and deploys that version to Vercel; the landing page and deck show it. `codeql.yml` scans Python + TypeScript; Dependabot covers npm, pip and Actions.
 
 ## 📁 Project Structure
 

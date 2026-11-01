@@ -22,3 +22,6 @@ coverage/
 *.tsbuildinfo
 # generated at build (scripts/write-version.mjs)
 public/version.json
+playwright-report/
+test-results/
+.lighthouseci/
