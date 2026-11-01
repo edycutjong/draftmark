@@ -8,6 +8,8 @@
 
   [![Live Demo](https://img.shields.io/badge/🚀_Live-Demo-06b6d4?style=for-the-badge)](https://draftmark.edycu.dev)
   [![Demo Video](https://img.shields.io/badge/▶️_Demo-Video-FF0000?style=for-the-badge)](https://youtu.be/9vRaziU6X1g)
+  [![X Thread](https://img.shields.io/badge/𝕏_Launch-Thread-000000?style=for-the-badge)](https://x.com/edycutjong/status/2116769107945435480)
+  [![dev.to](https://img.shields.io/badge/dev.to-Write--up-0A0A0A?style=for-the-badge&logo=devdotto&logoColor=white)](https://dev.to/edycutjong/when-a-model-writes-the-maths-make-it-sit-the-booklets-own-exam-first-28h9)
   [![Evidence](https://img.shields.io/badge/🧾_Live-Evidence-f59e0b?style=for-the-badge)](https://draftmark.edycu.dev/evidence)
   [![Pitch Deck](https://img.shields.io/badge/🎞️_Pitch-Deck-8E2B22?style=for-the-badge)](https://draftmark.edycu.dev/deck)
   [![Built for Meta](https://img.shields.io/badge/Cerebral_Valley-Meta_AI_Developer_Hackathon-8b5cf6?style=for-the-badge)](https://cerebralvalley.ai/e/meta-ai-developer-hackathon)
