@@ -77,7 +77,8 @@ def _meta_fail(e: Exception) -> JSONResponse:
         limits.trip_budget(str(e))
         return _err(503, "BUDGET", "Meta API billing limit: live runs are off on this instance")
     if isinstance(e, meta.MetaError):
-        return _err(502, "UPSTREAM", f"Meta API HTTP {str(e.args[0])[:1]}xx" if e.args else "Meta API error")
+        status = e.status if isinstance(e.status, int) and 100 <= e.status <= 599 else 0
+        return _err(502, "UPSTREAM", f"Meta API HTTP {status // 100}xx" if status else "Meta API error")
     return _err(502, "UPSTREAM", type(e).__name__)
 
 
@@ -173,6 +174,10 @@ def _img(data_url: str) -> Image.Image:
     return im.convert("RGB")
 
 
+_IMG_ERRORS = {m: m for m in ("frames must be JPEG/PNG data URLs", "frame image > 2 MB",
+                                "unreadable frame image", "frame image > 4 MP")}
+
+
 @app.post("/api/py/labels")
 async def labels_ep(req: Request):
     """Two frames >= 1 s apart (JPEG data URLs, cropped like the clip) + geometry -> Spark 1.3 reads both
@@ -210,7 +215,8 @@ async def labels_ep(req: Request):
     try:
         imgs = {f: _img(u) for f, u in frames.items()}
     except ValueError as e:
-        return _err(400, "PAYLOAD", str(e))
+        # fixed client-facing texts only (CodeQL py/stack-trace-exposure): never echo an exception string
+        return _err(400, "PAYLOAD", _IMG_ERRORS.get(str(e), "bad frame image"))
     run_id = body.get("run_id") or f"live-{int(time.time())}"
     run_id = (geom.get("provenance") or {}).get("run_id") or run_id  # sealed: a body run id cannot borrow a ride
     blocked = _gate(req, False, None, run_id, ride=True)
@@ -372,7 +378,8 @@ async def survey_ep(req: Request):
             p = survey.proven(body.get("booklet", "trieste"))
         except RuntimeError as e:  # a stale or corrupt proof is a certified refusal, not a 500
             p = None
-            srv = {"program_author": None, "program_error": True, "error": str(e)[:200], "out_of_table": False}
+            srv = {"program_author": None, "program_error": True, "error": f"proof: {type(e).__name__}",
+                   "out_of_table": False}
             st = {"verdict": "FAIL", "failed_rows": [], "fallback": None}
     if mode != "barge" and p is not None:
         if srv_in:
@@ -440,7 +447,7 @@ def probe_sandbox(code: str | None = None):
         soft, hard = resource.getrlimit(resource.RLIMIT_NPROC)
         out["nproc_limit_parent"] = [soft, hard]
     except Exception as e:  # pragma: no cover
-        out["nproc_limit_parent"] = str(e)
+        out["nproc_limit_parent"] = type(e).__name__
     r = sandbox.run(_PROBE_OK, {"booklet": {}, "cases": [{"x": 4}]}, nproc=True)
     out["nproc0_launch_ok"] = r.ok
     out["total_ms"] = int((time.time() - t0) * 1000)

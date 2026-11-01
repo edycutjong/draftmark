@@ -18,6 +18,12 @@ import { SurveyResult } from "@/components/SurveyResult";
 import { ModelStrip } from "@/components/ModelStrip";
 
 type Err = { reason: Reason; detail: string };
+// Only our own clips (same-origin path) or the user's local file (blob:) may become a <video> src.
+function safeClipUrl(u: string): string | null {
+  if (u.startsWith("blob:")) return u;
+  return /^\/clips\/[\w.-]+\.mp4$/.test(u) ? u : null;
+}
+
 type Async<T> = { state: "idle" } | { state: "busy"; t0: number } | { state: "done"; data: T; ms: number } | { state: "error"; err: Err };
 
 /** Station 1 without a fixture clip: the live step anyone can run (no judge code, no model call). */
@@ -258,7 +264,7 @@ export function SurveyFlow() {
     const r = await api<MeasureResp>("measure", body);
     if (!r.ok) return setMeasure({ state: "error", err: { reason: r.reason, detail: r.detail } });
     pushUsage(r.data.usage);
-    if (kind === "fixture" && r.data.clip.file) setVideoUrl(r.data.clip.file);
+    if (kind === "fixture" && r.data.clip.file) setVideoUrl(safeClipUrl(r.data.clip.file));
     setFrameIdx(r.data.geometry.label_frames?.[0] ?? 0);
     setMeasure({ state: "done", data: r.data, ms: r.ms });
   }

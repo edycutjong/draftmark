@@ -18,6 +18,7 @@
   ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
   ![Python](https://img.shields.io/badge/Python_FastAPI-3776AB?style=flat&logo=python&logoColor=white)
   ![Meta Model API](https://img.shields.io/badge/Meta_Model_API-SAM_3.1_·_Muse_Wonder_1.0_·_Muse_Spark_1.3-0866FF?style=flat)
+  [![Release](https://img.shields.io/github/v/release/edycutjong/draftmark?logo=github&color=0e7490)](https://github.com/edycutjong/draftmark/releases)
   [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 
 </div>
@@ -78,6 +79,10 @@ claiming others lack it, is the combination: a wave-averaged reading from a vide
 the survey program and must reproduce the booklet's printed conditions with it before it computes, with refusal enforced by code.
 
 ## 🏗️ Architecture & Tech Stack
+
+<p align="center">
+  <img src="docs/assets/architecture.png" width="100%" alt="DraftMark architecture. Per clip, live: a phone clip of one draft-mark column (at most 64 frames, 3 MB) goes to POST /measure, where SAM 3.1 segments the video with two concepts, 'white number' and 'water'; an HMAC-signed hand-off to POST /labels, where Muse Spark 1.3 reads the painted marks as strict JSON on two frames at least 1 s apart and five code checks must pass; an HMAC-signed hand-off to POST /draft, where code fits least squares on dry marks, drops outlier frames by MAD and averages out the swell to a draft d plus or minus u (clip dB7X: 12.761 m, u 0.086 m). Per vessel: Muse Wonder 1.0, offline, writes the survey program from the booklet pages; a sandbox with an AST gate, rlimits and no network self-tests it on the booklet's 22 printed conditions (22/22 within 0.1 %, 2 probes raise, 200 randomized cases); proven.json pins it by sha256. POST /survey runs it in one sandbox launch with drafts taken from the signed token, and code issues a certificate (Trieste condition 4.1: 17825.8 t vs printed 17827.7 t) or refuses it (OUT_OF_TABLE, UNSIGNED; dB7X refused OUT_OF_TABLE). Runtime: Vercel Hobby, Next.js 15 and React 19 UI, a Python FastAPI function with maxDuration 300 s, no database, a LIVE_MODE=off kill switch that serves the recorded run, per-IP caps and a BUDGET flag on a Meta 402.">
+</p>
 
 One Next.js app on Vercel plus one Python FastAPI function that holds every model call and every number. No
 database; the browser carries each station's HMAC-signed output to the next, and each station verifies the previous
