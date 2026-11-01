@@ -8,7 +8,7 @@
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#17120F">
 <meta property="og:title" content="DraftMark — pitch deck">
-<meta property="og:image" content="https://draftmark.edycu.dev/og-image.png?v=6">
+<meta property="og:image" content="https://draftmark.edycu.dev/og-image.png?v=7">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
 <link rel="preload" href="../fonts/anybody-100-900.woff2" as="font" type="font/woff2" crossorigin>
 <style>
@@ -145,7 +145,23 @@ p.say b{color:var(--ink)}
 .pin{background:#120e0c;border-radius:10px;padding:20px;box-shadow:0 30px 50px -30px rgba(40,25,10,.6);margin:0 0 46px}
 .pin img{display:block;width:100%;height:auto}
 .pin figcaption{font:400 24px/1.4 var(--font-data);color:#B8AEA3;padding:14px 4px 0}
-/* 7 · synthetic */
+/* 7 · architecture */
+.arch{padding:72px 90px 64px 150px;justify-content:flex-start}
+.arch .eyebrow{margin-bottom:22px}
+.arch__grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:40px;align-items:end;min-height:0;flex:1}
+.arch__fig{margin:0;align-self:start;max-height:100%}
+.arch__fig img{display:block;width:100%;height:auto;max-height:880px;object-fit:contain;object-position:left top;border:1.5px solid var(--rule);border-radius:10px}
+.arch__key{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:22px;font:400 22px/1.35 var(--font-data);color:var(--muted)}
+.arch__key li{display:flex;gap:14px;align-items:center}
+.arch__key i{flex:none;width:34px;height:22px;border-radius:3px}
+.arch__key .k-meta{border:2px solid var(--before);background:var(--plate)}
+.arch__key .k-off{border:2px dashed var(--before)}
+.arch__key .k-code{border:2px solid #4A3D35;background:var(--plate)}
+.arch__key .k-hmac{height:4px;background:var(--ink)}
+.arch__key .k-pass{height:4px;background:var(--after)}
+.arch__key .arch__note{display:block;border-top:1.5px solid var(--rule);padding-top:22px;font-size:21px;color:#B5ABA1}
+.arch__key .arch__note b{color:var(--after);font-weight:500}
+/* 8 · synthetic */
 .nums{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:40px;border-top:1.5px solid var(--rule)}
 .nums > div{padding:44px 40px 0 0}
 .nums b{display:block;font:800 100px/1 var(--font-display);font-stretch:62%}
@@ -337,8 +353,25 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
   <aside class="notes">No model writes a figure on the certificate. The refusal is the design: the program will not extrapolate past the hydrostatic table.</aside>
 </section>
 
-<!-- 7 · accuracy, honestly -->
-<section class="slide" data-line="007" aria-label="Accuracy, honestly">
+<!-- 7 · architecture: the whole system on one slide -->
+<section class="slide arch" data-line="007" aria-label="Architecture">
+  <p class="eyebrow">Architecture · how it fits together</p>
+  <div class="arch__grid">
+    <figure class="arch__fig"><img src="../media/architecture-slide.webp" width="2600" height="1674" alt="DraftMark architecture. Per clip, live: phone clip, then SAM 3.1 finds the marks and the water edge, then Muse Spark 1.3 reads the painted marks with five code checks, then code averages the swell to d ± u; each hand-off is HMAC-signed. Per vessel: Muse Wonder 1.0 writes the program offline, a no-network sandbox self-tests it on 22 of 22 printed booklet rows, the proven program is pinned by sha256, and the survey runs it. Code issues a certificate or refuses: OUT_OF_TABLE, UNSIGNED."></figure>
+    <ul class="arch__key">
+      <li><i class="k-meta"></i><span>Meta model call</span></li>
+      <li><i class="k-off"></i><span>Offline, cached</span></li>
+      <li><i class="k-code"></i><span>Code, no model</span></li>
+      <li><i class="k-hmac"></i><span>HMAC hand-off, verified next</span></li>
+      <li><i class="k-pass"></i><span>Settled / PASS</span></li>
+      <li class="arch__note">No database: the browser carries the signed JSON. <b>LIVE_MODE=off</b> falls back to a recorded run.</li>
+    </ul>
+  </div>
+  <aside class="notes">Top row runs per clip, live: every station is one stateless endpoint and signs its output. Bottom row runs once per vessel: Wonder writes the program, the sandbox proves it on the booklet, then it is pinned. Code alone writes the certificate, or refuses.</aside>
+</section>
+
+<!-- 8 · accuracy, honestly -->
+<section class="slide" data-line="008" aria-label="Accuracy, honestly">
   <span class="tag">SYNTHETIC</span>
   <h2 style="max-width:none">Checked against a known truth.<br><em>A rendered one, for now.</em></h2>
   <p class="say" style="max-width:56ch">The real clips end in refusal, so the weight is checked on twelve loads of a barge drawn in code: waterline from physics, swell and camera noise added on purpose.</p>
@@ -351,8 +384,8 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
   <aside class="notes">Twelve loads of a barge drawn in code, truth by physics. SAM segments the rendered numerals and Spark reads them, live; SAM finds no rendered water, so the water edge is a colour threshold. It checks the chain, not real water.</aside>
 </section>
 
-<!-- 8 · three Meta models, one job each, each with its receipt -->
-<section class="slide" data-line="008" aria-label="Meta models and their receipts">
+<!-- 9 · three Meta models, one job each, each with its receipt -->
+<section class="slide" data-line="009" aria-label="Meta models and their receipts">
   <p class="eyebrow">Three Meta models · one load-bearing job each · code does the rest</p>
   <h2 style="max-width:none">Each model does <em>one job, with a receipt.</em></h2>
   <div class="jobs">
@@ -365,8 +398,8 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
   <aside class="notes">Each model owns one stage: without SAM there is nothing to measure; without Spark the labels must be typed in (marked degraded); without Wonder there is no model-written program for a new booklet.</aside>
 </section>
 
-<!-- 9 · what is new, measured against our own baselines (evidence/selftest-booklet.md) -->
-<section class="slide" data-line="009" aria-label="What is new">
+<!-- 10 · what is new, measured against our own baselines (evidence/selftest-booklet.md) -->
+<section class="slide" data-line="010" aria-label="What is new">
   <p class="eyebrow">What is new · measured against our own baselines</p>
   <h2 style="max-width:none">Why an agent, <em>not a template.</em></h2>
   <div class="nums ladder9">
@@ -378,8 +411,8 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
   <aside class="notes">Printed loading conditions of the Trieste booklet reproduced within 0.1 %: a generic textbook template 0/22, the booklet's section 3.1 applied verbatim 14/22, our hand-written reference 22/22, Wonder's program 22/22 after two regenerations. Nearest neighbours seen in public material (draft-survey spreadsheets and apps, academic draft-line readers, laser and radar draft systems, draft tubes) are not benchmarked here.</aside>
 </section>
 
-<!-- 10 · honest limits -->
-<section class="slide paper" data-line="010" aria-label="Honest limits">
+<!-- 11 · honest limits -->
+<section class="slide paper" data-line="011" aria-label="Honest limits">
   <p class="eyebrow">Honest limits · README</p>
   <h2>What it does <em>not</em> prove yet.</h2>
   <ul class="ledger">
@@ -392,8 +425,8 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
   <aside class="notes">Condensed from README Honest limits 1-6 (limit 4 folded into §2).</aside>
 </section>
 
-<!-- 11 · try it -->
-<section class="slide" data-line="011" aria-label="Try it">
+<!-- 12 · try it -->
+<section class="slide" data-line="012" aria-label="Try it">
   <div class="glow"></div>
   <div class="cols">
     <div>
@@ -410,7 +443,7 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
 
 <nav class="hud" aria-label="Deck controls">
   <button type="button" id="prev">← Prev</button>
-  <span id="count">01 / 11</span>
+  <span id="count">01 / 12</span>
   <span>← → keys · N notes · P print</span>
   <button type="button" id="next">Next →</button>
 </nav>
@@ -537,10 +570,22 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
 </script>
 <script>
 // Current release, written at build time by scripts/write-version.mjs (the static text is the fallback).
-fetch("/version.json").then(function (r) { return r.ok ? r.json() : null; }).then(function (v) {
-  if (!v || !v.version) return;
-  document.querySelectorAll("[data-app-version]").forEach(function (el) { el.textContent = v.version; });
-}).catch(function () {});
+// Fetched after load, off the critical path (the static text already shows a version).
+function dmVersion() {
+  fetch("/version.json").then(function (r) { return r.ok ? r.json() : null; }).then(function (v) {
+    if (!v || !v.version) return;
+    document.querySelectorAll("[data-app-version]").forEach(function (el) { el.textContent = v.version; });
+  }).catch(function () {});
+}
+// only when a version stamp scrolls into view (the footer), so it is never a request on the first paint
+(function () {
+  var els = document.querySelectorAll("[data-app-version]");
+  if (!("IntersectionObserver" in window)) return void addEventListener("load", dmVersion);
+  var io = new IntersectionObserver(function (es) {
+    if (es.some(function (e) { return e.isIntersecting; })) { io.disconnect(); dmVersion(); }
+  }, { rootMargin: "0px 0px 300px 0px" });
+  els.forEach(function (el) { io.observe(el); });
+})();
 </script>
 </body>
 </html>

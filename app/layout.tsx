@@ -9,7 +9,7 @@ const data = Martian_Mono({ subsets: ["latin"], variable: "--ff-data", display: 
 
 // Social card: public/og-image.png is EXACTLY 1200x630 (< 500 KB). Bump ?v= whenever the image changes —
 // platforms cache cards by URL, so a regenerated image without a new query string is never seen.
-const OG_IMAGE = "/og-image.png?v=6";
+const OG_IMAGE = "/og-image.png?v=7";
 const CARD_TITLE = "DraftMark — read a ship's draft from ten seconds of video";
 const CARD_DESCRIPTION =
   "SAM 3.1 finds the marks and water; code averages the waterline; Muse Wonder 1.0 writes the program, the booklet grades it.";

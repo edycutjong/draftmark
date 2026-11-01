@@ -16,11 +16,11 @@
 <meta property="og:url" content="https://draftmark.edycu.dev/judge">
 <meta property="og:title" content="DraftMark — judge path">
 <meta property="og:description" content="Four stops, no upload and no judge code: Wonder's program re-run live, a real hull measured then refused, three attempts, two certificates.">
-<meta property="og:image" content="https://draftmark.edycu.dev/og-image.png?v=6">
+<meta property="og:image" content="https://draftmark.edycu.dev/og-image.png?v=7">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://draftmark.edycu.dev/og-image.png?v=6">
+<meta name="twitter:image" content="https://draftmark.edycu.dev/og-image.png?v=7">
 <link rel="preload" href="/fonts/anybody-100-900.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/ibm-plex-sans-400-600.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/martian-mono-400-600.woff2" as="font" type="font/woff2" crossorigin>
@@ -429,10 +429,22 @@ document.documentElement.classList.add("js");
 </script>
 <script>
 // Current release, written at build time by scripts/write-version.mjs (the static text is the fallback).
-fetch("/version.json").then(function (r) { return r.ok ? r.json() : null; }).then(function (v) {
-  if (!v || !v.version) return;
-  document.querySelectorAll("[data-app-version]").forEach(function (el) { el.textContent = v.version; });
-}).catch(function () {});
+// Fetched after load, off the critical path (the static text already shows a version).
+function dmVersion() {
+  fetch("/version.json").then(function (r) { return r.ok ? r.json() : null; }).then(function (v) {
+    if (!v || !v.version) return;
+    document.querySelectorAll("[data-app-version]").forEach(function (el) { el.textContent = v.version; });
+  }).catch(function () {});
+}
+// only when a version stamp scrolls into view (the footer), so it is never a request on the first paint
+(function () {
+  var els = document.querySelectorAll("[data-app-version]");
+  if (!("IntersectionObserver" in window)) return void addEventListener("load", dmVersion);
+  var io = new IntersectionObserver(function (es) {
+    if (es.some(function (e) { return e.isIntersecting; })) { io.disconnect(); dmVersion(); }
+  }, { rootMargin: "0px 0px 300px 0px" });
+  els.forEach(function (el) { io.observe(el); });
+})();
 </script>
 </body>
 </html>

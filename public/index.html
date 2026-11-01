@@ -16,7 +16,7 @@
 <meta property="og:url" content="https://draftmark.edycu.dev/">
 <meta property="og:title" content="DraftMark — read a ship's draft from ten seconds of video">
 <meta property="og:description" content="SAM 3.1 finds the marks and water; code averages the waterline; Muse Wonder 1.0 writes the program, the booklet grades it.">
-<meta property="og:image" content="https://draftmark.edycu.dev/og-image.png?v=6">
+<meta property="og:image" content="https://draftmark.edycu.dev/og-image.png?v=7">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="DraftMark — time-average a ship's waterline from ten seconds of video of its draft marks; Muse Wonder's program reproduced 22/22 printed booklet conditions">
@@ -24,7 +24,7 @@
 <meta name="twitter:creator" content="@edycutjong">
 <meta name="twitter:title" content="DraftMark — read a ship's draft from ten seconds of video">
 <meta name="twitter:description" content="SAM 3.1 finds the marks and water; code averages the waterline; Muse Wonder 1.0 writes the program, the booklet grades it.">
-<meta name="twitter:image" content="https://draftmark.edycu.dev/og-image.png?v=6">
+<meta name="twitter:image" content="https://draftmark.edycu.dev/og-image.png?v=7">
 <link rel="preload" href="fonts/anybody-100-900.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/ibm-plex-sans-400-600.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/martian-mono-400-600.woff2" as="font" type="font/woff2" crossorigin>
@@ -265,6 +265,7 @@ h2 em{font-style:normal;color:var(--after)}
 
 /* ---------- demo pair: terminal replay + real screen ---------- */
 .sec--demo{background:linear-gradient(180deg,#1b1411,var(--bg))}
+.arch{margin:32px 0 0}.arch>a{display:block;border:1px solid var(--rule);border-radius:6px;overflow:hidden;background:var(--bg);box-shadow:0 30px 60px -36px rgba(0,0,0,.9);transition:border-color .18s}.arch>a:hover{border-color:var(--muted)}.arch img{display:block;width:100%;height:auto}.arch .cap a{color:inherit;text-decoration:underline;text-underline-offset:3px}
 .tabs{display:flex;gap:6px;margin:0 0 18px;flex-wrap:wrap}
 .tabs button{font:500 13px/1 var(--font-data);color:var(--muted);background:transparent;border:1px solid var(--rule);border-radius:3px;padding:12px 14px;cursor:pointer;min-height:44px;transition:color .18s,border-color .18s,background .18s}
 .tabs button:hover{color:var(--ink);border-color:var(--muted)}
@@ -362,7 +363,7 @@ h2 em{font-style:normal;color:var(--after)}
   <div class="wrap hero__grid">
     <div>
       <p class="where stag"><b>DraftMark</b> · measures a moving waterline over 60 frames of video</p>
-      <h1 class="stag"><span class="l">The sea keeps</span> <span class="l">moving. The reading</span> <em class="l">finally holds still.</em></h1>
+      <h1><span class="l">The sea keeps</span> <span class="l">moving. The reading</span> <em class="l">finally holds still.</em></h1>
       <p class="lede stag">Before dawn, a surveyor must turn a moving waterline into the one draft reading the cargo figure hangs on. On a 2&times; crop of the mark column, SAM&nbsp;3.1 finds the marks in <b data-proof="evidence/core-run-dB7X.md">60 of 60 frames</b> of a real hull clip; separately, the program Muse Wonder&nbsp;1.0 wrote must reproduce one booklet&rsquo;s printed conditions before it may compute (after two regenerations, <b data-proof="evidence/selftest-booklet.md">22 of 22</b>).</p>
       <div class="cta stag">
         <a class="btn" href="https://github.com/edycutjong/draftmark"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.22 1.88.87 2.34.66.07-.52.28-.87.5-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.22 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.66 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0Z"/></svg>GitHub</a>
@@ -376,7 +377,7 @@ h2 em{font-style:normal;color:var(--after)}
     <figure class="inst" id="inst" style="margin:0">
       <div class="inst__top"><span class="rec" id="recLabel">clip dB7X · recorded, redrawn 1×</span><span>SAM 3.1 + code · 6 fps</span></div>
       <svg id="vis" viewBox="0 0 640 520" role="img" aria-labelledby="visT">
-        <title id="visT">Real clip dB7X: the waterline measured in each of 60 frames moves across the painted marks 6, 8, 13M and 2; the running mean settles and holds at 12.761 metres, plus or minus 0.086 metres (repeatability).</title>
+        <title id="visT">Real clip dB7X: 60 per-frame waterline readings settle at 12.761 m ± 0.086 m</title>
         <defs>
           <linearGradient id="hullG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1c1512"/><stop offset=".62" stop-color="#17120F"/><stop offset=".63" stop-color="#5b1d17"/><stop offset="1" stop-color="#8E2B22"/></linearGradient>
           <linearGradient id="seaG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6F8C8A" stop-opacity=".78"/><stop offset="1" stop-color="#22302e" stop-opacity=".96"/></linearGradient>
@@ -470,7 +471,7 @@ h2 em{font-style:normal;color:var(--after)}
     </div>
     <div class="rv">
       <div class="frame"><div class="frame__bar"><i></i><i></i><i></i><span>draftmark.edycu.dev/runs · clip dB7X</span></div>
-        <img src="media/measure-grid.webp" width="1400" height="1037" loading="lazy" decoding="async" alt="The product's measurement view for clip dB7X: SAM 3.1 boxes on the painted marks, the 60 per-frame drafts with the running mean settling at 12.761 m, and the result table (repeatability ±0.0864 m, 60 of 60 frames kept).">
+        <img src="media/measure-grid.webp" width="1400" height="1037" loading="lazy" decoding="async" alt="Measurement view, clip dB7X: SAM 3.1 boxes on the marks; the mean settles at 12.761 m">
       </div>
       <p class="cap">Recorded run <span class="data">rec-db7x-20261031</span>. Code averages through the swell: MAD outliers out, N<sub>eff</sub> 3.55 from the autocorrelation, u&nbsp;≈&nbsp;sd/√N<sub>eff</sub> on this clip.</p>
     </div>
@@ -522,9 +523,9 @@ h2 em{font-style:normal;color:var(--after)}
       </ol>
     </div>
     <div class="stamps rv">
-      <figure class="pin" style="margin:0"><img src="media/stamp-refuse.webp" width="1220" height="248" loading="lazy" decoding="async" alt="Certificate stamp: REFUSE, OUT_OF_TABLE, matrix row 4. The draft is outside the vessel's hydrostatic table: the program refuses to extrapolate."><figcaption>rec-db7x-20261031 · real hull · d 12.761 m</figcaption></figure>
-      <figure class="pin" style="margin:0"><img src="media/stamp-issue.webp" width="1356" height="230" loading="lazy" decoding="async" alt="Certificate stamp: ISSUE WITH WARNING, matrix row 9, POSITIONS_ENTERED: some draft positions were entered, not measured from a clip (6 positions entered)."><figcaption>rec-trieste-20261031 · booklet condition 4.1 · 6 drafts entered</figcaption></figure>
-      <figure class="pin" style="margin:0"><img src="media/certificate-db7x.webp" width="1100" height="993" loading="lazy" decoding="async" alt="Top of the printable certificate for recorded run rec-db7x-20261031, with the measured draft, the label checks and the REFUSE decision."><figcaption>printable certificate · draftmark.edycu.dev/certificate/rec-db7x-20261031</figcaption></figure>
+      <figure class="pin" style="margin:0"><img src="media/stamp-refuse.webp" width="1220" height="248" loading="lazy" decoding="async" alt="Certificate stamp: REFUSE, OUT_OF_TABLE, matrix row 4"><figcaption>rec-db7x-20261031 · real hull · d 12.761 m</figcaption></figure>
+      <figure class="pin" style="margin:0"><img src="media/stamp-issue.webp" width="1356" height="230" loading="lazy" decoding="async" alt="Certificate stamp: ISSUE WITH WARNING, matrix row 9, 6 positions entered"><figcaption>rec-trieste-20261031 · booklet condition 4.1 · 6 drafts entered</figcaption></figure>
+      <figure class="pin" style="margin:0"><img src="media/certificate-db7x.webp" width="1100" height="993" loading="lazy" decoding="async" alt="Top of the printable certificate for run rec-db7x-20261031, ending in REFUSE"><figcaption>printable certificate · draftmark.edycu.dev/certificate/rec-db7x-20261031</figcaption></figure>
     </div>
   </div>
 </section>
@@ -543,6 +544,20 @@ h2 em{font-style:normal;color:var(--after)}
       <div><b data-proof="evidence/eval-synthetic.md">0.12 %</b><p>median cargo error vs the synthetic truth; the draft reads slightly low on 10 of 12 loads</p></div>
       <div><b data-proof="evidence/eval-synthetic.md">0 / 12</b><p>clips where SAM found the rendered water; the water mask is a stand-in</p></div>
     </div>
+  </div>
+</section>
+
+<!-- ===================== ARCHITECTURE (unnumbered: sums up 001–005) ===================== -->
+<section class="sec sec--arch" id="architecture" data-no="" aria-labelledby="archH">
+  <div class="wrap">
+    <div class="rv">
+      <p class="line-no">How it fits together</p>
+      <h2 id="archH">Three models, one pinned program, <em>one signed certificate.</em></h2>
+    </div>
+    <figure class="arch rv">
+      <a href="https://github.com/edycutjong/draftmark/blob/main/docs/assets/architecture.png" title="Full-size architecture diagram"><img src="media/architecture.webp" width="1600" height="1496" loading="lazy" decoding="async" alt="DraftMark architecture: per-clip live pipeline, per-vessel proven program, certificate or refusal"></a>
+      <figcaption class="cap">Meta model calls in sea-green, code in grey, the settled draft in amber. <a href="https://github.com/edycutjong/draftmark/blob/main/docs/ARCHITECTURE.md">docs/ARCHITECTURE.md</a></figcaption>
+    </figure>
   </div>
 </section>
 
@@ -573,7 +588,7 @@ h2 em{font-style:normal;color:var(--after)}
 {"run": "rec-db7x-20261031", "kept": 60, "usd": 0.0397}
 </pre></div>
       <div><div class="frame"><div class="frame__bar"><i></i><i></i><i></i><span>draftmark.edycu.dev/runs</span></div>
-        <img src="media/wave-chart.webp" width="1400" height="709" loading="lazy" decoding="async" alt="The product's wave chart for clip dB7X: per-frame drafts in sea-glass, the running mean in amber settling at 12.761 m, plus or minus 0.0864 m."></div>
+        <img src="media/wave-chart.webp" width="1400" height="709" loading="lazy" decoding="async" alt="Wave chart, clip dB7X: per-frame drafts and the running mean settling at 12.761 m"></div>
         <p class="cap">The measurement stands (repeatability only, no ground truth). No cargo is computed for a real-hull test clip.</p></div>
     </div>
     <div class="panel pair" id="p-tri" role="tabpanel" aria-labelledby="tab-tri" hidden>
@@ -589,7 +604,7 @@ h2 em{font-style:normal;color:var(--after)}
 {"selftest": "22/22 PASS", "disp": 17825.8, "printed": 17827.7}
 </pre></div>
       <div><div class="frame"><div class="frame__bar"><i></i><i></i><i></i><span>draftmark.edycu.dev/runs</span></div>
-        <img src="media/program-proof.webp" width="1200" height="1337" loading="lazy" decoding="async" alt="The product's program proof: the self-test table with 22 of 22 printed booklet conditions passing, and Wonder's three attempts (gate reject, 14 of 22, 22 of 22)."></div>
+        <img src="media/program-proof.webp" width="1200" height="1337" loading="lazy" decoding="async" alt="Program proof: 22 of 22 booklet conditions pass after Wonder's three attempts"></div>
         <p class="cap">No cargo figure: no lightship or initial survey was entered.</p></div>
     </div>
   </div>
@@ -601,7 +616,7 @@ h2 em{font-style:normal;color:var(--after)}
     <h2 class="rv">What stops it <em>from lying</em></h2>
     <div class="bento">
       <article class="cell cell--a rv">
-        <svg class="glyph" viewBox="0 0 520 170" role="img" aria-label="The generated program passes a static gate, then runs in a sandbox subprocess with no network; JSON goes in and comes out."><rect x="1" y="1" width="518" height="168" rx="6" fill="none" stroke="#3A2E28" stroke-width="2"/><text x="16" y="24" font-family="Martian Mono,monospace" font-size="12" fill="#9A8F86">server (parent) spawns →</text><rect x="196" y="44" width="300" height="104" rx="5" fill="rgba(242,179,61,.05)" stroke="#F2B33D" stroke-width="2"/><text x="212" y="68" font-family="Martian Mono,monospace" font-size="12" fill="#F2B33D">child subprocess · no network</text><text x="212" y="98" font-family="Martian Mono,monospace" font-size="13" fill="#F2EEE6">program.py  (sha 4b3aa8cd…)</text><text x="212" y="126" font-family="Martian Mono,monospace" font-size="12" fill="#9A8F86">JSON in → JSON out</text><text x="16" y="92" font-family="Martian Mono,monospace" font-size="12" fill="#F2EEE6">static gate</text><text x="16" y="112" font-family="Martian Mono,monospace" font-size="11" fill="#DF5E44">globals, dunders,</text><text x="16" y="128" font-family="Martian Mono,monospace" font-size="11" fill="#DF5E44">str.format: refused</text><path d="M150 98 H190" stroke="#F2B33D" stroke-width="2"/><path d="M184 92 l8 6 -8 6" fill="none" stroke="#F2B33D" stroke-width="2"/><path d="M496 30 L510 16 M510 30 L496 16" stroke="#D9543B" stroke-width="2"/><text x="440" y="27" font-family="Martian Mono,monospace" font-size="11" fill="#9A8F86">net</text></svg>
+        <svg class="glyph" viewBox="0 0 520 170" role="img" aria-label="Static gate, then a no-network sandbox subprocess; JSON in, JSON out"><rect x="1" y="1" width="518" height="168" rx="6" fill="none" stroke="#3A2E28" stroke-width="2"/><text x="16" y="24" font-family="Martian Mono,monospace" font-size="12" fill="#9A8F86">server (parent) spawns →</text><rect x="196" y="44" width="300" height="104" rx="5" fill="rgba(242,179,61,.05)" stroke="#F2B33D" stroke-width="2"/><text x="212" y="68" font-family="Martian Mono,monospace" font-size="12" fill="#F2B33D">child subprocess · no network</text><text x="212" y="98" font-family="Martian Mono,monospace" font-size="13" fill="#F2EEE6">program.py  (sha 4b3aa8cd…)</text><text x="212" y="126" font-family="Martian Mono,monospace" font-size="12" fill="#9A8F86">JSON in → JSON out</text><text x="16" y="92" font-family="Martian Mono,monospace" font-size="12" fill="#F2EEE6">static gate</text><text x="16" y="112" font-family="Martian Mono,monospace" font-size="11" fill="#DF5E44">globals, dunders,</text><text x="16" y="128" font-family="Martian Mono,monospace" font-size="11" fill="#DF5E44">str.format: refused</text><path d="M150 98 H190" stroke="#F2B33D" stroke-width="2"/><path d="M184 92 l8 6 -8 6" fill="none" stroke="#F2B33D" stroke-width="2"/><path d="M496 30 L510 16 M510 30 L496 16" stroke="#D9543B" stroke-width="2"/><text x="440" y="27" font-family="Martian Mono,monospace" font-size="11" fill="#9A8F86">net</text></svg>
         <h3>Generated code never runs in the server process</h3>
         <p>A static gate, then a no-network sandbox subprocess, JSON in and out. Two escapes, <span class="data">re.enum.sys</span> from our own testing and a format-string walk from architecture review, are regression tests now.</p>
         <span class="chip">api/_core/sandbox.py</span><span class="chip">tests/test_sandbox.py</span>
@@ -835,9 +850,8 @@ document.documentElement.classList.add("js");
           io.unobserve(e.target);
         });
       }, { rootMargin: "0px 0px -8% 0px" });
-      [].forEach.call(document.querySelectorAll(".rv"), function (e) {
-        if (e.getBoundingClientRect().top > window.innerHeight) io.observe(e); else e.classList.add("in");
-      });
+      // no layout reads here (a forced reflow on load): the observer reports what is already in view on its first callback
+      [].forEach.call(document.querySelectorAll(".rv"), function (e) { io.observe(e); });
       cus.forEach(function (c) { io.observe(c); });
       io.observe($("replay"));
       var so = new IntersectionObserver(function (es) {
@@ -852,10 +866,22 @@ document.documentElement.classList.add("js");
 </script>
 <script>
 // Current release, written at build time by scripts/write-version.mjs (the static text is the fallback).
-fetch("/version.json").then(function (r) { return r.ok ? r.json() : null; }).then(function (v) {
-  if (!v || !v.version) return;
-  document.querySelectorAll("[data-app-version]").forEach(function (el) { el.textContent = v.version; });
-}).catch(function () {});
+// Fetched after load, off the critical path (the static text already shows a version).
+function dmVersion() {
+  fetch("/version.json").then(function (r) { return r.ok ? r.json() : null; }).then(function (v) {
+    if (!v || !v.version) return;
+    document.querySelectorAll("[data-app-version]").forEach(function (el) { el.textContent = v.version; });
+  }).catch(function () {});
+}
+// only when a version stamp scrolls into view (the footer), so it is never a request on the first paint
+(function () {
+  var els = document.querySelectorAll("[data-app-version]");
+  if (!("IntersectionObserver" in window)) return void addEventListener("load", dmVersion);
+  var io = new IntersectionObserver(function (es) {
+    if (es.some(function (e) { return e.isIntersecting; })) { io.disconnect(); dmVersion(); }
+  }, { rootMargin: "0px 0px 300px 0px" });
+  els.forEach(function (el) { io.observe(el); });
+})();
 </script>
 </body>
 </html>
