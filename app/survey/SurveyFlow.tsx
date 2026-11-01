@@ -350,8 +350,8 @@ export function SurveyFlow() {
       <Station n={1} title="Clip" open done={measure.state === "done"}>
         <div className="grid2">
           <div>
-            <h3 className="h4">{health.state === "done" && fixtures.length === 0 ? "Try it without a code" : "Our fixture clip"}</h3>
-            {health.state === "busy" ? <p className="muted">Checking the live API…</p> : null}
+            {/* No-code path renders before /health answers (no fixtures ship), so nothing below it shifts (CLS). */}
+            <h3 className="h4">{fixtures.length === 0 ? "Try it without a code" : "Our fixture clip"}</h3>
             {health.state === "error" ? (
               <div className="error-box" role="alert">
                 <p>
@@ -362,7 +362,7 @@ export function SurveyFlow() {
                 </p>
               </div>
             ) : null}
-            {health.state === "done" && fixtures.length === 0 ? <NoCodePath /> : null}
+            {health.state !== "error" && fixtures.length === 0 ? <NoCodePath /> : null}
             {fixtures.length ? (
               <ul className="fixture-list">
                 {fixtures.map((f) => (
