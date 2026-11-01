@@ -16,7 +16,8 @@ export function SiteHeader({ live }: { live?: boolean }) {
       <nav aria-label="Main">
         <ul className="nav">
           <li>
-            <Link href="/judge">Judge path</Link>
+            {/* static page (public/judge/index.html): a plain link, so Next does not prefetch a missing RSC payload */}
+            <a href="/judge">Judge path</a>
           </li>
           <li>
             <Link href="/runs">Recorded runs</Link>

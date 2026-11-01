@@ -357,7 +357,7 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
 <section class="slide arch" data-line="007" aria-label="Architecture">
   <p class="eyebrow">Architecture · how it fits together</p>
   <div class="arch__grid">
-    <figure class="arch__fig"><img src="../media/architecture-slide.webp" width="2600" height="1674" alt="DraftMark architecture. Per clip, live: phone clip, then SAM 3.1 finds the marks and the water edge, then Muse Spark 1.3 reads the painted marks with five code checks, then code averages the swell to d ± u; each hand-off is HMAC-signed. Per vessel: Muse Wonder 1.0 writes the program offline, a no-network sandbox self-tests it on 22 of 22 printed booklet rows, the proven program is pinned by sha256, and the survey runs it. Code issues a certificate or refuses: OUT_OF_TABLE, UNSIGNED."></figure>
+    <figure class="arch__fig"><img data-src="../media/architecture-slide.webp" decoding="async" width="2600" height="1674" alt="DraftMark architecture. Per clip, live: phone clip, then SAM 3.1 finds the marks and the water edge, then Muse Spark 1.3 reads the painted marks with five code checks, then code averages the swell to d ± u; each hand-off is HMAC-signed. Per vessel: Muse Wonder 1.0 writes the program offline, a no-network sandbox self-tests it on 22 of 22 printed booklet rows, the proven program is pinned by sha256, and the survey runs it. Code issues a certificate or refuses: OUT_OF_TABLE, UNSIGNED."></figure>
     <ul class="arch__key">
       <li><i class="k-meta"></i><span>Meta model call</span></li>
       <li><i class="k-off"></i><span>Offline, cached</span></li>
@@ -465,7 +465,13 @@ body.shownotes .notes{display:block;position:absolute;left:170px;right:140px;bot
     if (id === "demoSlide") play();
     if (id === "momentSlide") swell();
     if (id === "proveSlide") grade();
+    warm(cur); warm(cur + 1);
   }
+  // big slide images (data-src) load when their slide is next, or once the page is idle, never ahead of the cover's paint
+  function warm(i) { var s = slides[i]; if (!s) return; [].forEach.call(s.querySelectorAll("img[data-src]"), function (img) { img.src = img.getAttribute("data-src"); img.removeAttribute("data-src"); }); }
+  function warmAll() { for (var i = 0; i < slides.length; i++) warm(i); }
+  addEventListener("load", function () { (window.requestIdleCallback || setTimeout)(warmAll); });
+  addEventListener("beforeprint", warmAll);
   addEventListener("resize", fit);
   addEventListener("keydown", function (e) {
     if (["ArrowRight", "PageDown", " ", "Enter"].indexOf(e.key) > -1) { e.preventDefault(); go(cur + 1); }
