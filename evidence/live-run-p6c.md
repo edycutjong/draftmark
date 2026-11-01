@@ -241,6 +241,12 @@ muse-spark-1.3 · 3533 tok · 11.2 s · $0.014
 total $0.045
 ```
 
+## Wonder's three attempts as station 5 shows them (tabs, from `data/programs/trieste/run-booklet-only/attempts.json`)
+
+- Attempt 1: FAIL 0/22 printed conditions; static gate: line 230: name globals not allowed; line 255: name globals not allowed; line 260: name globals not allowed; 0.55 min, $0.161, `resp_6ae5a5f8ac84c849236c47d5`
+- Attempt 2: FAIL 14/22 printed conditions; differential max error 0.6993 %; failing conditions and their first diverging intermediate: 2.2 -> corr_trim2, 3.1 -> corr_trim2, 3.2 -> corr_trim2, 6.2 -> corr_trim2, 7.2 -> corr_trim2, 8.2 -> corr_trim2, 9.1 -> corr_trim2, 9.2 -> corr_trim2; 0.55 min, $0.145, `resp_6ae5a6194a0590c4c3c04e31`
+- Attempt 3: PASS 22/22 printed conditions; differential max error 7.101e-05 %; 0.89 min, $0.175, `resp_6ae5a63a238297fff10f457e`
+
 ## Printable certificate of the run (`/certificate?run=local`, verbatim)
 
 ```text
