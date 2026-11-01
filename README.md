@@ -6,6 +6,7 @@
 
   <br/>
 
+  [![Judge Path](https://img.shields.io/badge/⚖️_Judge-Path_(2_min)-16a34a?style=for-the-badge)](https://draftmark.edycu.dev/judge)
   [![Live Demo](https://img.shields.io/badge/🚀_Live-Demo-06b6d4?style=for-the-badge)](https://draftmark.edycu.dev)
   [![Demo Video](https://img.shields.io/badge/▶️_Demo-Video-FF0000?style=for-the-badge)](https://youtu.be/9vRaziU6X1g)
   [![X Thread](https://img.shields.io/badge/𝕏_Launch-Thread-000000?style=for-the-badge)](https://x.com/edycutjong/status/2116769107945435480)
