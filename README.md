@@ -27,6 +27,11 @@
 ## 📸 See it in Action
 
 <p align="center">
+  <img src="docs/assets/broll.gif" alt="Silent 14-second loop of one real run on draftmark.edycu.dev (run live-mvx1wyzw): a prepared clip is uploaded with a judge code, SAM 3.1 tracks the marks and water (wait shown 25x, source clip pixels hidden), Muse Spark 1.3 reads the labels (wait shown 10x) and five checks pass, the draft comes out at 12.761 m ± 0.0863 m, the certificate preview refuses with OUT_OF_TABLE, and the tamper test's edited draft is refused as UNSIGNED." width="100%">
+</p>
+<p align="center"><sub>Cut from one continuous real take of the live site (2026-11-01): only the two model waits are sped up, and both are labelled on screen.</sub></p>
+
+<p align="center">
   <img src="docs/assets/devpost-gallery.png" alt="DraftMark gallery card: the draft marks, the measured waterline and the certificate." width="100%">
 </p>
 
