@@ -49,10 +49,14 @@ test("recorded run JSON is served", async ({ request }) => {
 test("judge path lists the four stops with working links", async ({ page }) => {
   const errors = failOnPageErrors(page);
   await page.goto("/judge");
-  await expect(page.getByRole("heading", { level: 1, name: "Judge path" })).toBeVisible();
+  await expect(page).toHaveTitle(/Judge path/);
+  await expect(page.getByRole("heading", { level: 1, name: /Judge path/ })).toBeVisible();
   await expect(page.locator(".judge-steps > li")).toHaveCount(4);
+  await expect(page.locator("#stop-1 a[href='/runs#program-h']")).toBeVisible();
   await expect(page.getByText("REFUSE · OUT_OF_TABLE")).toBeVisible();
-  for (const href of ["/runs#program-h", "/certificate/rec-db7x-20261031", "/certificate/rec-trieste-20261031"]) {
+  await expect(page.locator("footer [data-app-version]")).toHaveText(/^v\d+\.\d+\.\d+$/);
+  for (const href of ["/runs#program-h", "/runs#measurement-h", "/runs#attempts-h", "/certificate/rec-db7x-20261031", "/certificate/rec-trieste-20261031", "/survey", "/deck"]) {
+    await expect(page.locator(`main a[href='${href}']`).first()).toBeAttached();
     const res = await page.request.get(href.split("#")[0]);
     expect(res.ok()).toBeTruthy();
   }

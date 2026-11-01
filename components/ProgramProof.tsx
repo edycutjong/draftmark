@@ -98,7 +98,7 @@ export function ProgramProof({ program, selftest, live }: { program: Program; se
 
       {attempts.length ? (
         <>
-          <h3 className="h4">How the program was earned</h3>
+          <h3 id="attempts-h" className="h4">How the program was earned</h3>
           <div className="tabs" role="tablist" aria-label="Generation attempts">
             {attempts.map((a, k) => (
               <button

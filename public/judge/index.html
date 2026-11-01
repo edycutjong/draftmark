@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Judge path — DraftMark</title>
+<meta name="description" content="The short path through DraftMark for a judge: four stops in order, no upload and no judge code. Step 1 re-runs Muse Wonder 1.0's program live.">
+<meta name="author" content="Edy Cu Tjong">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#17120F">
+<link rel="canonical" href="https://draftmark.edycu.dev/judge">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icon-512.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="DraftMark">
+<meta property="og:url" content="https://draftmark.edycu.dev/judge">
+<meta property="og:title" content="DraftMark — judge path">
+<meta property="og:description" content="Four stops, no upload and no judge code: Wonder's program re-run live, a real hull measured then refused, three attempts, two certificates.">
+<meta property="og:image" content="https://draftmark.edycu.dev/og-image.png?v=6">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://draftmark.edycu.dev/og-image.png?v=6">
+<link rel="preload" href="/fonts/anybody-100-900.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/ibm-plex-sans-400-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/martian-mono-400-600.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:"Anybody";src:url(/fonts/anybody-100-900.woff2) format("woff2");font-weight:100 900;font-stretch:50% 150%;font-display:swap}
+@font-face{font-family:"IBM Plex Sans";src:url(/fonts/ibm-plex-sans-400-600.woff2) format("woff2");font-weight:400 600;font-display:optional}
+@font-face{font-family:"Martian Mono";src:url(/fonts/martian-mono-400-600.woff2) format("woff2");font-weight:400 600;font-stretch:75% 112.5%;font-display:optional}
+/* Same system as the landing (public/index.html): specs/design.md §4 tokens, rail, nav, buttons, line numbers,
+   ledger, close and footer rules are copied from it verbatim; only the .route and .stops blocks are new. */
+:root{
+  --bg:#17120F;--plate:#221A16;--ink:#F2EEE6;--muted:#9A8F86;--hull:#8E2B22;
+  --before:#6F8C8A;--after:#F2B33D;--refuse:#D9543B;--rule:#3A2E28;--refuse-text:#DF5E44;
+  --paper:#F3EEE2;--paper-ink:#1D1712;--paper-rule:#D8CDB8;--stamp:#A3271D;
+  --font-display:"Anybody","Archivo Narrow","Arial Narrow",sans-serif;
+  --font-body:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  --font-data:"Martian Mono","IBM Plex Mono",ui-monospace,monospace;
+  --pitch:20px;--gut:clamp(20px,5vw,72px);--max:1240px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scrollbar-color:var(--rule) var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--font-body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--after);color:var(--bg)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--after);outline-offset:3px;border-radius:2px}
+img,svg{display:block;max-width:100%}
+.data,code,kbd,samp{font-family:var(--font-data);font-size:.86em;letter-spacing:-.01em}
+.skip{position:absolute;left:-999px;top:8px;background:var(--after);color:var(--bg);padding:8px 14px;z-index:99}
+.skip:focus{left:8px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gut)}
+
+/* ---------- the draft scale down the left edge (design.md §3 layout habit) ---------- */
+.rail{position:fixed;left:0;top:0;bottom:0;width:44px;z-index:5;pointer-events:none;display:none}
+.rail::before{content:"";position:absolute;left:19px;top:0;bottom:0;width:6px;
+  background:repeating-linear-gradient(180deg,rgba(242,238,230,.13) 0 10px,transparent 10px 20px)}
+.rail__line{position:absolute;left:0;width:44px;top:50%;height:2px;background:var(--after);box-shadow:0 0 12px rgba(242,179,61,.55)}
+.rail__no{position:absolute;left:6px;top:calc(50% + 8px);font:500 10px/1 var(--font-data);color:var(--after);letter-spacing:.04em}
+@media (min-width:1180px){.rail{display:block}}
+
+/* ---------- nav ---------- */
+.nav{position:sticky;top:0;z-index:20;background:rgba(23,18,15,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(58,46,40,.6)}
+.nav__in{display:flex;align-items:center;gap:28px;height:64px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font:800 22px/1 var(--font-display);font-stretch:70%;letter-spacing:.02em;text-transform:uppercase}
+.brand{min-height:44px;transition:color .18s ease}
+.brand:hover{color:var(--after)}
+.brand img{width:30px;height:30px}
+.nav__links{display:flex;gap:22px;margin-left:auto}
+.nav__links a{text-decoration:none;color:var(--muted);font-size:14px;transition:color .18s ease}
+.nav__links a:hover{color:var(--ink)}
+.nav__links a[aria-current="page"]{color:var(--ink)}
+@media (max-width:860px){.nav__links{display:none}.nav .btn{margin-left:auto}}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:12px 20px;border-radius:3px;font:600 15px/1 var(--font-body);text-decoration:none;
+  border:1px solid var(--rule);color:var(--ink);background:transparent;cursor:pointer;transition:transform .18s cubic-bezier(.2,.8,.2,1),background .18s ease,border-color .18s ease,box-shadow .18s ease}
+.btn:hover{border-color:var(--muted);background:rgba(242,238,230,.04);transform:translateY(-1px)}
+.btn:active{transform:translateY(0) scale(.98)}
+.btn--on{background:var(--after);border-color:var(--after);color:var(--bg)}
+.btn--on:hover{background:#F7C25E;border-color:#F7C25E;box-shadow:0 8px 28px -10px rgba(242,179,61,.7)}
+.btn--sm{min-height:40px;padding:10px 16px;font-size:14px}
+.btn svg{width:16px;height:16px}
+
+/* ---------- hero ---------- */
+.hero{position:relative;padding:clamp(40px,6vw,84px) 0 clamp(40px,6vw,72px);overflow:hidden;isolation:isolate}
+.hero::before{content:"";position:absolute;inset:0;z-index:-2;
+  background:radial-gradient(60% 70% at 78% 18%,rgba(242,179,61,.10),transparent 70%),radial-gradient(90% 60% at 50% 120%,rgba(142,43,34,.42),transparent 70%)}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;opacity:.5;
+  background:repeating-linear-gradient(180deg,transparent 0 79px,rgba(58,46,40,.55) 79px 80px)}
+.hero__world{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.hero__swell{position:absolute;left:0;bottom:1%;width:200%;height:120px;animation:drift 22s linear infinite}
+.hero__swell path{fill:none;stroke:rgba(111,140,138,.28);stroke-width:2}
+@keyframes drift{to{transform:translateX(-50%)}}
+.hero__grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,4vw,64px);align-items:center}
+.where{font:500 11.5px/1.4 var(--font-data);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 22px}
+.where b{color:var(--after);font-weight:500}
+h1{font:800 clamp(42px,5.6vw,82px)/.9 var(--font-display);font-stretch:62%;text-transform:uppercase;letter-spacing:-.005em;margin:0;text-wrap:balance}
+h1 .l{display:block}
+h1 em{font-style:normal;color:var(--after);text-shadow:0 0 34px rgba(242,179,61,.28)}
+.lede{font-size:clamp(17px,1.45vw,19px);line-height:1.6;color:#DCD5CB;max-width:52ch;margin:26px 0 30px}
+.lede b{color:var(--ink);font-weight:600}
+.lede a,.ctanote a,.intro a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;transition:color .18s}
+.lede a:hover,.ctanote a:hover,.intro a:hover{color:var(--after)}
+.cta{display:flex;flex-wrap:wrap;gap:12px}
+.ctanote{margin:12px 0 0;font-size:13.5px;line-height:1.5;color:var(--muted)}
+
+/* the route card: the four stops as a ruled index, in the instrument's frame (new) */
+.route{position:relative;margin:0;background:linear-gradient(180deg,#201814,#1a1310);border:1px solid var(--rule);border-radius:6px;padding:14px 14px 8px;box-shadow:0 40px 80px -40px rgba(0,0,0,.8),inset 0 1px 0 rgba(242,238,230,.04)}
+.route__top{display:flex;justify-content:space-between;align-items:center;gap:12px;font:500 11px/1.3 var(--font-data);color:var(--muted);letter-spacing:.04em;padding:2px 4px 10px;border-bottom:1px solid var(--rule)}
+.route__top .rec{display:inline-flex;align-items:center;gap:7px;color:var(--ink)}
+.route__top .rec::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--after);box-shadow:0 0 8px var(--after)}
+.route ol{list-style:none;margin:0;padding:0}
+.route a{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:4px 14px;align-items:center;padding:14px 6px;border-bottom:1px solid var(--rule);text-decoration:none;border-radius:3px;transition:background .18s ease}
+.route li:last-child a{border-bottom:0}
+.route a:hover{background:rgba(242,238,230,.04)}
+.route a:hover .route__t{color:var(--after)}
+.route__n{font:800 34px/1 var(--font-display);font-stretch:62%;color:var(--before)}
+.route li:first-child .route__n{color:var(--after)}
+.route__t{font:600 15.5px/1.35 var(--font-body);transition:color .18s}
+.route__t small{display:block;margin-top:3px;font:400 11.5px/1.4 var(--font-data);color:var(--muted)}
+.route__v{font:500 12px/1.2 var(--font-data);color:var(--after);text-align:right;white-space:nowrap}
+.route__v--no{color:var(--refuse-text)}
+.route__v--w{color:#D6CFC4}
+.live{display:inline-block;font:600 10px/1 var(--font-data);letter-spacing:.14em;color:var(--bg);background:var(--after);padding:4px 6px;border-radius:2px;margin-left:6px;vertical-align:2px}
+.rec-tag{display:inline-block;font:600 10px/1 var(--font-data);letter-spacing:.14em;color:var(--bg);background:var(--before);padding:4px 6px;border-radius:2px;margin-left:6px;vertical-align:2px}
+
+@media (max-width:960px){.hero__grid{grid-template-columns:minmax(0,1fr)}.lede{max-width:none}}
+@media (max-width:520px){.route a{grid-template-columns:24px minmax(0,1fr) auto;gap:4px 10px}.route__top span:last-child{display:none}.route__n{font-size:30px}}
+
+/* ---------- story sections (certificate line numbers) ---------- */
+.sec{position:relative;padding:clamp(52px,7vw,92px) 0}
+.line-no{font:500 12px/1 var(--font-data);color:var(--after);letter-spacing:.08em;display:inline-flex;align-items:center;gap:10px;margin:0 0 18px}
+.line-no::before{content:"";width:28px;height:2px;background:currentColor}
+h2{font:800 clamp(34px,4.6vw,62px)/.95 var(--font-display);font-stretch:66%;text-transform:uppercase;letter-spacing:-.003em;margin:0 0 20px;text-wrap:balance;max-width:20ch}
+h2 em{font-style:normal;color:var(--after)}
+.sec p.intro{font-size:18px;line-height:1.6;color:#D6CFC4;max-width:60ch;margin:0}
+.cap{font-size:13px;line-height:1.5;color:var(--muted);margin:12px 0 0;max-width:62ch}
+.chip{display:inline-block;font:500 11px/1 var(--font-data);color:var(--before);border:1px solid rgba(111,140,138,.45);border-radius:2px;padding:5px 7px;margin:0 6px 8px 0;white-space:nowrap}
+.chip--a{color:var(--after);border-color:rgba(242,179,61,.45)}
+
+/* ---------- the four stops: a ruled ledger with a receipt per stop (new, built from .ledger + .rc + .frame) ---------- */
+.sec--stops{background:linear-gradient(180deg,var(--bg),#1b1411)}
+.stops{list-style:none;margin:34px 0 0;padding:0}
+.stops > li{display:grid;grid-template-columns:120px minmax(0,1fr) minmax(0,.95fr);gap:16px clamp(24px,4vw,56px);padding:clamp(28px,3.4vw,40px) 0;border-top:1px solid var(--rule);scroll-margin-top:84px}
+.stops > li:last-child{border-bottom:1px solid var(--rule)}
+.stops .n{font:800 64px/.9 var(--font-display);font-stretch:62%;color:var(--before)}
+.stops > li:first-child .n{color:var(--after);text-shadow:0 0 30px rgba(242,179,61,.25)}
+.stops .n small{display:block;margin-top:10px;font:500 11px/1.3 var(--font-data);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-shadow:none}
+.stops > li:first-child .n small{color:var(--after);font-weight:600}
+.stops h3{margin:0 0 12px;font:700 clamp(24px,2.4vw,30px)/1.05 var(--font-display);font-stretch:72%;text-transform:uppercase;letter-spacing:.01em;max-width:26ch}
+.stops p{margin:0 0 14px;color:#D6CFC4;font-size:16px;line-height:1.6;max-width:56ch}
+.stops p b{color:var(--ink);font-weight:600}
+.stops .go{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 0}
+.fig{align-self:start}
+.fig__b{display:block;font:800 clamp(44px,5vw,72px)/1 var(--font-display);font-stretch:62%;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.fig__b small{font-size:.42em;color:var(--muted);font-weight:600;margin-left:6px;letter-spacing:.02em}
+.fig__b--ok{color:var(--after);text-shadow:0 0 22px rgba(242,179,61,.3)}
+.stops .fig__k{margin:10px 0 0;max-width:none;font:400 12px/1.5 var(--font-data);color:var(--muted)}
+.frame{border:1px solid var(--rule);border-radius:6px;overflow:hidden;background:#120e0c;box-shadow:0 30px 60px -36px rgba(0,0,0,.9)}
+.frame__bar{display:flex;align-items:center;gap:7px;padding:9px 12px;border-bottom:1px solid var(--rule);font:400 11px/1 var(--font-data);color:var(--muted)}
+.frame__bar i{width:9px;height:9px;border-radius:50%;background:var(--rule)}
+.frame__bar span{margin-left:8px}
+.frame img{width:100%;height:auto}
+.verdict{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin:12px 0 0;padding:11px 14px;border:1.5px solid var(--refuse);border-radius:3px;background:rgba(217,84,59,.07)}
+.verdict__w{font:800 24px/1 var(--font-display);font-stretch:62%;letter-spacing:.05em;color:var(--refuse-text)}
+.verdict__r{font:500 11.5px/1.2 var(--font-data);color:var(--refuse-text)}
+/* stop 3: the three attempts, one bar each (share of the 22 printed conditions) */
+.tries{list-style:none;margin:0;padding:16px 18px;border:1px solid var(--rule);border-radius:6px;background:var(--plate);display:grid;gap:14px}
+.tries li{display:grid;grid-template-columns:86px minmax(0,1fr) 62px;gap:12px;align-items:center;font:500 11px/1.2 var(--font-data);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.bar{position:relative;height:26px;border-radius:3px;background:repeating-linear-gradient(90deg,rgba(242,238,230,.06) 0 calc(100%/22 - 3px),transparent calc(100%/22 - 3px) calc(100%/22))}
+.bar i{position:absolute;left:0;top:0;bottom:0;width:var(--p);border-radius:3px;background:var(--after);box-shadow:inset 0 -3px 0 rgba(0,0,0,.18);transform-origin:left;transition:transform .9s cubic-bezier(.2,.8,.2,1)}
+.bar--part i{background:#C9472F}
+.bar--gate{background:repeating-linear-gradient(135deg,rgba(217,84,59,.15) 0 8px,transparent 8px 16px);outline:1px dashed rgba(217,84,59,.6);outline-offset:-1px;display:flex;align-items:center;padding:0 10px;text-transform:none;letter-spacing:0;color:#D6CFC4;font-size:11.5px;white-space:nowrap;overflow:hidden}
+.tries .s{font:800 24px/1 var(--font-display);font-stretch:62%;text-align:right;color:var(--refuse-text);letter-spacing:0}
+.tries .s--ok{color:var(--after)}
+.js .tries i{transform:scaleX(0)}
+.js .tries.in i{transform:none}
+.js .tries li:nth-child(3) i{transition-delay:.35s}
+/* stop 4: the two certificate stamps, pinned like the landing's paper band */
+.pins{display:grid;gap:22px;padding:22px 16px 18px;border-radius:6px;background:var(--paper);background-image:linear-gradient(var(--paper-rule) 1px,transparent 1px);background-size:100% 40px;background-position:0 -1px}
+.pin{margin:0;background:#120e0c;border-radius:4px;padding:10px;box-shadow:0 1px 0 rgba(0,0,0,.12),0 18px 34px -18px rgba(40,25,10,.55);position:relative}
+.pin img{width:100%;height:auto;border-radius:2px}
+.pin figcaption{font:400 11.5px/1.45 var(--font-data);color:#B8AEA3;padding:9px 4px 2px}
+.pin::before{content:"";position:absolute;top:-9px;left:50%;width:74px;height:18px;margin-left:-37px;background:rgba(243,238,226,.7);border:1px solid rgba(216,205,184,.9);transform:rotate(-2deg)}
+@media (max-width:1000px){.stops > li{grid-template-columns:90px minmax(0,1fr)}.fig{grid-column:2}}
+@media (max-width:620px){.stops > li{grid-template-columns:minmax(0,1fr);gap:12px}.fig{grid-column:auto}.stops .n{font-size:52px;display:flex;align-items:baseline;gap:14px}.stops .n small{margin-top:0}.tries li{grid-template-columns:70px minmax(0,1fr) 50px;gap:8px}}
+
+/* ---------- optional live run: the paper band ---------- */
+.sec--paper{background:var(--paper);color:var(--paper-ink);
+  background-image:linear-gradient(var(--paper-rule) 1px,transparent 1px);background-size:100% 40px;background-position:0 -1px}
+.sec--paper .line-no{color:var(--stamp)}
+.sec--paper h2 em{color:var(--stamp)}
+.sec--paper p.intro{color:#3B322A}
+.sec--paper .intro a{color:var(--paper-ink)}
+.sec--paper .intro a:hover{color:var(--stamp)}
+.two{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(28px,5vw,72px);align-items:start}
+@media (max-width:960px){.two{grid-template-columns:minmax(0,1fr)}}
+.formlines{margin:0;padding:0;list-style:none;border-top:1.5px solid var(--paper-ink)}
+.formlines li{display:grid;grid-template-columns:44px 1fr;gap:10px;padding:10px 0;border-bottom:1px solid var(--paper-rule);font-size:15.5px;line-height:1.5}
+.formlines li span{font:500 11px/1.9 var(--font-data);color:var(--stamp)}
+.formlines code{font-family:var(--font-data);font-size:.82em;background:rgba(163,39,29,.08);padding:1px 5px;border-radius:2px}
+.btn--ink{border-color:var(--paper-ink);color:var(--paper-ink)}
+.btn--ink:hover{border-color:var(--stamp);color:var(--stamp);background:rgba(163,39,29,.05)}
+.sec--paper .go{margin-top:22px}
+
+/* ---------- honest limits: a ruled ledger, not quote cards ---------- */
+.sec--honest{background:#120e0c;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.ledger{margin:30px 0 0;padding:0;list-style:none}
+.ledger li{display:grid;grid-template-columns:120px 1fr;gap:24px;padding:22px 0;border-top:1px solid var(--rule)}
+.ledger li:last-child{border-bottom:1px solid var(--rule)}
+.ledger .n{font:800 44px/1 var(--font-display);font-stretch:62%;color:var(--before)}
+.ledger blockquote{margin:0;font-size:clamp(17px,1.6vw,21px);line-height:1.5;color:var(--ink);max-width:62ch}
+.ledger cite{display:block;margin-top:8px;font:400 11.5px/1.4 var(--font-data);color:var(--muted);font-style:normal}
+@media (max-width:620px){.ledger li{grid-template-columns:1fr;gap:6px}}
+
+/* ---------- close + footer ---------- */
+.close{position:relative;text-align:center;padding:clamp(80px,11vw,140px) 0;overflow:hidden;isolation:isolate}
+.close::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(50% 60% at 50% 100%,rgba(242,179,61,.16),transparent 70%),radial-gradient(80% 50% at 50% 115%,rgba(142,43,34,.5),transparent 70%)}
+.close h2{margin:0 auto 14px;max-width:16ch}
+.close__sub{margin:0 auto 28px;font-size:19px;color:#D6CFC4}
+.close .cta{justify-content:center}
+.foot{border-top:1px solid var(--rule);padding:34px 0 46px;font-size:13.5px;color:var(--muted)}
+.foot__in{display:flex;flex-wrap:wrap;gap:16px 34px;justify-content:space-between}
+.foot nav{display:flex;flex-wrap:wrap;gap:8px 20px}
+.foot a{color:var(--muted);text-decoration:none;border-bottom:1px solid transparent;transition:color .18s,border-color .18s;display:inline-flex;align-items:center;min-height:44px}
+.foot a:hover{color:var(--ink);border-color:var(--muted)}
+.foot a[aria-current="page"]{color:var(--ink)}
+.foot p{margin:0;max-width:64ch}
+
+/* reveal: from an already-visible default (print, screenshots and no-JS see everything) */
+.js .rv{transform:translateY(18px);transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.js .rv.in{transform:none}
+.hero .stag{animation:rise .8s cubic-bezier(.2,.8,.2,1) both}
+.hero .stag:nth-child(2){animation-delay:.08s}.hero .stag:nth-child(3){animation-delay:.16s}.hero .stag:nth-child(4){animation-delay:.24s}.hero .stag:nth-child(5){animation-delay:.32s}
+.hero .route.stag{animation-delay:.2s}
+@keyframes rise{from{opacity:.001;transform:translateY(18px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.js .rv{opacity:1;transform:none}.js .tries i{transform:none}}
+@media print{.nav,.rail{display:none}.js .rv{opacity:1;transform:none}.js .tries i{transform:none}body{background:#fff;color:#000}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="rail" aria-hidden="true"><div class="rail__line"></div><div class="rail__no" id="railNo"></div></div>
+
+<header class="nav">
+  <div class="wrap nav__in">
+    <a class="brand" href="/" aria-label="DraftMark home"><img src="/icon.svg" alt="" width="30" height="30">DraftMark</a>
+    <nav class="nav__links" aria-label="Sections">
+      <a href="#stops">Four stops</a><a href="#live">Live run</a><a href="#limits">Limits</a><a href="/runs">Recorded runs</a><a href="/evidence">Evidence</a><a href="/deck">Deck</a>
+    </nav>
+    <a class="btn btn--on btn--sm" href="/runs#program-h">Step 1, live →</a>
+  </div>
+</header>
+
+<main id="main">
+<!-- ===================== HERO ===================== -->
+<section class="hero" data-no="">
+  <div class="hero__world" aria-hidden="true"><svg class="hero__swell" viewBox="0 0 2880 120" preserveAspectRatio="none"><path d="M0 60 C60 30 180 30 240 60 C300 90 420 90 480 60 C540 30 660 30 720 60 C780 90 900 90 960 60 C1020 30 1140 30 1200 60 C1260 90 1380 90 1440 60 C1500 30 1620 30 1680 60 C1740 90 1860 90 1920 60 C1980 30 2100 30 2160 60 C2220 90 2340 90 2400 60 C2460 30 2580 30 2640 60 C2700 90 2820 90 2880 60"/></svg></div>
+  <div class="wrap hero__grid">
+    <div>
+      <p class="where stag"><b>For judges</b> · no upload, no judge code</p>
+      <h1 class="stag"><span class="l">Judge path.</span> <em class="l">Four stops, in order.</em></h1>
+      <p class="lede stag">Step&nbsp;1 re-runs Muse Wonder&nbsp;1.0&rsquo;s saved program <b>live</b> against the booklet&rsquo;s printed conditions; steps 2 to 4 open recorded runs, each labelled with its run id.</p>
+      <div class="cta stag">
+        <a class="btn btn--on" href="/runs#program-h">Start: step 1, live →</a>
+        <a class="btn" href="#stops">The four stops ↓</a>
+      </div>
+    </div>
+
+    <nav class="route stag" aria-label="The four stops">
+      <div class="route__top"><span class="rec">judge path · 4 stops</span><span>1 live · 3 recorded</span></div>
+      <ol>
+        <li><a href="#stop-1"><span class="route__n">1</span><span class="route__t">Re-run Muse Wonder 1.0's program<span class="live">LIVE</span><small>sandbox · booklet's printed conditions</small></span><span class="route__v" data-proof="evidence/selftest-booklet.md">22/22</span></a></li>
+        <li><a href="#stop-2"><span class="route__n">2</span><span class="route__t">One real hull, measured then refused<small>clip dB7X · SAM 3.1 + Muse Spark 1.3 + code</small></span><span class="route__v route__v--no">REFUSE</span></a></li>
+        <li><a href="#stop-3"><span class="route__n">3</span><span class="route__t">Wonder's three attempts<small>gate reject · 14/22 · 22/22</small></span><span class="route__v">22/22</span></a></li>
+        <li><a href="#stop-4"><span class="route__n">4</span><span class="route__t">The two certificates<small>refusal · issued with a warning</small></span><span class="route__v route__v--w">2 certs</span></a></li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<!-- ===================== THE FOUR STOPS ===================== -->
+<section class="sec sec--stops" id="stops" data-no="001">
+  <div class="wrap">
+    <div class="rv">
+      <p class="line-no">Line 001 · The four stops</p>
+      <h2>One live run, <em>three recorded ones.</em></h2>
+      <p class="intro">Open them in order. The SAM&nbsp;3.1 and Spark&nbsp;1.3 calls behind step&nbsp;2 are listed with response ids on <a href="/evidence">/evidence</a>; Wonder&rsquo;s three program-writing calls are shown with its attempts on <a href="/runs#attempts-h">/runs</a>.</p>
+    </div>
+
+    <ol class="stops judge-steps">
+      <li id="stop-1">
+        <div class="n">1<small>live</small></div>
+        <div>
+          <h3>Re-run the program Muse Wonder 1.0 wrote, live</h3>
+          <p>The sandbox re-runs the saved program against the booklet's printed conditions (<b class="data" data-proof="evidence/selftest-booklet.md">22/22</b> at record time). Of the four stops, this is the only one that runs live.</p>
+          <div class="go"><a class="btn btn--on" href="/runs#program-h">Open the self-test →</a></div>
+        </div>
+        <div class="fig">
+          <b class="fig__b fig__b--ok" data-proof="evidence/selftest-booklet.md">22<small>/22</small></b>
+          <p class="fig__k">printed booklet conditions reproduced, within 0.1&nbsp;% · <span class="data">evidence/selftest-booklet.md</span></p>
+        </div>
+      </li>
+
+      <li id="stop-2">
+        <div class="n">2<small>recorded</small></div>
+        <div>
+          <h3>Watch one real hull get measured, then refused</h3>
+          <p>Clip dB7X is third-party test footage with no ground truth. SAM&nbsp;3.1 tracks the numerals and the water in every frame, Muse Spark&nbsp;1.3 reads the labels, five code checks confirm them, and code averages the swell to <b class="data" data-proof="public/runs/rec-db7x-20261031.json">12.761 m ± 0.086 m</b> (repeatability).</p>
+          <p>That draft is past the only booklet's table, so the certificate refuses.</p>
+          <div class="go"><a class="btn" href="/runs#measurement-h">Open the recorded measurement →</a></div>
+        </div>
+        <div class="fig">
+          <div class="frame"><div class="frame__bar"><i></i><i></i><i></i><span>/runs · clip dB7X</span></div>
+            <img src="/media/wave-chart.webp" width="1400" height="709" loading="lazy" decoding="async" alt="The product's wave chart for clip dB7X: per-frame drafts in sea-glass, the running mean in amber settling at 12.761 m."></div>
+          <div class="verdict"><span class="verdict__w">REFUSE · OUT_OF_TABLE</span><span class="verdict__r">rec-db7x-20261031</span></div>
+        </div>
+      </li>
+
+      <li id="stop-3">
+        <div class="n">3<small>recorded</small></div>
+        <div>
+          <h3>See Wonder's three attempts</h3>
+          <p>Attempt&nbsp;1 was rejected by the sandbox's code gate; attempt&nbsp;2 reproduced <b>14 of 22</b> conditions; attempt&nbsp;3, <b>22 of 22</b>.</p>
+          <p>Between attempts Wonder saw the gate error or its pass count, the failing ids and its own intermediate values. The printed answers were never in its prompt.</p>
+          <div class="go"><a class="btn" href="/runs#attempts-h">Open the three attempts →</a></div>
+        </div>
+        <div class="fig">
+          <ol class="tries rv" aria-label="Wonder's three attempts against the 22 printed conditions">
+            <li><span>Attempt 1</span><span class="bar bar--gate">gate: never ran</span><span class="s">gate</span></li>
+            <li><span>Attempt 2</span><span class="bar bar--part" style="--p:63.64%"><i></i></span><span class="s" data-proof="evidence/selftest-booklet.md">14/22</span></li>
+            <li><span>Attempt 3</span><span class="bar" style="--p:100%"><i></i></span><span class="s s--ok" data-proof="evidence/selftest-booklet.md">22/22</span></li>
+          </ol>
+          <p class="fig__k">bar length = share of the 22 printed conditions passed · run <span class="data">rec-trieste-20261031</span> · <span class="data">evidence/selftest-booklet.md</span></p>
+        </div>
+      </li>
+
+      <li id="stop-4">
+        <div class="n">4<small>recorded</small></div>
+        <div>
+          <h3>Open the two certificates</h3>
+          <p>The refusal for the real hull, and the issued survey on the booklet's own ship (condition 4.1, all six drafts entered): <b class="data" data-proof="evidence/core-run-trieste.md">17825.8 t</b> against the printed <b class="data" data-proof="evidence/core-run-trieste.md">17827.7 t</b>, issued with a warning; cargo not computed.</p>
+          <div class="go"><a class="btn" href="/certificate/rec-db7x-20261031">Refusal certificate →</a><a class="btn" href="/certificate/rec-trieste-20261031">Issued certificate →</a></div>
+        </div>
+        <div class="fig">
+          <div class="pins">
+            <figure class="pin"><img src="/media/stamp-refuse.webp" width="1220" height="248" loading="lazy" decoding="async" alt="Certificate stamp: REFUSE, OUT_OF_TABLE, matrix row 4."><figcaption>rec-db7x-20261031 · real hull</figcaption></figure>
+            <figure class="pin"><img src="/media/stamp-issue.webp" width="1356" height="230" loading="lazy" decoding="async" alt="Certificate stamp: ISSUE WITH WARNING, POSITIONS_ENTERED (6 positions entered)."><figcaption>rec-trieste-20261031 · condition 4.1 · 6 drafts entered</figcaption></figure>
+          </div>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ===================== OPTIONAL LIVE RUN (paper) ===================== -->
+<section class="sec sec--paper" id="live" data-no="002">
+  <div class="wrap two">
+    <div class="rv">
+      <p class="line-no">Line 002 · Optional</p>
+      <h2>Measure your own clip <em>live.</em></h2>
+      <p class="intro"><a href="/survey">/survey</a> runs SAM&nbsp;3.1 and Spark&nbsp;1.3 on your own prepared draft-mark clip. Uploads need the judge code from the submission notes. Our real-hull test clips are third-party footage we do not re-host.</p>
+      <div class="go"><a class="btn btn--ink" href="/survey">Open the live survey →</a></div>
+    </div>
+    <ol class="formlines rv" aria-label="What the clip must be">
+      <li><span>002.1</span><div>An <code>MP4</code>, cropped to the mark column.</div></li>
+      <li><span>002.2</span><div>At most <b data-proof="docs/ARCHITECTURE.md">10.5&nbsp;s</b>, <b data-proof="README.md">64 frames</b> and <b data-proof="README.md">3 MB</b>.</div></li>
+      <li><span>002.3</span><div>The judge code from the submission notes; each upload spends Meta API budget.</div></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ===================== HONEST LIMITS ===================== -->
+<section class="sec sec--honest" id="limits" data-no="003">
+  <div class="wrap">
+    <p class="line-no rv">Line 003 · Limits</p>
+    <h2 class="rv">What this does <em>not</em> prove</h2>
+    <p class="intro rv">Four of the six honest limits in the README, quoted (each cites its README number); all six are on the <a href="/#limits">landing page</a>.</p>
+    <ul class="ledger">
+      <li class="rv"><span class="n">1</span><blockquote>“The weight check is on 12 loads of a rendered synthetic barge (code-drawn pixels, truth by physics), not a physical scale: it checks the chain's arithmetic, label checks and wave-averaging, not real water, glare or a real print.”<cite>README · Honest limits, 1 (abridged)</cite></blockquote></li>
+      <li class="rv"><span class="n">2</span><blockquote>“The real-ship clips are third-party test footage with no ground truth (repeatability and refusal only, no accuracy claim); no real-ship draft accuracy is claimed.”<cite>README · Honest limits, 2</cite></blockquote></li>
+      <li class="rv"><span class="n">3</span><blockquote>“The test booklet is a Ro-Ro/passenger ship, not a bulk carrier; a draft outside its 0.5-9.3 m table is refused, so the two real clips certify as REFUSE OUT_OF_TABLE.”<cite>README · Honest limits, 3 (abridged)</cite></blockquote></li>
+      <li class="rv"><span class="n">4</span><blockquote>“This is a prototype, not a surveyor's document.”<cite>README · Honest limits, 6 (last sentence)</cite></blockquote></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===================== CLOSE ===================== -->
+<section class="close" data-no="004">
+  <div class="wrap">
+    <h2 class="rv">Then the rest, <em>in one click.</em></h2>
+    <p class="close__sub rv">The demo video, the pitch deck and the source.</p>
+    <div class="cta rv">
+      <a class="btn" href="https://youtu.be/9vRaziU6X1g">Demo video</a>
+      <a class="btn" href="/deck">Pitch deck</a>
+      <a class="btn" href="https://github.com/edycutjong/draftmark"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.22 1.88.87 2.34.66.07-.52.28-.87.5-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.22 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.66 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0Z"/></svg>GitHub</a>
+      <a class="btn btn--on" href="/runs#program-h">Start: step 1, live →</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__in">
+    <nav aria-label="Footer"><a href="/">Home</a><a href="/judge" aria-current="page">Judge path</a><a href="/survey">Live survey</a><a href="/runs">Recorded runs</a><a href="/evidence">Evidence</a><a href="/deck">Pitch deck</a><a href="https://github.com/edycutjong/draftmark">Source (MIT)</a><a href="https://github.com/edycutjong/draftmark/releases">Release&nbsp;<span data-app-version>v1.0.0</span></a></nav>
+    <p>Prototype, not a surveyor's certificate. Built by Edy Cu Tjong for the Meta AI Developer Hackathon. Clips dB7X and UKTRQ are third-party footage, not re-hosted; only derived geometry is committed. Fonts: Anybody, IBM Plex Sans, Martian Mono (OFL).</p>
+  </div>
+</footer>
+
+<script>
+document.documentElement.classList.add("js");
+(function () {
+  "use strict";
+  // reveal on view, the attempt bars fill once, and the rail reads the current line number (same as the landing)
+  var railNo = document.getElementById("railNo");
+  var rv = [].slice.call(document.querySelectorAll(".rv"));
+  if (!("IntersectionObserver" in window)) { rv.forEach(function (e) { e.classList.add("in"); }); return; }
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+  }, { rootMargin: "0px 0px -8% 0px" });
+  rv.forEach(function (e) { if (e.getBoundingClientRect().top > window.innerHeight) io.observe(e); else e.classList.add("in"); });
+  var so = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) railNo.textContent = e.target.getAttribute("data-no"); });
+  }, { rootMargin: "-50% 0px -50% 0px" });
+  [].forEach.call(document.querySelectorAll("[data-no]"), function (s) { so.observe(s); });
+})();
+</script>
+<script>
+// Current release, written at build time by scripts/write-version.mjs (the static text is the fallback).
+fetch("/version.json").then(function (r) { return r.ok ? r.json() : null; }).then(function (v) {
+  if (!v || !v.version) return;
+  document.querySelectorAll("[data-app-version]").forEach(function (el) { el.textContent = v.version; });
+}).catch(function () {});
+</script>
+</body>
+</html>

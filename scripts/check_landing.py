@@ -1,10 +1,10 @@
-"""Check the landing page and the pitch deck against the evidence they quote.
+"""Check the landing page, the pitch deck and the judge path against the evidence they quote.
 
   python scripts/check_landing.py            # exit 1 on any mismatch
 
 1. The waterline replayed by both pages (the DS array) equals draft.frames[].d_m of the recorded run, rounded to
    4 decimals, and D / U equal draft.result.d_m / u_rep_m exactly.
-2. Every number in the visible text of both pages appears somewhere in the evidence corpus (evidence/*.md,
+2. Every number in the visible text of all three pages (landing, deck, /judge) appears somewhere in the evidence corpus (evidence/*.md,
    README.md, docs/*.md, public/runs/*.json). A number that greps nowhere is printed as UNSOURCED.
 Re-run after any change to the recorded runs (P1e regenerates them) or to the page copy.
 """
@@ -15,11 +15,12 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = [ROOT / "public/index.html", ROOT / "public/deck/index.html"]
+PAGES = [ROOT / "public/index.html", ROOT / "public/deck/index.html"]  # replay the waterline (check 1)
+TEXT_PAGES = PAGES + [ROOT / "public/judge/index.html"]  # numbers must grep in the corpus (check 2)
 RUN = ROOT / "public/runs/rec-db7x-20261031.json"
 # numbers that are page furniture, not claims (slide/line numbers, frame indices, viewport sizes)
 FURNITURE = {"0", "1", "2", "3", "4", "5", "6", "8", "10", "12", "001", "002", "003", "004", "005", "006", "007", "008",
-             "009", "010", "011", "012", "004.1", "004.2", "004.3", "59", "1920", "1080", "2026", "31", "3.1", "1.3",
+             "009", "010", "011", "012", "004.1", "004.2", "004.3", "002.1", "002.2", "002.3", "59", "1920", "1080", "2026", "31", "3.1", "1.3",
              "1.0", "7", "9", "11", "13", "14", "20"}
 
 
@@ -55,7 +56,7 @@ def main() -> int:
                 print(f"FAIL {page.relative_to(ROOT)}: {name} != draft.result.{key} ({res[key]})")
                 bad += 1
     text_corpus = corpus()
-    for page in PAGES:
+    for page in TEXT_PAGES:
         nums = sorted(set(re.findall(r"(?<![\w.])\d[\d,]*(?:\.\d+)?", visible_text(page.read_text()))))
         unsourced = []
         for n in nums:
