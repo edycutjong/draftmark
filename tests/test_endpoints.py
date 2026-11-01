@@ -60,6 +60,10 @@ def test_rate_limit_per_ip_then_instance():
     for i in range(limits.PER_INSTANCE_H):
         limits.take(f"2.2.2.{i}", now=5000.0)
     assert "per instance" in limits.take("3.3.3.3", now=5001.0)[1]
+    # Test line 65: old run in _runs expires after 1 hour
+    limits.reset()
+    assert limits.take("4.4.4.4", run_id="run_old", now=1000.0)[0]
+    assert limits.take("4.4.4.4", run_id="run_new", now=5000.0)[0]
 
 
 def _geom():

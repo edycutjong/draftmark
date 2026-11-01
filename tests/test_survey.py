@@ -124,3 +124,101 @@ def test_non_finite_or_mislabelled_program_output_is_a_program_error(monkeypatch
     assert r["program_error"] and not r["out_of_table"]
     assert S.clean_sources({"mid_p": "live", "mid_s": "live", "fore_p": "foo"}) == \
         {"mid_p": "live", "mid_s": "entered", "fore_p": "entered"}
+
+
+def test_validate_non_numeric_and_bl():
+    # 42-44: non-numeric values
+    bad = S.validate({"drafts": {"fore_p": "invalid_number"}}, {})
+    assert any("draft fore_p is not a number" in m for m in bad)
+
+    # 58: bl in top
+    ok = {"drafts": drafts_of("4.1")}
+    assert S.validate(ok, {"bl": 100.0}) == []
+    bad_bl = S.validate(ok, {"bl": -5.0})
+    assert any("bl = -5.0 outside" in m for m in bad_bl)
+
+
+def test_proven_errors(tmp_path, monkeypatch):
+    import json
+    import shutil
+
+    # 79: booklet not in booklets()
+    with pytest.raises(KeyError):
+        S.proven("unknown_booklet")
+
+    # Copy files for sha mismatch tests
+    src = S.DATA / "programs" / "trieste"
+    dst = tmp_path / "programs" / "trieste"
+    shutil.copytree(src, dst)
+    meta = json.loads((dst / "proven.json").read_text())
+    prog_file = dst / meta["default_program"]
+
+    # 85: code sha256 mismatch
+    prog_file.write_text("# altered code\n")
+    monkeypatch.setattr(S, "DATA", tmp_path)
+    with pytest.raises(RuntimeError, match="proven program sha mismatch"):
+        S.proven("trieste")
+
+    # Restore code file and test 89: ship.json sha mismatch
+    prog_file.write_text((src / meta["default_program"]).read_text())
+    ship_file = prog_file.parent / "ship.json"
+    ship_file.write_text('{"altered": true}\n')
+    with pytest.raises(RuntimeError, match="ship.json does not match the proven manifest"):
+        S.proven("trieste")
+
+
+def test_gate_trim_range():
+    # 120: trim outside self-tested range
+    drafts = drafts_of("4.1")
+    # TRIM_PROVEN_M is typically [-2.0, 5.0], let trim = 10.0
+    bad = S.gate(drafts, {"d_ms": 5.0, "d_fp": 1.0, "d_ap": 11.0})
+    assert any("implied trim +10.000 m outside the self-tested range" in b for b in bad)
+
+
+def test_ship_validate_fails_and_perturb_oot(monkeypatch):
+    # 130: ship raises ValueError when validate fails
+    with pytest.raises(ValueError, match="draft fore_p is not a number"):
+        S.ship({"drafts": {"fore_p": "not_a_number"}})
+
+    # 176: perturbation case fails (r['ok'] is False)
+    real_run = S.sandbox.run
+
+    def mock_perturb_fail(code, req):
+        rr = real_run(code, req)
+        # res[1:7] are the +1 mm perturbation cases. Fail res[1]
+        if len(rr.data.get("results", [])) > 1:
+            rr.data["results"][1] = {"ok": False, "error": "simulated perturbation failure"}
+        return rr
+
+    monkeypatch.setattr(S.sandbox, "run", mock_perturb_fail)
+    r = run(drafts_of("4.1"))
+    assert r["perturb_oot"] is True
+
+
+def test_barge_negative_draft_perturbation():
+    # 239-240: d - u causes ValueError in B.displacement_kg
+    r = S.barge({"d_m": 0.01, "u_m": 0.05})
+    assert r["perturb_oot"] is True
+
+
+def test_survey_extra_helpers():
+    # 72-73: booklet_meta
+    bm = S.booklet_meta("trieste")
+    assert bm["id"] == "trieste" and "vessel" in bm
+
+    # 98: selftest_summary
+    st = S.proven("trieste")["selftest"]
+    summary = S.selftest_summary(st)
+    assert summary["verdict"] == "PASS"
+
+    # 104: failed_rows
+    mock_st = {"rows": [{"cond_id": "c1", "passed": False, "trace": {"d_mm": 10.0, "trim": 0.5}}]}
+    f_rows = S.failed_rows(mock_st)
+    assert len(f_rows) == 1 and f_rows[0]["cond_id"] == "c1"
+
+    # 179: live and not u_live > 0
+    d = drafts_of("4.1")
+    r = S.ship({"drafts": d, "sources": {"mid_p": "live"}, "u_live_m": 0.0, "sg": 1.025})
+    assert r["perturb_oot"] is True
+
+

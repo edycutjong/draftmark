@@ -63,3 +63,19 @@ def test_row1_object_cap():
 def test_row1_water_miss():
     num, wat = clip(water_x=(400.0, 600.0))
     assert pipeline.geometry_from_objects(num, wat, 12, 6.0, marks.SHIP)["row1"] == "WATER_MISS"
+
+
+def test_dry_tokens_without_water():
+    toks = [marks.Token("t1", (0,), (0, 10, 20, 30))]
+    assert pipeline.dry_tokens(toks, []) == toks
+
+
+def test_pipeline_geometry_from_text():
+    import pathlib
+    d = pathlib.Path(__file__).parent / "data"
+    num = (d / "sam_video_3frames.txt").read_text()
+    wat = (d / "sam_water_3frames.txt").read_text()
+    g = pipeline.geometry(num, wat, 3, 5.0, marks.SHIP, None)
+    assert g["n_frames"] == 3
+
+

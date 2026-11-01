@@ -45,6 +45,7 @@ def test_refuses_when_frames_low():
     toks, water, lab = _clip([13.3] * 10)
     _, res = measure.measure_clip(toks, water, lab, marks.SHIP)
     assert res.refused and res.reason == "FRAMES_LOW"
+    assert res.as_dict()["refused"] is True
 
 
 def test_track_swap_drops_the_frame():
@@ -102,3 +103,82 @@ def test_numeral_cut_by_the_frame_top_is_not_perspective():
     water = [SamObject(0, 99, (0.0, 500.0, 300.0, 600.0), np.ones((100, 300), dtype=bool))]
     fg = measure.frame_draft(0, toks, z, water, marks.BARGE)
     assert fg.drop_reason != "PERSPECTIVE" and fg.kept
+
+
+def test_column_top_without_mask():
+    from api._core.sam import SamObject
+    o_no_mask = SamObject(0, 1, (0.0, 100.0, 10.0, 140.0), mask=None)
+    o_mask = SamObject(0, 2, (0.0, 100.0, 10.0, 140.0), mask=np.ones((40, 10), dtype=bool))
+    assert measure.column_top([o_no_mask, o_mask], 5) == 100.0
+
+
+def test_frame_draft_drop_reasons():
+    from api._core.sam import SamObject
+
+    def _setup():
+        t1 = marks.Token("1", (0,), (0, 200, 10, 260), bottom_px=260.0,
+                         glyphs=[SamObject(0, 0, (0, 200, 10, 260))])
+        t2 = marks.Token("2", (1,), (0, 140, 10, 200), bottom_px=200.0,
+                         glyphs=[SamObject(0, 1, (0, 140, 10, 200))])
+        t3 = marks.Token("3", (2,), (0, 80, 10, 140), bottom_px=140.0,
+                         glyphs=[SamObject(0, 2, (0, 80, 10, 140))])
+        drafts = {"1": 10.0, "2": 10.2, "3": 10.4}
+        w = [SamObject(0, 99, (0, 280, 50, 350), np.ones((70, 50), dtype=bool))]
+        return [t1, t2, t3], drafts, w
+
+    toks, drafts, w = _setup()
+
+    # 82-83: NO_LABELLED_MARKS
+    fg_no_lab = measure.frame_draft(0, toks, {}, w, marks.SHIP)
+    assert fg_no_lab.drop_reason == "NO_LABELLED_MARKS"
+
+    # 88-89: NO_WATER_EDGE
+    fg_no_water = measure.frame_draft(0, toks, drafts, [], marks.SHIP)
+    assert fg_no_water.drop_reason == "NO_WATER_EDGE"
+
+    # 117-118: SCALE_SIGN (b >= 0)
+    toks_zero = [
+        marks.Token("1", (0,), (0, 0, 10, 0), bottom_px=0.0),
+        marks.Token("2", (1,), (20, 0, 30, 0), bottom_px=0.0),
+        marks.Token("3", (2,), (40, 0, 50, 0), bottom_px=0.0),
+    ]
+    fg_scale = measure.frame_draft(0, toks_zero, {"1": 1.0, "2": 2.0, "3": 3.0},
+                                   [SamObject(0, 0, (0, 50, 60, 100), np.ones((50, 60), dtype=bool))],
+                                   marks.SHIP)
+    assert fg_scale.drop_reason == "SCALE_SIGN"
+
+    # 120-121: PITCH
+    fg_pitch = measure.frame_draft(0, toks, drafts, w, marks.SHIP, pitch_ref_px=100.0)
+    assert fg_pitch.drop_reason == "PITCH"
+
+    # 123-124: RESIDUAL
+    toks_r, drafts_r, w_r = _setup()
+    toks_r[1] = marks.Token("2", (1,), (0, 120, 10, 180), bottom_px=180.0,
+                            glyphs=[SamObject(0, 1, (0, 120, 10, 180))])
+    fg_resid = measure.frame_draft(0, toks_r, drafts_r, w_r, marks.SHIP)
+    assert fg_resid.drop_reason == "RESIDUAL"
+
+    # 126-127: EDGE_NOISY
+    toks_n, drafts_n, _ = _setup()
+    noisy_mask = np.zeros((100, 50), dtype=bool)
+    for col in range(50):
+        noisy_mask[(16 if col % 2 == 0 else 48):, col] = True
+    w_noisy = [SamObject(0, 99, (0, 370, 50, 470), noisy_mask)]
+    fg_noisy = measure.frame_draft(0, toks_n, drafts_n, w_noisy, marks.SHIP)
+    assert fg_noisy.drop_reason == "EDGE_NOISY"
+
+    # 131-132: PERSPECTIVE
+    toks_p, drafts_p, w_p = _setup()
+    toks_p[0] = marks.Token("1", (0,), (0, 240, 10, 260), bottom_px=260.0,
+                            glyphs=[SamObject(0, 0, (0, 240, 10, 260))])
+    toks_p[1] = marks.Token("2", (1,), (0, 140, 10, 200), bottom_px=200.0,
+                            glyphs=[SamObject(0, 1, (0, 140, 10, 200))])
+    fg_persp = measure.frame_draft(0, toks_p, drafts_p, w_p, marks.SHIP)
+    assert fg_persp.drop_reason == "PERSPECTIVE"
+
+
+def test_lag1_short_series():
+    # 185: len(x) < 3 returns 0.0
+    assert measure.lag1(np.array([1.0, 2.0])) == 0.0
+    assert measure.lag1(np.array([])) == 0.0
+

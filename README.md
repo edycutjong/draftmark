@@ -119,7 +119,7 @@ Friction we met and what we did about it: [docs/DX-REPORT.md](docs/DX-REPORT.md)
 
 | Measure | Result | Evidence |
 |---|---|---|
-| Tests | 127 pytest passing | `tests/` |
+| Tests | 235 pytest passing, 100% statement coverage of `api/` (CI gate); 6 Playwright E2E specs | `tests/`, `e2e/` |
 | Wonder program self-test | 22/22 printed booklet conditions, 2 regenerations (reference 22/22, verbatim copy 14/22, generic 0/22) | [selftest-booklet.md](evidence/selftest-booklet.md) |
 | Survey on Trieste condition 4.1 | 17825.8 t vs printed 17827.7 t (-0.0106 %; one of the 22 acceptance rows, not held out) | [core-run-trieste.md](evidence/core-run-trieste.md) |
 | Real clip dB7X | 60/60 frames, draft 12.761 m, u_rep 0.086 m (repeatability only) | [core-run-dB7X.md](evidence/core-run-dB7X.md) |
@@ -165,9 +165,9 @@ npm run dev                # Next.js on :3000, FastAPI on :8000
 ## 🧪 Testing & CI
 
 ```bash
-python3 -m pytest -q       # 127 tests
+python3 -m pytest -q --cov=api   # 235 tests, 100% coverage of api/
 ruff check . && npm run typecheck && npm run build
-npx playwright test        # 5 E2E specs on the production build
+npx playwright test        # 6 E2E specs on the production build
 ```
 
 `ci.yml` is a 6-stage pipeline:
@@ -175,7 +175,7 @@ npx playwright test        # 5 E2E specs on the production build
 | Stage | Job | What it runs |
 |---|---|---|
 | 1 | Frontend Quality | `tsc` on Node 20 / 22 / 24 (main) |
-| 1 | Backend Quality | ruff, pytest |
+| 1 | Backend Quality | ruff, pytest with a 100% `api/` coverage gate |
 | 2 | Secret Scanning | gitleaks over the full history |
 | 2 | Dependency Audit | `npm audit` (production), `pip-audit` |
 | 3 | Build Verification | `next build`, bundle budget, landing/deck number check |

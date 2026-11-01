@@ -84,3 +84,83 @@ def test_a_merged_metre_box_read_as_a_digit_fails_the_anchor():
     assert toks[0].n_glyphs == 1 and marks.check_labels(toks, read, dict(read))[1].anchor
     shifted = {**read, toks[0].track: "8", toks[5].track: "12M"}  # merged 12M box read as a digit
     assert not marks.check_labels(toks, shifted, dict(shifted))[1].anchor
+
+
+def test_mark_system_properties_and_token_cy():
+    # 37: digit_h_m
+    assert marks.SHIP.digit_h_m == 0.10
+    assert marks.BARGE.digit_h_m == pytest.approx(0.010)
+
+    # 40, 43: label_pattern, labels_enum
+    pat = marks.SHIP.label_pattern()
+    assert pat == r"^(?:[1-9][0-9]?M|[2468])$"
+    assert "1M" in marks.SHIP.labels_enum()
+
+    # 68, 72: Token.h, Token.cy
+    t = marks.Token(track="t0", glyph_ids=(0,), box=(10, 20, 30, 40))
+    assert t.h == 20.0
+    assert t.cy == 30.0
+
+    # 78: bottom_px cached
+    t_cached = marks.Token(track="t0", glyph_ids=(0,), box=(10, 20, 30, 40), bottom_px=42.0)
+    assert t_cached.mask_bottom() == 42.0
+
+    # 99: group_glyphs empty
+    assert marks.group_glyphs([]) == []
+
+
+def test_mask_bottom_fallback_and_empty():
+    import numpy as np
+    from api._core.sam import SamObject
+
+    # 82, 89: glyph without mask or with all-false mask
+    g1 = SamObject(frame=0, obj_id=0, box=(10, 20, 30, 40), mask=None)
+    g2 = SamObject(frame=0, obj_id=1, box=(10, 20, 30, 40), mask=np.zeros((20, 20), dtype=bool))
+    t = marks.Token(track="t0", glyph_ids=(0, 1), box=(10, 20, 30, 40), glyphs=(g1, g2))
+    assert t.mask_bottom() == 40.0
+
+
+def test_resolve_drafts_unknown_label():
+    # 155-156: unknown label appends None
+    res = marks.labels_to_drafts(["?", "12M", "2"])
+    assert res == [None, 12.0, 12.2]
+
+
+def test_check_labels_no_second_read_and_table_range_and_strip():
+    toks, read = _tokens_and_labels()
+
+    # 180: as_dict
+    drafts, chk_init = marks.check_labels(toks, read, dict(read))
+    d_dict = chk_init.as_dict()
+    assert d_dict["ok"] is True and "monotone" in d_dict
+
+    # 211-212: read2 is None
+    _, chk_none = marks.check_labels(toks, read, read2=None)
+    assert chk_none.cross_frame is False
+    assert chk_none.detail["cross_frame_note"] == "no second read"
+
+    # 230: table_range
+    _, chk_in_range = marks.check_labels(toks, read, dict(read), table_range=(10.0, 15.0))
+    assert chk_in_range.anchor is True
+    _, chk_out_range = marks.check_labels(toks, read, dict(read), table_range=(1.0, 2.0))
+    assert chk_out_range.anchor is False
+
+    # 226-227, 239-240: strip_sequence and _is_subsequence
+    labs = [read[t.track] for t in toks]
+    # Pass matching strip sequence
+    _, chk_strip = marks.check_labels(toks, read, dict(read), strip_sequence=labs)
+    assert chk_strip.anchor is True
+
+    # Pass subsequence strip sequence
+    sub_seq = ["12M", "6", "13M", "4"]
+    sub_toks = [t for t in toks if read[t.track] in sub_seq]
+    sub_read = {t.track: read[t.track] for t in sub_toks}
+    _, chk_sub = marks.check_labels(sub_toks, sub_read, dict(sub_read), strip_sequence=labs)
+    assert chk_sub.anchor is True
+
+    # Directly test _is_subsequence
+    sub = ["2", "4", "1M"]
+    seq = marks.strip_sequence()
+    assert marks._is_subsequence(sub, seq) is True
+    assert marks._is_subsequence(["1M", "1M"], seq) is False
+

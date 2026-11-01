@@ -24,3 +24,11 @@ def test_zero_offset_and_uncertainty():
 def test_out_of_box_raises():
     with pytest.raises(ValueError):
         barge.displacement_kg(barge.Barge(0.1, 0.1, 0.2), -0.01)
+
+
+def test_barge_table():
+    b = barge.Barge(L_m=0.1, B_m=0.1, light_kg=0.2, rho_kg_m3=1000.0)
+    tbl = barge.table(b, t0=0.01, t1=0.03, step=0.01)
+    assert len(tbl) == 3
+    assert tbl[0]["draft_m"] == 0.01
+    assert "disp_kg" in tbl[0] and "kg_per_mm" in tbl[0]
