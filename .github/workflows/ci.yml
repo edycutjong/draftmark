@@ -18,7 +18,7 @@ jobs:
           python-version: "3.11"
           cache: pip
           cache-dependency-path: requirements-dev.txt
-      - run: pip install -r requirements.txt -r requirements-dev.txt ruff pip-audit
+      - run: pip install -r requirements.txt -r requirements-dev.txt ruff==0.15.2 pip-audit
       - run: ruff check .
       - run: python -m pytest -q
       - name: Dependency audit

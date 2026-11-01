@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="docs/assets/icon.svg" alt="DraftMark Icon" width="144">
+  <img src="docs/assets/icon-animated.svg" alt="DraftMark Icon" width="144">
   <h1>DraftMark ⚓</h1>
   <p><em>Time-average the waterline from a short video of a ship's draft marks, then let an agent write, prove and run the survey program.</em></p>
   <img src="docs/assets/readme-hero-animated.svg" alt="DraftMark: the sea keeps moving across the 12M mark; one thin line stops, holds, and is written down." width="100%">
