@@ -92,7 +92,7 @@ img,svg{display:block;max-width:100%}
 .hero::after{content:"";position:absolute;inset:0;z-index:-1;opacity:.5;
   background:repeating-linear-gradient(180deg,transparent 0 79px,rgba(58,46,40,.55) 79px 80px)}
 .hero__world{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
-.hero__swell{position:absolute;left:0;bottom:1%;width:200%;height:120px;animation:drift 22s linear infinite}
+.hero__swell{position:absolute;left:0;bottom:1%;width:200%;max-width:none;height:120px;animation:drift 22s linear infinite}
 .hero__swell path{fill:none;stroke:rgba(111,140,138,.28);stroke-width:2}
 @keyframes drift{to{transform:translateX(-50%)}}
 .hero__grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:clamp(28px,4vw,64px);align-items:center}
