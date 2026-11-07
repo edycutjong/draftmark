@@ -2,6 +2,6 @@
 fastapi>=0.115
 httpx>=0.28.1
 numpy>=1.26
-pillow>=10.1
+pillow>=13.0.0
 meta-sam-parser>=0.1.0
 pypdf>=6.21.4
